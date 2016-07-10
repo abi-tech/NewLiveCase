@@ -9,9 +9,6 @@ mainModule.controller('mainController', [ '$rootScope', 'pageService', function 
     $rootScope.editorHeight = 624;
     $rootScope.editorScale = 0.6;
 
-    $rootScope.currentPage = pageService.get(0);
-    $rootScope.currentComponent = null;
-
     //管理各区动态生成的Scope
     $rootScope.navigationArea = {};
     $rootScope.navigationArea.scopes = [];
@@ -24,4 +21,38 @@ mainModule.controller('mainController', [ '$rootScope', 'pageService', function 
 
     $rootScope.configArea = {};
     $rootScope.configArea.scopes = [];
+
+    $rootScope.pages = pageService.pages;
+
+    $rootScope.createPage = function(index) {  //console.log(index);
+        pageService.add(index + 1);
+        $rootScope.setCurrentPage(index + 1, pageService.get(index + 1));
+    } 
+
+    $rootScope.removePage = function(index) {
+        pageService.delete(index);
+        $rootScope.setCurrentPage(0);
+    } 
+
+    $rootScope.copyPage = function(index) {  
+        pageService.copy(index);
+        $rootScope.setCurrentPage(index + 1, pageService.pages[index + 1]);
+    } 
+
+    $rootScope.moveUp = function(index) {
+        pageService.moveUp(index);
+    } 
+
+    $rootScope.moveDown = function(index) {
+        pageService.moveDown(index);
+    } 
+
+    $rootScope.setCurrentPage = function(index, page){
+        $rootScope.currentIndex = index; 
+        $rootScope.currentPage = page; 
+        $rootScope.currentComponent = null;
+    }
+
+    $rootScope.setCurrentPage(0, pageService.pages[0]);
+
 }]); 

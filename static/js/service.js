@@ -11,7 +11,18 @@ mainModule.service('pageService', ['$rootScope', function (rootScope) {
             autoTurnPage: true,
             autoTurnPageDelay: 0,
             lockTurnPage: true,
-            active: true,
+            //active: true,
+            components: []
+        }, { 
+            style: { "background-color": "#ffffff", "background-image": "none"},
+            animation: { "type": "", "name": "缩放", "effect": "slideZoomIn", "duration": 1, "delay": 0 },
+            turnPage: { "id": "3", "name": "DownArrow", "url": "static/images/slideDown.png" },
+            slideIcon: "static/images/slideDown.png",
+            applyAllPages: true,
+            autoTurnPage: true,
+            autoTurnPageDelay: 0,
+            lockTurnPage: true,
+            //active: true,
             components: []
         }],
 
@@ -25,6 +36,7 @@ mainModule.service('pageService', ['$rootScope', function (rootScope) {
                     style: { "background-color": "#ffffff", "background-image": "none"},
                     animation: { "name": "缩放", "effect": "slideZoomIn", "duration": 1, "delay": 0 },
                     turnPage: { "id": "1", "name": "LiveApp", "url": "static/images/upArrow.png" },
+                    slideIcon: "static/images/slideDown.png",
                     applyAllPages: false,
                     autoTurnPage: false,
                     autoTurnPageDelay: 0,

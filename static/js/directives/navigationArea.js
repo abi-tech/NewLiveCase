@@ -39,7 +39,16 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
 
         	function initEvent() {
         		$(".u-toolBtn:eq(0)", toolBtnPanel).on('click', function (e) {
-        			alert('');
+                    var cfg = $.extend({}, baseCfg);
+                    cfg.width = 640;
+                    cfg.height = 540;
+                    cfg.imgUrl = 'http://img.liveapp.cn/group3/eng/61/fc/d2fa43d4f1f912efc58f1f783f7c_14622537853754_5.png';
+                    //cfg.css['width'] = 
+        			pageService.get(pageService.currentIndex)
+                        .components.push(new Singleimage('singleimage', cfg));
+                    $rootScope.$apply();
+                    console.log(pageService.pages);
+                    console.log($rootScope.currentPage.components);
         		});
 
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {

@@ -1,7 +1,7 @@
 mainModule.service('pageService', ['$rootScope', function (rootScope) {
 
 	var service = {
-
+        currentIndex: 0,
 		pages:[{ 
             style: { "background-color": "#ffffff", "background-image": "none"},
             animation: { "type": "", "name": "缩放", "effect": "slideZoomIn", "duration": 1, "delay": 0 },
@@ -11,7 +11,6 @@ mainModule.service('pageService', ['$rootScope', function (rootScope) {
             autoTurnPage: true,
             autoTurnPageDelay: 0,
             lockTurnPage: true,
-            //active: true,
             components: []
         }, { 
             style: { "background-color": "#ffffff", "background-image": "none"},
@@ -22,7 +21,6 @@ mainModule.service('pageService', ['$rootScope', function (rootScope) {
             autoTurnPage: true,
             autoTurnPageDelay: 0,
             lockTurnPage: true,
-            //active: true,
             components: []
         }],
 

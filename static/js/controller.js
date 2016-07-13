@@ -51,6 +51,7 @@ mainModule.controller('mainController', [ '$rootScope', 'pageService', function 
         $rootScope.currentIndex = index; 
         $rootScope.currentPage = page; 
         $rootScope.currentComponent = null;
+        console.log($rootScope.currentPage);
     }
 
     $rootScope.setCurrentPage(0, pageService.pages[0]);

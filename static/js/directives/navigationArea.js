@@ -39,20 +39,37 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
 
         	function initEvent() {
         		$(".u-toolBtn:eq(0)", toolBtnPanel).on('click', function (e) {
-                    var cfg = $.extend({}, baseCfg);
+                    var cfg = {};
                     cfg.width = 640;
-                    cfg.height = 540;
+                    cfg.height = 535;
                     cfg.imgUrl = 'http://img.liveapp.cn/group3/eng/61/fc/d2fa43d4f1f912efc58f1f783f7c_14622537853754_5.png';
-                    //cfg.css['width'] = 
-        			pageService.get(pageService.currentIndex)
-                        .components.push(new Singleimage('singleimage', cfg));
+                    cfg.scale = $rootScope.editorScale;
+                    cfg.animateIn = { effect: "bounceIn", duration: 1 };
+                    cfg.animateOut = { effect: "bounceOut", duration: 1 };
+                    cfg.onDragEnd = function($html, top, left){
+                        //console.log($html, top, left);
+                    }
+                    cfg.onResizeEnd = function($html, top, left, width, height){
+                        //console.log($html, top, left, width, height);
+                    }
+        			pageService.get(pageService.currentIndex).components.push(new Singleimage('singleimage', cfg));
                     $rootScope.$apply();
-                    console.log(pageService.pages);
-                    console.log($rootScope.currentPage.components);
         		});
 
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {
-        			alert('');
+                    var cfg = {};
+                    cfg.innerText = '';
+                    cfg.scale = $rootScope.editorScale;
+                    cfg.animateIn = { effect: "bounceIn", duration: 1 };
+                    cfg.animateOut = { effect: "bounceOut", duration: 1 };
+                    cfg.onDragEnd = function($html, top, left){
+                        //console.log($html, top, left);
+                    }
+                    cfg.onResizeEnd = function($html, top, left, width, height){
+                        //console.log($html, top, left, width, height);
+                    }
+        			pageService.get(pageService.currentIndex).components.push(new Singletext('singletext', cfg));
+                    $rootScope.$apply();
         		});
 
         		$(".u-toolBtn:eq(2)", toolBtnPanel).on('click', function (e) {
@@ -62,7 +79,25 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
 
         		$(".u-toolBtn:eq(2) ul li", toolBtnPanel).on('click', function (e) {
         			var index = $(".u-toolBtn:eq(2) ul li", toolBtnPanel).index(this);
-        			alert(index);
+        			var cfg = {};
+                    cfg.y = 822;
+                    cfg.x = 217;
+                    cfg.width = 200;
+                    cfg.height = index == "1"? 126 : 70;
+                    cfg.innerText = '';
+                    cfg.innerIcon = 'http://eng.liveapp.cn/tpl/components/links/externallinks/img/phone.png';
+                    cfg.scale = $rootScope.editorScale;
+                    cfg.funType = index + '';
+                    cfg.animateIn = { effect: "bounceIn", duration: 1 };
+                    cfg.animateOut = { effect: "bounceOut", duration: 1 };
+                    cfg.onDragEnd = function($html, top, left){
+                        //console.log($html, top, left);
+                    }
+                    cfg.onResizeEnd = function($html, top, left, width, height){
+                        //console.log($html, top, left, width, height);
+                    }
+                    pageService.get(pageService.currentIndex).components.push(new Externallinks('externallinks', cfg));
+                    $rootScope.$apply();
         		});
 
         		$nav2Coms.on('click', function (e) {

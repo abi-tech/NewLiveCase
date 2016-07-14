@@ -60,32 +60,297 @@ var ExClass = function (baseClass, prop) {
     return F;
 };
 //=============================================== 继承 Javascript 实现方式 END =========================================
-
-var baseCfg = {
-    type: 'base',
-    text: '',
-    width: 0,
-    height: 0,
-    bg: '',
-    containerCss: { },
-    css: { },
-    center: true,
-    animateIn: { },
-    animateOut: { }
-}
+// "top" : (options.y * options.scale) + "px",
+// "left" : (options.x * options.scale) + "px",
+// "width": (options.width * options.scale) + "px", 
+// "height": (options.height * options.scale) + "px", 
+// "transform": "rotate(" + options.rotate + "deg)",
+// "opacity": options.opacity,
+// "z-index": 10000,
+// "cursor": "move"
 //声明H5CompentBase
 var H5ComponentBase = ExClass({
-    initialize: function(name, cfg) {
-        var cfg = cfg || {};
-    	var id = ('h5_c_' + Math.random()).replace('.', '_');
+    initialize: function(name, options) {
+    	var that = this;
+    	var defaultOptions = {
+    		mode: '1', // 设计 1 显示 2
+		    type: 'base',
+		    width: 0,
+		    height: 0,
+		    x: 0,
+		    y: 0,
+		    zIndex: 11000,
+		    center: true,
+		    containerCss: { },
+		    componentCss: { },
+		    innerCss: { },
+		    animateIn: null,
+		    animateOut: null,
+		    onDragEnd: function(){},
+		    onResizeEnd: function(){}
+		}
 
-        this.name = name;
-        this.id = id;
-    	$.extend(this, cfg);
+		that.id = ('h5_c_' + Math.random()).replace('.', '_');
+        that.name = name;
+
+		that.wrapperTemplate = [
+			'<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move">',
+				'<div class="tl-c"></div><div class="tr-c"></div><div class="bl-c"></div><div class="br-c"></div>',
+			'</div>'
+		].join('');
+
+		that.containerTemplate = '<div></div>';
+        //wrapper 在设计模式下加载 用于组件的 位置 宽高 大小 控制
+        //container 在显示模式下设置 
+        //component 控制组件的外观
+        //inner 控制组件的内容
+		that.$wrapper = $(that.wrapperTemplate);
+		that.$container = $(that.containerTemplate);
+		that.options = $.extend({}, defaultOptions, options);
+    	
+    	$.extend(that, that.options);
+
+		that._build();
+
+		that.choosen();
+		that.animate(that.animateIn);
+        that.animate(that.animateOut);
     },
-    getName: function(prefix) {
-        return prefix + this.name;
-    }
+    _setCss: function () {
+    	var that = this;
+    	that.setZIndex(that.zIndex);
+    	that.setBackgroundColor(that.componentCss["background-color"]);
+    	that.setBorderWidth(that.componentCss["border-width"]);
+    	that.setBorderColor(that.componentCss["border-color"]);
+    	that.setBorderRadius(that.componentCss["border-radius"]);
+    	that.setOpacity(that.componentCss["opacity"]);
+    	that.setRotate(that.componentCss["transform"]);
+    	that.setWidth(that.width);
+    	that.setHeight(that.height);
+    	that.setX(that.x)
+    	that.setY(that.y);
+    },
+    setComponentCss: function (css) {
+    	var that = this;
+    	for(var key in css){
+    		that.$component.css(key, css[key]);
+    	}
+    },
+    setInnerCss: function (css) {
+    	var that = this;
+    	for(var key in css){
+    		that.$inner.css(key, css[key]);
+    	}
+    },
+    setZIndex: function(zIndex){
+    	//this.containerCss["z-index"] = zIndex;
+    	this.$wrapper.css("z-index", zIndex);
+    },
+    setBackgroundColor: function (color) {
+    	//设置背景颜色
+    	this.componentCss["background-color"] = color;
+    	this.$component.css("background-color", color);
+    },
+    setBorderWidth: function (width) {
+    	//设置边框宽度
+    	this.componentCss["border-width"] = width + "px";
+    	this.$component.css("border-width", width + "px");
+    },
+    setBorderColor: function (color) {
+    	//设置边框颜色
+    	this.componentCss["border-color"] = color;
+    	this.$component.css("border-color", color);
+    },
+    setBorderRadius: function (radius) {
+    	//设置边框圆角
+    	this.componentCss["border-radius"] = radius + "px";
+    	this.$component.css("border-radius", radius + "px");
+    },
+    setOpacity: function (opacity) {
+    	//设置透明度
+    	this.componentCss["opacity"] = opacity;
+    	this.$component.css("opacity", opacity);
+    },
+    setRotate: function (rotate) {
+    	//设置旋转角度 transform: ;
+    	this.componentCss["transform"] = "rotate(" + rotate + "deg)";
+    	this.$wrapper.css("transform", "rotate(" + rotate + "deg)");
+    	this.$component.css("transform", "rotate(" + rotate + "deg)");
+    },
+    setWidth: function (width) {
+    	//设置宽度
+    	this.width = width;
+    	this.containerCss["width"] = this._scale(width);
+    	this.$wrapper.css("width", this._scale(width));
+    },
+    setHeight: function (height) {
+    	//设置高度
+    	this.height = height;
+    	this.containerCss["height"] = this._scale(height);
+    	this.$wrapper.css("height", this._scale(height));
+    },
+    setX: function (x) {
+    	//设置x
+    	this.x = x;
+    	this.containerCss["left"] = this._scale(x);
+    	this.$wrapper.css("left", this._scale(x));
+    },
+    setY: function (y) {
+    	//设置y
+    	this.y = y;
+    	this.containerCss["top"] = this._scale(y);
+    	this.$wrapper.css("top", this._scale(y));
+    },
+    setAnimateIn: function (animation) {
+    	//设置动画进入
+    	$.extend(this.options.animateIn, animation);
+    },
+    setAnimateOut: function (animation) {
+    	//设置动画退出
+    	$.extend(this.options.animateOut, animation);
+    },
+    animate: function(animation) {
+    	//表演动画
+    	var that = this;
+    	if(typeof animation !== "object" 
+    		&& typeof animation.effect !== "string") return;
+
+    	var express = animation.effect + " " + animation.duration + "s";
+    	var end = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
+    	that.$component.css("animation", express).one(end, function () {
+            $(this).css("animation", "none");
+        });
+    },
+    choosen: function () {
+    	//添加选中样式
+    	var that = this;
+    	$(".c-c-container").removeClass("u-comChoose");
+        that.$html.addClass("u-comChoose");
+    },
+    _build: function() {
+    	var that = this;
+    	if(that.mode === '1'){
+    		that.$container.append(that.$component);
+    		that.$wrapper.prepend(that.$container);
+    		that.$html = that.$wrapper;
+       		that.interact = interact(that.$html[0], { styleCursor: false });
+       		that._setCss();
+    		that._bind();
+
+    		that.setComponentCss(that.componentCss);
+    		that.setInnerCss(that.innerCss);
+    	}else{
+
+    	}
+    },
+    _bind: function(){
+    	var that = this;
+		that._drag();
+    	that._resize();
+    	that._resizeend();
+    	that._actionChecker();
+
+    	that.$html.on('click', function (event) {
+            event.stopPropagation()
+           	that.choosen();
+        });
+
+        $(".tr-c,.bl-c", that.$html).on('mouseenter', function () {
+            that.$html.css("cursor", "ne-resize");
+        }).on('mouseleave', function (e) {
+            that.$html.css("cursor", "move");
+        });
+
+        $(".tl-c,.br-c", that.$html).on('mouseenter', function () {
+            that.$html.css("cursor", "nw-resize");
+        }).on('mouseleave', function (e) {
+            that.$html.css("cursor", "move");
+        });
+    },
+    _scale: function(val){
+    	return val * this.scale;
+    },
+	_drag: function(){
+		var that = this;
+		that.interact.draggable({
+            restrict: {
+                restriction: "parent",
+                endOnly: true,
+                elementRect: { top: 1.05, left: 1.05, bottom: -0.05, right: -0.05 }
+            },
+            onmove: function (event) {
+                var target = event.target,
+                    x = (parseFloat($(event.target).css('left')) || 0),
+                    y = (parseFloat($(event.target).css('top')) || 0);
+
+                x = x + event.dx;
+                y = y + event.dy;
+
+                $(event.target).css('left', x);
+                $(event.target).css('top', y);
+                //TODO 移动时修改 top left
+                if(typeof that.onDragEnd === 'function')
+                	that.onDragEnd(that.$html, x, y);
+            }
+        });
+	},
+	_resize: function(){
+		var that = this;
+		that.interact.resizable({
+			preserveAspectRatio: that.ratio,
+            edges: { left: true, right: true, bottom: true, top: true }
+        })
+        .on('resizemove', function (event) {
+            var target = event.target,
+                   x = (parseFloat($(event.target).css('left')) || 0),
+                   y = (parseFloat($(event.target).css('top')) || 0);
+
+            x += event.deltaRect.left;
+            y += event.deltaRect.top;
+            w = event.rect.width;
+            h = event.rect.height;
+
+            $(event.target).css('left', x);
+            $(event.target).css('top', y);
+            $(event.target).css('width', w);
+            $(event.target).css('height', h);
+
+            //TODO 移动时修改 top left width height
+            if(typeof that.onResizeEnd === 'function')
+            	that.onResizeEnd(that.$html, x, y, w, h);
+        });
+	},
+	_resizeend: function(){
+		var that = this;
+		that.interact.on('resizeend', function (event) {
+            $(that.$html).css("cursor", "move");
+        });
+	},
+	_actionChecker: function(){
+		var that = this;
+		that.interact.actionChecker(function (pointer, event, action, interactable, $html, interaction) {
+            if (action.name === 'resize' && $($html).hasClass("u-comChoose")) {
+                var cursorKey = 'resize',
+                    edgeNames = ['top', 'bottom', 'left', 'right'];
+
+                for (var i = 0; i < 4; i++) {
+                    if (action.edges[edgeNames[i]]) {
+                        cursorKey += edgeNames[i];
+                    }
+                }
+                cursor = interact.debug().actionCursors[cursorKey];
+
+                $(that.$html).css("cursor", cursor);
+            } else {
+                action.name = 'drag';
+            }
+
+            if (action.name === 'drag') {
+                $(that.$html).css("cursor", "move");
+            }
+            return action;
+        });
+	}
 });
 
 var mainModule = angular.module("mainModule", []);

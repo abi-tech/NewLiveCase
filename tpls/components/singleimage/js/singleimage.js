@@ -1,61 +1,41 @@
 var Singleimage = ExClass(H5ComponentBase, {
-    initialize: function($super, name, cfg) {
-        $super(name, cfg);
-        var defaultContainerCss = {
-        	"width": "100%", 
-	    	"height": "100%", 
-	    	"overflow": "hidden", 
-	    	"border-color": "rgb(204, 204, 204)", 
-	    	"border-radius": "0px", 
-	    	"transform": "rotate(0deg)", 
-	    	"opacity": 1, 
-	    	"border-width": "0px", 
-	    	"background-color": "rgba(225, 225, 225, 0)"
-        };
+    initialize: function($super, name, options) {
+    	var that = this;
 
-        var defaultCss = {
-        	'width': cfg.width + 'px', 
-        	'height': cfg.height + 'px',
-        	'margin-left': cfg.left + 'px', 
-        	'margin-top': cfg.top +  'px', 
-        	'transform': 'scale(' + cfg.scale + ')',
-        	'display': 'block'
-        }
-
-        this.type = name;
-
-        var tpl_com_container = [
-			'<div class="f-abs c-c-container">',
-			    '<div class="tl-c"></div><div class="tr-c"></div><div class="bl-c"></div><div class="br-c"></div>',
-			'</div>'
-		].join('');
-
-		var tpl_component = [
-			'<div class="c-singleimage preview-container" inside-styles="" data-id=' + this.id + '>',
+		that.componentTemplate = [
+			'<div class="c-singleimage preview-container" inside-styles="">',
 				'<img class="jcrop-preview newImg" src="" />',
 			'</div>'
 		].join('');
 
-		var $container = $(tpl_com_container);
-		var $component = $(tpl_component);
-		var $image = $component.find("img");
-		for(var key in defaultContainerCss){
-        	var value = defaultContainerCss[key];
-        	cfg.containerCss[key] = value; 
-        	$component.css(key, value);
-        }
+		options.componentCss = {
+			"width": "100%",
+        	"height": "100%", 
+        	"overflow": "hidden",
+        	"background-color": "rgba(255, 255, 255, 0)", //背景色
+        	"border-width": "0px",                   //边框宽度
+        	"border-color": "rgba(225, 225, 225, 0)",    //边框颜色
+        	"border-radius": "0px",                  //边框圆角
+        	"transform": "rotate(0deg)",            //暂时无用
+        	"opacity": 1,                         //透明度
+		};
 
-        for(var key in defaultCss){
-        	var value = defaultCss[key];
-        	cfg.css[key] = value;
-        	$image.css(key, value);
-        }
-		
-		$image.prop("src", cfg.imgUrl);
-		console.log($component.prop("outerHTML"));
-		return $component;
-    },
-    getName: function($super) {
-        return $super("Employee name: ");
+		options.innerCss = {
+			'width': options.width + 'px', 
+        	'height': options.height + 'px',
+        	'margin-left': options.left + 'px', 
+        	'margin-top': options.top +  'px', 
+        	'transform': 'scale(' + options.scale + ')',
+        	'display': 'block'
+		};
+
+		//子类控制自身组件的外观 内容
+		//父类控制在design模式和view模式下与配置类互动
+		that.$component = $(that.componentTemplate);
+		that.$inner = that.$component.find("img").prop("src", options.imgUrl);
+
+		//等比缩放
+		options.ratio = true;
+		$super(name, options);
     }
 });

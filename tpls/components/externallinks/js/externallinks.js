@@ -82,6 +82,8 @@ var Externallinks = ExClass(H5ComponentBase, {
 	        	}
 			}
 	    }else{
+	    	that.$component.css("background-color", that.echoBackgroundColor(1))
+	    	that.$component.css("width", 126 * that.scale);
 	    	that.$inner.css("background-image", 'url("' + inner + '")');
 	    }
     },

@@ -225,13 +225,14 @@ var File = function(options){
 	var that = this;
 	var defaultOptions = { 
 		title: "", 
-		url: "" 
+		url: "",
+		check: false
 	};
 
 	var imageTemplate = [
 	'<div class="imgPreview">',
 		'<div class="dz-details" title="{{ title }}">',
-			'<div class="previewImg"></div>',
+			'<div class="previewImg" style="background-image: url(&quot;{{ url }}&quot;);"></div>',
 			'<div class="delbtn"></div>',
 		'</div>',
 		'<p class="previewname" title="{{ title }}">{{ title }}</p>',
@@ -253,8 +254,32 @@ File.prototype.init = function () {
 
 File.prototype.initEvent = function () {
 	var that = this;
-	that.$html("click", function(e) { //<div class="check"></div>
-		var $check = $(".dz-details", this).find("div.check");
+	that.$html.on("click", function(e) {
+		if(!that.options.check){
+			that.check();
+		}else{
+			that.uncheck();
+		}
+	});
+
+	$("div.close", that.$html).on("click", function (e) {
+		e.stopPropagation();
+		alert("do delete!");
 	});
 }
+
+File.prototype.check = function () {
+	var that = this;
+	$(".dz-details>div.check", that.$html).remove();
+	$(".dz-details", that.$html).append('<div class="check"></div>');
+	that.options.check = true;
+}
+
+File.prototype.uncheck = function () {
+	var that = this;
+	$(".dz-details>div.check", that.$html).remove();
+	that.options.check = false;
+}
+
+
 

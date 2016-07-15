@@ -6,7 +6,7 @@ var Singletext = ExClass(H5ComponentBase, {
         options.height = 80;
         options.x = (640 - 417) / 2;
         options.y = 108;
-
+        
 		that.componentTemplate = [
 			'<div inside-styles="" class="text-wrap">',
 			    '<div class="text-content">右侧输入文本</div>',

@@ -4584,7 +4584,7 @@ body,html {
 	color:#9a9a9a
 }
 #fileDialog .imagePreview .audiocontrol .nochoose {
-	background:url(/static/images/upload/cicle.png)no-repeat
+	background:url(/static/images/cicle.png)no-repeat
 }
 #fileDialog .imagePreview .audiocontrol .audiocheck,#fileDialog .imagePreview .audiocontrol .choose {
 	position:absolute;
@@ -4592,7 +4592,7 @@ body,html {
 	top:0
 }
 #fileDialog .imagePreview .audiocontrol .choose {
-	background:url(/static/images/upload/radio.png)no-repeat
+	background:url(/static/images/radio.png)no-repeat
 }
 #fileDialog .imagePreview .audiocontrol .audiocheck {
 	background:url(/static/images/upload/check.png)no-repeat
@@ -4610,7 +4610,7 @@ body,html {
 	z-index:20
 }
 #fileDialog .imagePreview .check {
-	background:url(/static/images/upload/radio.png)center center no-repeat
+	background:url(/static/images/radio.png)center center no-repeat
 }
 #fileDialog .imagePreview .check.ismultile,#fileDialog .imagePreview .delchoose {
 	background:url(/static/images/upload/check.png)center center no-repeat
@@ -4680,7 +4680,7 @@ body,html {
 	width:130px
 }
 #fileDialog .imagePreview .imgPreview .delbtn {
-	background:url(/static/images/upload/cicle.png)center center no-repeat;
+	background:url(/static/images/cicle.png)center center no-repeat;
 	position:absolute;
 	bottom:5px;
 	right:12px;
@@ -4764,7 +4764,7 @@ body,html {
 	top:-80px;
 	width:23px;
 	height:23px;
-	background-image:url(/static/images/upload/imgClose.png);
+	background-image:url(/static/images/imgClose.png);
 	text-indent:7px;
 	line-height:33px;
 	color:#fff;
@@ -5633,7 +5633,7 @@ article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,secti
 	height:20px
 }
 .u-mid-pic .effect-check-wapper {
-	background:url(/static/images/upload/cicle.png)no-repeat;
+	background:url(/static/images/cicle.png)no-repeat;
 	display:none
 }
 .c-ct.c-ct-active .rsb,.c-ct:hover .rsb,.u-mid-pic:hover .effect-check-wapper {

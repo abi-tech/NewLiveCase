@@ -1,0 +1,40 @@
+<section id="fileDialog" lass="oni-dialog active">
+	<div class="oni-dialog-inner u-dialog-height" style="height: 600px;">
+		<div class="oni-dialog-header u-dialog-header">
+			<div class="oni-dialog-close"> <i class="oni-icon oni-icon-times icon-x18 icon-x18-dialog-close"></i>
+			</div>
+			<div class="oni-dialog-title title">&nbsp;</div>
+		</div>
+		<div class="oni-dialog-content u-dialog-content u-dialog-mag-top" style="height: 384px;">
+			<div id="dropzone" class="u-newdz">
+				<div class="dz-default dz-message" style="opacity: 1!important;">
+					<div class="u-upload-btn">上传文件</div>
+					<p class="u-upload-txt">仅支持小于1M的JPG、JEPG、PNG、GIF、BMP格式图片</p>
+				</div>
+				<form class="dropzone dz-clickable" id="newDropzoneUpload">
+					<div class="dz-default dz-message">
+						<span>Drop files here to upload</span>
+					</div>
+				</form>
+				<div class="cover" style="display: none;"></div>
+			</div>
+			<div class="f-fix uploadContent" style="height:460px;position: relative">
+				<div class="previewCtrl"></div>
+				<div class="imagePreview"></div>
+				<div class="u-delete">
+					<span>批量删除</span>
+				</div>
+			</div>
+		</div>
+		<div class="oni-dialog-footer oni-helper-clearfix u-dialog-footer">
+			<div class="oni-dialog-btns u-dialog-btn-pos-important">
+				<button class="u-btn-mid-important oni-button oni-widget oni-state-default oni-corner-all oni-button-success u-btn-disabled" data-button-color="success" disabled="">
+					<span class="oni-button-text">确定</span>
+				</button>
+				<button class="u-btn-mid-light-grey-important oni-button oni-widget oni-state-default oni-corner-all">
+					<span class="oni-button-text">取消</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</section>

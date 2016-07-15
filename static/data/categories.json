@@ -1,0 +1,85 @@
+{
+	"categories" : [
+		{ "id": 0, "pid": 0, "name": "我的图库", "children": []},
+		{ "id": 1, "pid": 0, "name": "母亲节", "children": [
+			{ "id": 14, "pid": 1, "name": "图片" }
+		]},
+		{ "id": 2, "pid": 0, "name": "背景", "children": [
+			{ "id": 15, "pid": 2, "name": "风景" },
+			{ "id": 16, "pid": 2, "name": "简约" },
+			{ "id": 17, "pid": 2, "name": "节日" },
+			{ "id": 18, "pid": 2, "name": "卡通" },
+			{ "id": 19, "pid": 2, "name": "科技" },
+			{ "id": 20, "pid": 2, "name": "商务" },
+			{ "id": 21, "pid": 2, "name": "生活" },
+			{ "id": 22, "pid": 2, "name": "水墨" }
+		]},
+		{ "id": 3, "pid": 0, "name": "边框", "children": [
+			{ "id": 23, "pid": 3, "name": "古典" },
+			{ "id": 24, "pid": 3, "name": "简约" },
+			{ "id": 25, "pid": 3, "name": "卡通" },
+			{ "id": 26, "pid": 3, "name": "其他" }
+		]},
+		{ "id": 4, "pid": 0, "name": "贴图", "children": [
+			{ "id": 27, "pid": 4, "name": "表情" },
+			{ "id": 28, "pid": 4, "name": "动画" },
+			{ "id": 29, "pid": 4, "name": "卡通" },
+			{ "id": 30, "pid": 4, "name": "流行语" },
+			{ "id": 31, "pid": 4, "name": "英文" },
+			{ "id": 32, "pid": 4, "name": "中文" }
+		]},
+		{ "id": 5, "pid": 0, "name": "图标", "children": [
+			{ "id": 33, "pid": 5, "name": "商务" },
+			{ "id": 34, "pid": 5, "name": "餐饮" },
+			{ "id": 35, "pid": 5, "name": "交通" },
+			{ "id": 36, "pid": 5, "name": "科技" },
+			{ "id": 37, "pid": 5, "name": "天气" },
+			{ "id": 38, "pid": 5, "name": "手绘" },
+			{ "id": 39, "pid": 5, "name": "手势" },
+			{ "id": 40, "pid": 5, "name": "节日" },
+			{ "id": 41, "pid": 5, "name": "通用" }
+		]},
+		{ "id": 6, "pid": 0, "name": "五一", "children": [
+			{ "id": 42, "pid": 6, "name": "艺术字" }
+		]},
+		{ "id": 7, "pid": 0, "name": "功能", "children": [
+			{ "id": 43, "pid": 7, "name": "电话" },
+			{ "id": 44, "pid": 7, "name": "链接" },
+			{ "id": 45, "pid": 7, "name": "视频" },
+			{ "id": 46, "pid": 7, "name": "语言留言墙" },
+			{ "id": 47, "pid": 7, "name": "音频" },
+			{ "id": 48, "pid": 7, "name": "抽奖" }
+		]},
+		{ "id": 8, "pid": 0, "name": "元旦", "children": [
+			{ "id": 49, "pid": 8, "name": "背景" },
+			{ "id": 50, "pid": 8, "name": "元素" }
+		]},
+		{ "id": 9, "pid": 0, "name": "情人节", "children": [
+			{ "id": 51, "pid": 9, "name": "背景" },
+			{ "id": 52, "pid": 9, "name": "素材" },
+			{ "id": 53, "pid": 9, "name": "艺术字" }
+		]},
+		{ "id": 10, "pid": 0, "name": "春节", "children": [
+			{ "id": 54, "pid": 10, "name": "背景" },
+			{ "id": 55, "pid": 10, "name": "艺术字" },
+			{ "id": 56, "pid": 10, "name": "优惠券" }
+		]},
+		{ "id": 11, "pid": 0, "name": "形状", "children": [
+			{ "id": 57, "pid": 11, "name": "基础图形" },
+			{ "id": 58, "pid": 11, "name": "箭头" },
+			{ "id": 59, "pid": 11, "name": "气泡" },
+			{ "id": 60, "pid": 11, "name": "线条" },
+			{ "id": 61, "pid": 11, "name": "星形状" },
+			{ "id": 62, "pid": 11, "name": "其他" }
+		]},
+		{ "id": 12, "pid": 0, "name": "圣诞", "children": [
+			{ "id": 63, "pid": 12, "name": "背景" },
+			{ "id": 64, "pid": 12, "name": "圣诞艺术字" },
+			{ "id": 65, "pid": 12, "name": "圣诞元素" }
+		]},
+		{ "id": 13, "pid": 0, "name": "其它", "children": [
+			{ "id": 66, "pid": 13, "name": "扁平化" }
+		]}
+	]
+}
+

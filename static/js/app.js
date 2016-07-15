@@ -107,7 +107,7 @@ var H5ComponentBase = ExClass({
 		that.$wrapper = $(that.wrapperTemplate);
 		that.$container = $(that.containerTemplate);
 		that.options = $.extend({}, defaultOptions, options);
-    	
+    	//console.log(that.options);
     	$.extend(that, that.options);
 
 		that._build();
@@ -153,8 +153,8 @@ var H5ComponentBase = ExClass({
     },
     setBorderWidth: function (width) {
     	//设置边框宽度
-    	this.componentCss["border-width"] = width + "px";
-    	this.$component.css("border-width", width + "px");
+    	this.componentCss["border-width"] = width;
+    	this.$component.css("border-width", width);
     },
     setBorderColor: function (color) {
     	//设置边框颜色
@@ -163,8 +163,8 @@ var H5ComponentBase = ExClass({
     },
     setBorderRadius: function (radius) {
     	//设置边框圆角
-    	this.componentCss["border-radius"] = radius + "px";
-    	this.$component.css("border-radius", radius + "px");
+    	this.componentCss["border-radius"] = radius;
+    	this.$component.css("border-radius", radius);
     },
     setOpacity: function (opacity) {
     	//设置透明度
@@ -173,9 +173,9 @@ var H5ComponentBase = ExClass({
     },
     setRotate: function (rotate) {
     	//设置旋转角度 transform: ;
-    	this.componentCss["transform"] = "rotate(" + rotate + "deg)";
-    	this.$wrapper.css("transform", "rotate(" + rotate + "deg)");
-    	this.$component.css("transform", "rotate(" + rotate + "deg)");
+    	this.componentCss["transform"] = rotate;
+    	this.$wrapper.css("transform", rotate);
+    	this.$component.css("transform", rotate);
     },
     setWidth: function (width) {
     	//设置宽度

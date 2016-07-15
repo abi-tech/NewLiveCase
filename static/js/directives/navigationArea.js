@@ -80,14 +80,9 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		$(".u-toolBtn:eq(2) ul li", toolBtnPanel).on('click', function (e) {
         			var index = $(".u-toolBtn:eq(2) ul li", toolBtnPanel).index(this);
         			var cfg = {};
-                    cfg.y = 822;
-                    cfg.x = 217;
-                    cfg.width = 200;
-                    cfg.height = index == "1"? 126 : 70;
-                    cfg.innerText = '';
-                    cfg.innerIcon = 'http://eng.liveapp.cn/tpl/components/links/externallinks/img/phone.png';
                     cfg.scale = $rootScope.editorScale;
                     cfg.funType = index + '';
+                    cfg.funMode = index == 1? "icon" : "text";
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
                     cfg.animateOut = { effect: "bounceOut", duration: 1 };
                     cfg.onDragEnd = function($html, top, left){
@@ -147,7 +142,8 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		});
 
         		$btnRelease.on('click', function (e) {
-        			alert('btnRelease');
+        			var fileDialog = new FileDialog({});
+                    fileDialog.show();
         		});
 
         		$btnUndo.on('click', function (e) {

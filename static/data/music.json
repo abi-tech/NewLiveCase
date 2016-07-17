@@ -1,0 +1,125 @@
+﻿{
+    "category": [
+        {
+            "id": 0,
+            "pid": 0,
+            "name": "我的音频"
+        },
+        {
+            "id": "122",
+            "pid": "0",
+            "name": "春节",
+            "created": "1453365472",
+            "position": "2",
+            "mime": "audio",
+            "children": [
+                {
+                    "id": "123",
+                    "pid": "122",
+                    "name": "快乐",
+                    "created": "1453365486",
+                    "position": "1",
+                    "mime": "audio"
+                }
+            ]
+        },
+        {
+            "id": "42",
+            "pid": "0",
+            "name": "背景音乐",
+            "created": "1436970546",
+            "position": "14",
+            "mime": "audio",
+            "children": [
+                {
+                    "id": "43",
+                    "pid": "42",
+                    "name": "动感",
+                    "created": "1436970623",
+                    "position": "1",
+                    "mime": "audio"
+                },
+                {
+                    "id": "44",
+                    "pid": "42",
+                    "name": "宏大",
+                    "created": "1436970627",
+                    "position": "2",
+                    "mime": "audio"
+                },
+                {
+                    "id": "45",
+                    "pid": "42",
+                    "name": "欢快",
+                    "created": "1436970632",
+                    "position": "3",
+                    "mime": "audio"
+                },
+                {
+                    "id": "46",
+                    "pid": "42",
+                    "name": "激烈",
+                    "created": "1436970637",
+                    "position": "4",
+                    "mime": "audio"
+                },
+                {
+                    "id": "47",
+                    "pid": "42",
+                    "name": "节日",
+                    "created": "1436972027",
+                    "position": "5",
+                    "mime": "audio"
+                },
+                {
+                    "id": "48",
+                    "pid": "42",
+                    "name": "浪漫",
+                    "created": "1436972157",
+                    "position": "6",
+                    "mime": "audio"
+                },
+                {
+                    "id": "49",
+                    "pid": "42",
+                    "name": "舒缓",
+                    "created": "1436972288",
+                    "position": "7",
+                    "mime": "audio"
+                },
+                {
+                    "id": "57",
+                    "pid": "42",
+                    "name": "电影",
+                    "created": "1437011263",
+                    "position": "8",
+                    "mime": "audio"
+                },
+                {
+                    "id": "117",
+                    "pid": "42",
+                    "name": "钢琴曲",
+                    "created": "1452504470",
+                    "position": "9",
+                    "mime": "audio"
+                },
+                {
+                    "id": "50",
+                    "pid": "42",
+                    "name": "其它",
+                    "created": "1436972439",
+                    "position": "10",
+                    "mime": "audio"
+                }
+            ]
+        },
+        {
+            "id": "96",
+            "pid": "0",
+            "name": "新节点",
+            "created": "1447035011",
+            "position": "16",
+            "mime": "audio"
+        }
+    ]
+}

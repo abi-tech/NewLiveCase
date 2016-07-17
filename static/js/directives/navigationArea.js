@@ -39,26 +39,32 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
 
         	function initEvent() {
         		$(".u-toolBtn:eq(0)", toolBtnPanel).on('click', function (e) {
-                    var cfg = {};
-                    cfg.width = 640;
-                    cfg.height = 535;
-                    cfg.imgUrl = 'http://img.liveapp.cn/group3/eng/61/fc/d2fa43d4f1f912efc58f1f783f7c_14622537853754_5.png';
-                    cfg.scale = $rootScope.editorScale;
-                    cfg.animateIn = { effect: "bounceIn", duration: 1 };
-                    cfg.animateOut = { effect: "bounceOut", duration: 1 };
-                    cfg.onDragEnd = function($html, top, left){
-                        //console.log($html, top, left);
-                    }
-                    cfg.onResizeEnd = function($html, top, left, width, height){
-                        //console.log($html, top, left, width, height);
-                    }
-        			pageService.get(pageService.currentIndex).components.push(new Singleimage('singleimage', cfg));
-                    $rootScope.$apply();
+                    //点击弹出图片选择对话框
+                    var options = {
+                        onChosenEnd: function (item) {
+                            console.log('onChosenEnd', item);
+                            var cfg = {};
+                            cfg.width = item.options.width;
+                            cfg.height = item.options.height;
+                            cfg.url = item.options.url;
+                            cfg.scale = $rootScope.editorScale;
+                            cfg.onDragEnd = function($html, top, left){
+                                //console.log($html, top, left);
+                            }
+                            cfg.onResizeEnd = function($html, top, left, width, height){
+                                //console.log($html, top, left, width, height);
+                            }
+                            pageService.get(pageService.currentIndex).components.push(new Singleimage(cfg));
+                            $rootScope.$apply();
+                        }
+                    };
+                    var fileDialog = new FileDialog(options);
+                    fileDialog.show();
         		});
 
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {
                     var cfg = {};
-                    cfg.innerText = '';
+                    cfg.text = '';
                     cfg.scale = $rootScope.editorScale;
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
                     cfg.animateOut = { effect: "bounceOut", duration: 1 };
@@ -68,7 +74,7 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                     cfg.onResizeEnd = function($html, top, left, width, height){
                         //console.log($html, top, left, width, height);
                     }
-        			pageService.get(pageService.currentIndex).components.push(new Singletext('singletext', cfg));
+        			pageService.get(pageService.currentIndex).components.push(new Singletext(cfg));
                     $rootScope.$apply();
         		});
 
@@ -91,7 +97,7 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                     cfg.onResizeEnd = function($html, top, left, width, height){
                         //console.log($html, top, left, width, height);
                     }
-                    pageService.get(pageService.currentIndex).components.push(new Externallinks('externallinks', cfg));
+                    pageService.get(pageService.currentIndex).components.push(new Externallinks(cfg));
                     $rootScope.$apply();
         		});
 
@@ -101,10 +107,12 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         			if(dom.hasClass("z-hide")){ 
         				dom.removeClass();
         				dom.addClass("g-coms");
+                        $nav2Coms.addClass("z-active");
         			}else{
         				dom.removeClass();
         				dom.addClass("g-coms");
         				dom.addClass("z-hide");
+                        $nav2Coms.removeClass("z-active");
         			}
         		});
 
@@ -130,20 +138,19 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		});
 
         		$btnPreview.on('click', function (e) {
-        			var $dlgPreview = $compile('<div preview-dialog></div>')(scope);
+        			var $dialog = $compile('<div preview-dialog></div>')(scope);
         			var $cover = $('<div class="g-cover"></div>');
-
+                    
         			$("body").append($cover);
-        			$("body").append($dlgPreview);
+        			$("body").append($dialog);
         			$cover.on("click", function (e) {
         				$cover.remove();
-        				$dlgPreview.remove();
+        				$dialog.remove();
         			});
         		});
 
         		$btnRelease.on('click', function (e) {
-        			var fileDialog = new FileDialog({});
-                    fileDialog.show();
+                    alert("btnRelease");
         		});
 
         		$btnUndo.on('click', function (e) {

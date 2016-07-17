@@ -1,33 +1,25 @@
 /**
-* 描述：用于表示链接
-* 函数列表：
-* initialize($super, name, options) 1.构建表现结构 2.设置组件样式
-* initFunType
-* backgroundColorTable
-* textTable
-* iconTable
-* setTextFun
-* setIconFun
-* setText
-* setIcon
+* 描述：用于表示按钮组件
 **/
 var Externallinks = ExClass(H5ComponentBase, {
-    initialize: function($super, name, options) { 
+    initialize: function($super, options) { 
     	var that = this;
 
     	//默认参数结构
-    	var defaultOptions = {
+    	that.defaultOptions = {
+            type: "externallinks",
     		x: 217,
     		y: 822,
     		width: 0,
     		height: 0,
     		scale: 0,
-    		icon: { url: null, width: 200, height: 126 },
-    		text: { content: null, width: 200, height: 70 },
+    		icon: '',
+    		text: '',
     		funType: "0",
     		funMode: "text",
-    		containerCss: { },
     		componentCss: {
+                "width": "100%",
+                "height": "100%",
 				"border-color": "none",
 				"border-radius": "50rem",
 				"transform": "rotate(0deg)",
@@ -36,28 +28,29 @@ var Externallinks = ExClass(H5ComponentBase, {
 				"background-image": "none",
 				"background-color": "none", 
 			},
-			innerCss: { },
+			innerCss: {},
 			animateIn: null,
 			animateOut: null,
 			onDragEnd: function($html, x, y){ },
 			onResizeEnd: function($html, x, y, w, h){ }
     	};
-		that.options = $.extend({}, defaultOptions, options);
+		that.options = $.extend({}, that.defaultOptions, options);
 
 		that.initFunType();
-		$super(name, that.options);
+		$super(that.options);
 
-		setTimeout(function () {
-			if(that.options.funMode == "text"){
-				that.setIconFun();
-			}else{
-				that.setTextFun();
-			}
+		// setTimeout(function () {
+		// 	if(that.options.funMode == "text"){
+		// 		that.setIconFun();
+		// 	}else{
+		// 		that.setTextFun();
+		// 	}
 			
-		}, 5000);
+		// }, 5000);
     },
     //创建时 初始化参数 结构
     initFunType: function(){
+        this.initSize();
     	this.initText();
     	this.initIcon();
 
@@ -65,6 +58,18 @@ var Externallinks = ExClass(H5ComponentBase, {
     		case 'text': this.setTextFun(); break;
     		case 'icon': this.setIconFun(); break;
     	}
+    },
+    initSize: function () {
+        switch(this.options.funMode){
+            case 'text': 
+                this.options.width = 200;
+                this.options.height = 70;
+                break;
+            case 'icon': 
+                this.options.width = 200;
+                this.options.height = 126;
+                break;
+        }
     },
     //默认背景色表
     initBackgroundColor: function () {
@@ -90,7 +95,7 @@ var Externallinks = ExClass(H5ComponentBase, {
     },
     //初始化文字
     initText: function () {
-    	if(typeof this.innerText === "string" && this.innerText.length > 0)
+    	if(typeof this.text === "string" && this.text.length > 0)
     		return;
     	var text = '';
 	    switch(this.options.funType){
@@ -99,11 +104,11 @@ var Externallinks = ExClass(H5ComponentBase, {
     		case '2': text = "打开弹层"; break;
     		case '3': text = "点击跳转"; break;
     	}
-    	this.options.text.content = text;
+    	this.options.text = text;
     },
     //初始化图标
     initIcon: function () {
-    	if(typeof this.innerIcon === "string" && this.innerIcon.length > 0)
+    	if(typeof this.icon === "string" && this.icon.length > 0)
     		return ;
     	var icon = '';
 	    switch(this.options.funType){
@@ -112,7 +117,7 @@ var Externallinks = ExClass(H5ComponentBase, {
     		case '2': icon = "http://eng.liveapp.cn/tpl/components/links/externallinks/img/layer.png"; break;
     		case '3': icon = "http://eng.liveapp.cn/tpl/components/links/externallinks/img/link.png"; break;
     	}
-    	this.options.icon.url = icon;
+    	this.options.icon = icon;
     },
     //设置成text形式
     setTextFun: function(){
@@ -125,9 +130,6 @@ var Externallinks = ExClass(H5ComponentBase, {
 			"text-decoration": "none",    //下划线
 			"text-align": "center",            //居 左 left 中 center 右 right
 		};
-
-		that.options.width = that.options.text.width;
-    	that.options.height = that.options.text.height;
 
     	that.options.innerCss = innerCss;
 
@@ -155,7 +157,7 @@ var Externallinks = ExClass(H5ComponentBase, {
 
 		if(that.$html) that.$html.css("height", that.options.text.height * that.options.scale);
     	//设置文字
-    	that.setText(that.options.text.content);
+    	that.setText(that.options.text);
     },
     //设置成icon形式
     setIconFun: function(){
@@ -163,9 +165,6 @@ var Externallinks = ExClass(H5ComponentBase, {
     	var innerCss = {
 			"background-image": 'url("' +  that.options.icon.url + '")'
 		};
-
-		that.options.width = that.options.icon.width;
-    	that.options.height = that.options.icon.height;
 
     	that.options.innerCss = innerCss;
 
@@ -196,16 +195,16 @@ var Externallinks = ExClass(H5ComponentBase, {
 
 		if(that.$html) that.$html.css("height", that.options.icon.height * that.options.scale);
     	//设置图标
-    	that.setIcon(that.options.icon.url);
+    	that.setIcon(that.options.icon);
     },
     //设置text形式的文字
     setText: function(text){
-    	this.options.text.content = text;
+    	this.options.text = text;
     	this.$inner.find(".btn-info").text(text);
     },
     //设置icon形式的图标的url
     setIcon: function(url) {
-    	this.options.icon.url = url;
+    	this.options.icon = url;
     	this.options.innerCss["background-image"] = 'url("' + url + '")';
     	this.$inner.css("background-image", 'url("' + url + '")');
     }

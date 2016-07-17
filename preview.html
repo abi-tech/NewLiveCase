@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="liveApp-html">
+<head>
+    <!-- 设置字符集格式 -->
+    <meta charset="UTF-8">
+    <!-- 设置宽度为设备的宽度，默认不缩放，不允许用户缩放（即禁止缩放），在网页加载时隐藏地址栏与导航栏（ios7.1新增） -->
+    <meta name="viewport" content="width=640, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- 是否启动webapp功能，会删除默认的苹果工具栏和菜单栏。 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 当启动webapp功能时，显示手机信号、时间、电池的顶部导航栏的颜色。默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。这个主要是根据实际的页面设计的主体色为搭配来进行设置。 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- 忽略页面中的数字识别为电话号码、email识别 -->
+    <meta name="format-detection" content="telephone=no, email=no">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <!-- windows phone 点击无高光 -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link id="apple-touch-icon" rel="apple-touch-icon-precomposed" sizes="114x114"/>
+
+    <meta name='keywords' content="云来,云来官网,yunlai,LiveAPP,LiveAPP官网,场景应用,场景应用3.0,场景秀,h5页面制作,h5制作软件,h5页面制作工具,免费微场景,微信场景,微信营销软件,微网站,场景制作"/>
+    <meta name="description" content="场景应用|简单 强大的免费H5创作工具。全球领先的移动场景应用平台。移动互联网时代的H5制作神器。最完美的移动互联网信息传播方式，简单，强大，可依赖 场景营销 开启你的场景时代。" />
+    <meta http-equiv="description" content="">
+    <title>我的场景</title>
+    <link rel="stylesheet" href="http://staticeng.liveapp.cn/tpl/all.css"/>
+    <style type="text/css" id="allComsCss">
+        .c-singleimage {
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            position: absolute;
+            background-clip: padding-box;
+            -webkit-background-clip: padding-box;
+        }
+
+        .c-singleimage img{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .c-singleimage.preview-container{
+            overflow: hidden !important;
+        }
+
+        .page .c-singleimage img{
+            transform: scale(1) !important;
+            -webkit-transform: scale(1) !important;
+            -moz-transform: scale(1) !important;    
+        }
+        .c-externallinks{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 1;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;   
+        }
+
+        .m-editor .c-externallinks a{
+            font-size: inherit;
+        }
+
+        .c-externallinks a{
+            font-size: 1rem;
+            text-align: center;
+            text-decoration: none;
+            overflow: hidden;
+        }
+
+        .c-externallinks.content{
+            overflow: hidden;
+        }
+
+        .c-externallinks.content .link{
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: inherit;
+        }
+
+        .c-externallinks .btn-icon{
+            width: 100%; 
+            height: 100%; 
+            position: absolute; 
+            left: 0; 
+            top: 0;
+            z-index: 2;
+            text-align: center;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .c-externallinks .btn-txt{
+            width: 100%;
+            height: 100%;
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+            display: -moz-box;
+            -moz-box-pack: center;
+            -moz-box-align: center; 
+            display: -ms-flexbox;
+            -ms-flex-pack: center;
+            -ms-flex-align: center;
+        }
+
+        .c-externallinks .btn-txt .btn-info{
+            width: 100%;
+        }
+
+        .u-maskLayer-close {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,0,0,.6);
+            border-radius: 50%;
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            -webkit-transform: translate(30%,-30%) !important;
+            -moz-transform: translate(30%,-30%) !important; 
+            -ms-transform: translate(30%,-30%) !important;  
+            transform: translate(30%,-30%) !important;  
+            z-index: 1000000 !important;
+        }
+
+        .u-maskLayer-close em, .u-maskLayer-close i {
+            width: 42px;
+            height: 4px;
+            background-color: #fff;
+            border-radius: 2px;
+            content: '';
+            display: block;
+            position: absolute;
+            z-index: 1000000;
+            bottom: 35px;
+            left: 15px ;
+        }
+
+        .u-maskLayer-close em {
+            -webkit-transform: rotateZ(45deg);
+            -moz-transform: rotateZ(45deg);
+            -ms-transform: rotateZ(45deg);
+            transform: rotateZ(45deg);
+        }
+
+        .u-maskLayer-close i {
+            -webkit-transform: rotateZ(-45deg);
+            -moz-transform: rotateZ(-45deg);
+            -ms-transform: rotateZ(-45deg);
+            transform: rotateZ(-45deg); 
+        }
+
+        .g-externallinks-maskLayer {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,.7);
+            z-index: 1000000;
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+            display: -moz-box;
+            -moz-box-pack: center;
+            -moz-box-align: center;     
+            display: -ms-flexbox;
+            -ms-flex-pack: center;
+            -ms-flex-align: center;     
+        }
+
+        .g-externallinks-maskLayer img{
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .g-externallinks-maskLayer.z-hide{
+            display: none;
+        }
+    </style>
+</head>
+<body class="liveApp" ng-controller="mainController">
+    
+    <!--app logo loading-->
+    <div id="app-loading" class="app-loading" style="display:none;">
+        <div class="loading-logo"></div>
+        <div class="loading-circle"></div>
+        <span id="percentage" class="percentage">0%</span>
+        <p class="loading-bottom-logo">LiveApp.cn</p>
+    </div>
+    <!-- 全局变量 -->
+    <script type="text/javascript">
+        var liveApp = {
+            caseData: {
+                pages:[{
+                    components:[]
+                }]
+            }
+        }
+    </script>
+     <!-- 插件引入 -->
+    <script src="static/plugins/jquery/2.2.3/jquery.min.js"></script>
+    <script src="static/plugins/template/template.js"></script>
+    <script src="static/plugins/angular/1.5.5/angular.min.js"></script>
+
+    <link href="static/plugins/fullpage/2.8.2/jquery.fullpage.min.css" rel="stylesheet" />
+    <script src="static/plugins/fullpage/2.8.2/jquery.fullpage.min.js"></script>
+    <!-- 组件引入 -->
+    <script src="static/js/h5.js"></script>
+    <script src="tpls/components/singleimage/js/singleimage.js"></script>
+    <script src="tpls/components/singletext/js/singletext.js"></script>
+    <script src="tpls/components/externallinks/js/externallinks.js"></script>
+    <!-- 服务引入 -->
+    <script src="static/js/app.js"></script>
+    <script src="static/js/case/service.js"></script>
+    <script src="static/js/case/controller.js"></script>
+</div>
+</body>
+</html>

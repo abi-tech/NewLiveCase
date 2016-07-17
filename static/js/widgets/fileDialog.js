@@ -1,6 +1,6 @@
 var tpl_file_dialog = [
 '<div style="display: block; z-index: 100001; height: auto; width: auto; top: 0px; overflow: auto; position: static;">',
-	'<section id="fileDialog" class="oni-dialog active">',
+	'<section id="fileDialog" class="oni-dialog">',
 		'<div class="oni-dialog-inner u-dialog-height" style="height: 600px;">',
 			'<div class="oni-dialog-header u-dialog-header">',
 				'<div class="oni-dialog-close"> <i class="oni-icon oni-icon-times icon-x18 icon-x18-dialog-close"></i></div>',
@@ -23,7 +23,7 @@ var tpl_file_dialog = [
 					'<div class="previewCtrl"></div>',
 					'<div class="imagePreview">',
 						'<div class="typebra none"><ul></ul></div>',
-						'<div class="imagePreviewContent nonebra"><div class="img-noData">没有更多素材了</div></div>',
+						'<div class="imagePreviewContent"><div class="img-noData">没有更多素材了</div></div>',
 					'</div>',
 					'<div class="u-delete">',
 						'<span>批量删除</span>',
@@ -66,7 +66,9 @@ var FileDialog = function (options) {
 			"position": "fixed"
 		},
 		categories: [],
-		fileList: []
+		fileList: [],
+		chosen: null,
+		onChosenEnd: function (item) { }
 	};
 
 	that.mask = '<div class="oni-dialog-layout u-dialog-layout" style=""></div>'
@@ -79,11 +81,16 @@ FileDialog.prototype.init = function () {
 	var that = this;
 	that.$mask = $(that.mask);
 	that.$html = $(that.template);
+	that.$dialog = that.$html.find("#fileDialog");
+
 	that.$previewCtrl = $(".previewCtrl", that.$html);
 	that.$filePreview = $(".imagePreview", that.$html);
 	that.$uDelete = $(".u-delete", that.$html);
 	that.$btnOk = $("#btnOk", that.$html);
 	that.$btnCancel = $("#btnCancel", that.$html);
+	that.$typebra = $(".imagePreview>div.typebra", that.$html);
+	that.$imagePreviewContent = $(".imagePreview>div.imagePreviewContent", that.$html);
+
 	that.initData();
 	that.initView();
 	that.initEvent();
@@ -97,7 +104,7 @@ FileDialog.prototype.initData = function () {
 		async: false,
 		type: "GET",
 		contentType: "application/json",
-		url: "/static/data/categories.json?v=1.0.0",
+		url: "/static/data/" + that.options.type + ".json",
 		success: function(data){
 			that.options.categories.length = 0;
 			$.merge(that.options.categories, data.categories);
@@ -141,6 +148,7 @@ FileDialog.prototype.initEvent = function () {
 	});
 
 	that.$btnOk.on("click", function (e) {
+		that.options.onChosenEnd && that.options.onChosenEnd(that.options.chosen);
 		that.hide();
 	});
 
@@ -168,8 +176,8 @@ FileDialog.prototype.initEvent = function () {
 
 FileDialog.prototype.renderTypebra = function (data) {
 	var that = this;
-	that.$filePreview.empty();
-	var $typebra = $('<div class="typebra"></div>');
+	that.$typebra.empty();
+
 	var $ul = $("<ul>");
 	for (var i = 0; i < data.children.length; i++) {
 		var item = data.children[i];
@@ -179,36 +187,59 @@ FileDialog.prototype.renderTypebra = function (data) {
 
 		if(i == 0) $li.addClass("active");
 	}
-	if(data.children.length == 0) $typebra.addClass("none");
-	$typebra.append($ul);
-	that.$filePreview.append($typebra);
+
+	if(data.children.length == 0) 
+		that.$typebra.addClass("none");
+	else
+		that.$typebra.removeClass("none");
+
+	that.$typebra.append($ul);
 
 	$("li", $ul).on("click", function (e) {
+		var index = $("li", $ul).index(this);
 		$(this).siblings().removeClass("active");
 		$(this).addClass("active");
+
+		that.renderImagePreviewContent(data.children[index]);
 	});
 }
 
 FileDialog.prototype.renderImagePreviewContent = function (data) {
 	var that = this;
-	var $imagePreviewContent = $('<div class="imagePreviewContent nonebra" id="imagePreviewContent"></div>');
+	that.$imagePreviewContent.empty();
 	var $empty = $('<div class="img-noData">没有更多素材了</div>');
+	if(data){
+		var url = "/static/data/" + that.options.type + "_pid_" + data.pid + "_id_" + data.id + ".json";
+		$.ajax({
+			async: false,
+			type: "GET",
+			contentType: "application/json",
+			url: url,
+			success: function(data){
+				for (var i = 0; i < data.data.list.length; i++) {
+					var obj = data.data.list[i];
+					obj.url = "/upload/image/" +　obj.url;
+					obj.onChecked = function(item) {
+						that.options.chosen && that.options.chosen.uncheck();
+						that.options.chosen = item;
+					}
 
-	
-	var file1 = new File({ title: "母亲节素材01.png", url: "http://img.liveapp.cn/group3/eng/61/fc/d2fa43d4f1f912efc58f1f783f7c_14622537853754_5.png" });
-	$imagePreviewContent.append(file1.$html);
-	if(typeof data === "undefined"){
-		$imagePreviewContent.append($empty);
+					var file = new File(obj);
+					that.$imagePreviewContent.append(file.$html);
+				}
+			}
+		});
 	}
 
-	that.$filePreview.append($imagePreviewContent);
+	that.$imagePreviewContent.append($empty);
 }
 
 FileDialog.prototype.show = function () {
 	var that = this;
 	that.$mask.show();
 	that.$html.show();
-	$("#fileDialog", that.$html).show();
+	that.$dialog.show();
+	that.$dialog.addClass("active");
 }
 
 FileDialog.prototype.hide = function () {
@@ -217,26 +248,27 @@ FileDialog.prototype.hide = function () {
 	that.$html.remove();
 }
 
-
-
-
 //======================================================================================================
 var File = function(options){
 	var that = this;
 	var defaultOptions = { 
-		title: "", 
+		name: "", 
 		url: "",
-		check: false
+		size: 0,
+		width: 0,
+		height: 0,
+		check: false,
+		canDelete: false,
+		onChecked: function(item){}
 	};
 
 	var imageTemplate = [
 	'<div class="imgPreview">',
-		'<div class="dz-details" title="{{ title }}">',
+		'<div class="dz-details" title="{{ name }}">',
 			'<div class="previewImg" style="background-image: url(&quot;{{ url }}&quot;);"></div>',
 			'<div class="delbtn"></div>',
 		'</div>',
-		'<p class="previewname" title="{{ title }}">{{ title }}</p>',
-		'<div class="close"></div>',
+		'<p class="previewname" title="{{ name }}">{{ name }}</p>',
 	'</div>'
 	].join('');
 
@@ -249,12 +281,18 @@ File.prototype.init = function () {
 	var that = this;
 	var html = template.compile(that.template)(that.options);
 	that.$html = $(html);
+	if(that.options.canDelete){
+		that.$html.append('<div class="close"></div>');
+	}
+	that.calc();
 	that.initEvent();
 }
 
 File.prototype.initEvent = function () {
 	var that = this;
 	that.$html.on("click", function(e) {
+		that.options.onChecked && that.options.onChecked(that);
+
 		if(!that.options.check){
 			that.check();
 		}else{
@@ -279,6 +317,16 @@ File.prototype.uncheck = function () {
 	var that = this;
 	$(".dz-details>div.check", that.$html).remove();
 	that.options.check = false;
+}
+
+File.prototype.calc = function () {
+	var that = this;
+	var img = new Image;    
+	img.onload = function(){        
+		that.options.width = img.width;
+		that.options.height = img.height;
+	};
+	img.src = that.options.url; 
 }
 
 

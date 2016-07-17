@@ -134,6 +134,8 @@ FileDialog.prototype.initView = function () {
 		if(i == 0) $li.addClass("on");
 	}
 	that.$previewCtrl.append($ul);
+
+	that.dockCenter();
 }
 
 FileDialog.prototype.initEvent = function () {
@@ -171,6 +173,10 @@ FileDialog.prototype.initEvent = function () {
 			that.renderTypebra(that.options.categories[index]);
 			that.renderImagePreviewContent(that.options.categories[index].children[0]);
 		}
+	});
+
+	$(window).on("resize", function (e) {
+		that.dockCenter();
 	});
 }
 
@@ -248,6 +254,13 @@ FileDialog.prototype.hide = function () {
 	that.$html.remove();
 }
 
+FileDialog.prototype.dockCenter = function () {
+	var that = this;
+	var winWidth = $(window).width();
+	var dlgWidth = 866;
+	var left = (winWidth - dlgWidth) / 2;
+	that.$dialog.css("left", left);
+}
 //======================================================================================================
 var File = function(options){
 	var that = this;

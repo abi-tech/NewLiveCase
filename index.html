@@ -6,6 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <title></title>
 	<link href="static/css/all.min.css" rel="stylesheet" />
+    <link href="static/css/all.css" rel="stylesheet" />
     <style>
         .global-loading{display:none}.global-loading .loading-cover{height:100%;width:100%;position:fixed;top:0;left:0;background:#f8f8f8}.loading-gif{background-image:url(http://img.liveapp.cn/group3/eng/77/5a/55850e921412ba2144f9c1a8648f_14661507730055_5763a.gif);position:absolute;top:5px;left:5px;width:150px;height:150px;border-radius:50%;background-size:150px 150px}.loading-svg{transform:rotate(-90deg);border-radius:50%;position:absolute;top:0;left:0}.loading-svg circle{fill:#dedede;stroke:#36b34a;stroke-width:10}.global-loading{position:fixed;top:50%;left:50%;margin:-180px auto auto -75px;width:160px;height:479px;opacity:1;-webkit-transition:all .5s;z-index:99999}.global-loading .lineWrap{position:absolute;width:100%;height:100%}.global-loading .logoText{background-image:url(/web//img/loading/logo.png);position:absolute;top:215px;left:-20px;display:block;width:200px;height:80px;background-repeat:no-repeat;background-size:200px 47px}.global-loading .logoText span{position:absolute;bottom:0;display:block;line-height:19px;font-size:18px;color:#1d1d1b;letter-spacing:7px}.global-loading .percentage{position:absolute;bottom:50px;left:-370px;display:block;letter-spacing:1px;width:900px;line-height:14px;text-align:center;font-size:14px;color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     </style>
@@ -17,7 +18,7 @@
     <div navigation-area></div>
     <div components-area></div>
     <div preview-area></div>
-    <div editor-area></div>
+    <div ng-model="currentPage" editor-area></div>
     <div config-area></div>
     
     <!-- 插件引入 -->
@@ -56,7 +57,5 @@
     <script src="static/js/directives/previewArea.js"></script>
     <script src="static/js/directives/editorArea.js"></script>
     <script src="static/js/directives/configArea.js"></script>
-    <script src="static/js/directives/editorAreaComponent.js"></script>
-    <script src="static/js/directives/previewAreaComponent.js"></script>
 </body>
 </html>

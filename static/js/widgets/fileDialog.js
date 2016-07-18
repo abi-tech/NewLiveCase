@@ -261,6 +261,14 @@ FileDialog.prototype.dockCenter = function () {
 	var left = (winWidth - dlgWidth) / 2;
 	that.$dialog.css("left", left);
 }
+
+FileDialog.prototype.getOptions = function () {
+	return null;
+}
+
+FileDialog.prototype.setOptions = function (options) {
+
+}
 //======================================================================================================
 var File = function(options){
 	var that = this;

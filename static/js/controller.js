@@ -1,26 +1,5 @@
-mainModule.controller('mainController', [ '$rootScope', 'pageService', function ($rootScope, pageService) {  
-	//原始 宽 高 缩放比例
-    $rootScope.originWidth = 640;
-    $rootScope.originHeight = 1040;
-    $rootScope.originScale = 1;
-
-    //编辑区 宽 高 缩放比例
-    $rootScope.editorWidth = 384;
-    $rootScope.editorHeight = 624;
-    $rootScope.editorScale = 0.6;
-
-    //管理各区动态生成的Scope
-    $rootScope.navigationArea = {};
-    $rootScope.navigationArea.scopes = [];
-
-    $rootScope.previewArea = {};
-    $rootScope.previewArea.scopes = [];
-
-    $rootScope.editorArea = {};
-    $rootScope.editorArea.scopesr = [];
-
-    $rootScope.configArea = {};
-    $rootScope.configArea.scopes = [];
+mainModule.controller('mainController', [ '$rootScope', 'pageService', 'editorService',
+    function ($rootScope, pageService, editorService) {
 
     $rootScope.pages = pageService.pages;
 
@@ -52,8 +31,11 @@ mainModule.controller('mainController', [ '$rootScope', 'pageService', function 
         $rootScope.currentPage = page; 
         $rootScope.currentComponent = null;
         //console.log($rootScope.currentPage);
+        //$rootScope.$apply();
+        editorService.$html.trigger('onLoad');
+        $(".u-comChoose", editorService.$html).removeClass("u-comChoose");
     }
 
     $rootScope.setCurrentPage(0, pageService.pages[0]);
 
-}]); 
+}]);

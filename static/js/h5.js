@@ -69,14 +69,14 @@ var H5ComponentBase = ExClass({
             height: 0,
             x: 0,
             y: 0,
-            zIndex: 11000,
+            zIndex: 10000,
             center: true,
             containerCss: { },
             componentCss: { },
             innerCss: { },
             animateIn: null,
             animateOut: null,
-            onChoosenEnd: function(){},
+            onChosenEnd: function(){},
             onDragEnd: function(){},
             onResizeEnd: function(){}
         }
@@ -128,8 +128,8 @@ var H5ComponentBase = ExClass({
         }
     },
     setZIndex: function(zIndex){
-        //this.containerCss["z-index"] = zIndex;
-        this.$wrapper.css("z-index", zIndex);
+        this.options.zIndex = zIndex;
+        this.$html.css("z-index", zIndex);
     },
     setBackgroundColor: function (color) {
         //设置背景颜色
@@ -205,12 +205,12 @@ var H5ComponentBase = ExClass({
             that.$container.css("animation", "none");
         });
     },
-    choosen: function () {
+    chosen: function () {
         //添加选中样式
         var that = this;
         $(".c-c-container").removeClass("u-comChoose");
         that.$wrapper.addClass("u-comChoose");
-        that.options.onChoosenEnd();
+        that.options.onChosenEnd();
     },
     _build: function() {
         var that = this;
@@ -228,7 +228,7 @@ var H5ComponentBase = ExClass({
             that.setComponentCss(that.options.componentCss);
             that.setInnerCss(that.options.innerCss);
 
-            that.choosen();
+            that.chosen();
         }else{
             //that.$wrapper = $(that.wrapperTemplate);
             that.$wrapper = that.$container = $(that.containerTemplate);
@@ -264,9 +264,9 @@ var H5ComponentBase = ExClass({
         that._resizeend();
         that._actionChecker();
 
-        that.$html.on('click', function (event) {
+        that.$html.on('click', function (event) { alert('1');
             event.stopPropagation()
-            that.choosen();
+            that.chosen();
         });
 
         $(".tr-c,.bl-c", that.$html).on('mouseenter', function () {

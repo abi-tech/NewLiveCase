@@ -35,11 +35,17 @@ mainModule.directive("previewArea", ['$rootScope', '$timeout', '$log', '$compile
             var $btnAdd = $(".c-plus", element);
 
             $btnAdd.on('click', function (e) {
+                //console.log($("#editorFrame .c-c-container").length);
+                //$("#editorFrame .c-c-container").remove();
+
                 pageService.add(scope.pages.length);
-                scope.$apply();
 
                 var idx = scope.pages.length - 1;
-                scope.setCurrentPage(idx, pageService.pages[idx]);
+
+                pageService.currentPageIndex = idx;
+
+                $rootScope.setCurrentPage(idx, pageService.pages[idx]);
+                $rootScope.$apply();
                 //console.log(scope, $rootScope);
 
                 $("section.m-pv>section.c-ct", element).removeClass("c-ct-active");
@@ -62,7 +68,8 @@ var tpl_preview_page = [
 '</section>'
 ].join('');
 
-mainModule.directive("previewPage", ['$rootScope', '$log', 'pageService', function ($rootScope, $log, pageService) {
+mainModule.directive("previewPage", ['$rootScope', '$log', 'pageService', 'editorService',
+    function ($rootScope, $log, pageService, editorService) {
     return {
         restrict: "A",
         template: tpl_preview_page,
@@ -113,11 +120,14 @@ mainModule.directive("previewPage", ['$rootScope', '$log', 'pageService', functi
         	});
 
             element.on('click', function (e) {
+                //$("#editorFrame .c-c-container").remove();
                 element.siblings().removeClass("c-ct-active");
                 element.addClass("c-ct-active");
 
-                var idx = scope.$index;
-                scope.setCurrentPage(idx, pageService.pages[idx]); console.log(scope, $rootScope);
+                var idx = scope.$index; 
+                pageService.currentPageIndex = idx; 
+                scope.setCurrentPage(idx, pageService.pages[idx]);
+                scope.$apply();
             });
         }
     }

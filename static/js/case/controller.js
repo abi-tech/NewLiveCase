@@ -1,18 +1,32 @@
+/**
+* 描述：显示页面的容器 集成fullpage.js插件
+* 功能：添加页面 添加组件 切换页面
+**/
 var H5 = function () {
 	var that = this;
 	this.id = ('h5_'+Math.random()).replace('.','_');
     this.el = $('<div class="pages" id="' + this.id + '">').hide();
     this.pages = [];
+    this.pageCfg = [];
     $('body').append(this.el);
 
+    /**
+    * 描述：添加页面
+    * 参数：options H5Page的页面参数
+    **/
     this.addPage = function(options){
         var page = $('<div class="page section">');
         this.el.append(page);
         this.pages.push(page);
+        this.pageCfg.push(options);
         return this;
     }
 
-    this.addComponent = function(options){ console.log(options);
+    /**
+    * 描述：添加页面组件
+    * 参数：options H5ComponentBase 子类的组件参数
+    **/
+    this.addComponent = function(options){
         var component; 
         var page = this.pages.slice(-1)[0];
 
@@ -33,18 +47,31 @@ var H5 = function () {
         return this;
     }
 
+    /**
+    * 描述：切换至上一页
+    **/
     this.moveUp = function () {
     	this.el.fullpage.moveSectionUp();
     }
 
+    /**
+    * 描述：切换至下一页
+    **/
     this.moveDown = function () {
     	this.el.fullpage.moveSectionDown();
     }
 
+    /**
+    * 描述：切换至某一页
+    * 参数：index 页码
+    **/
     this.moveTo = function (index) {
     	this.el.fullpage.moveTo(index);
     }
 
+    /**
+    * 描述：播放动画
+    **/
     this.animate = function (animation, animateBegin, animateEnd) {
     	var that = this;
     	var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
@@ -59,6 +86,10 @@ var H5 = function () {
     	});
     }
 
+    /**
+    * 描述：注册fullpage.js 插件功能
+    * 主要实现翻页动画 及 状态标记修改过
+    **/
     this.loader = function(){
         this.el.fullpage({
         	sectionsColor: ['#C63D0F', '#1BBC9B'],
@@ -71,7 +102,11 @@ var H5 = function () {
 
                 //$(this).find('.h5_component').trigger('onLeave');
                 var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-                that.pages[nextIndex - 1].css("animation", "a_slide_topIn 0.7s ease").one(animationEnd, function() {
+                var animation = that.pageCfg[nextIndex - 1].animation;
+
+                if(!animation) return;
+                var express = animation.effect + " " + animation.duration + "s backwards";
+                that.pages[nextIndex - 1].css("animation", express).one(animationEnd, function() {
                 	that.pages[nextIndex - 1].css("animation", "none");
                 });
             },
@@ -90,10 +125,12 @@ var H5 = function () {
 }
 
 mainModule.controller('mainController', [ '$http', '$scope', function ($http, $scope) {  
-	
+	//!liveApp.isPreview && initView();
 }]); 
 
-
+/**
+* 描述：通过全局参数liveApp 初始化页面 内置对象window上实现moveUp 和 moveDown 供外部调用
+**/
 function initView() {
 	var h5 = new H5();
 	for (var i = 0; i < liveApp.caseData.pages.length; i++) {

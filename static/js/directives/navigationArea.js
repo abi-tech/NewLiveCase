@@ -13,7 +13,8 @@ var tpl_area_toolbtn = [
 '</a>'
 ].join('');
 
-mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
+mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService', 'editorService',
+    function ($rootScope, $compile, pageService, editorService) {
     return {
         restrict: "A",
         templateUrl: "tpls/navigationArea.html",
@@ -47,14 +48,14 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                             cfg.width = item.options.width;
                             cfg.height = item.options.height;
                             cfg.url = item.options.url;
-                            cfg.scale = $rootScope.editorScale;
+                            cfg.scale = editorService.editorScale;
                             cfg.onDragEnd = function($html, top, left){
                                 //console.log($html, top, left);
                             }
                             cfg.onResizeEnd = function($html, top, left, width, height){
                                 //console.log($html, top, left, width, height);
                             }
-                            pageService.get(pageService.currentIndex).components.push(new Singleimage(cfg));
+                            pageService.get(pageService.currentPageIndex).components.push(new Singleimage(cfg));
                             $rootScope.$apply();
                         }
                     };
@@ -65,7 +66,7 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {
                     var cfg = {};
                     cfg.text = '';
-                    cfg.scale = $rootScope.editorScale;
+                    cfg.scale = editorService.editorScale;
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
                     cfg.animateOut = { effect: "bounceOut", duration: 1 };
                     cfg.onDragEnd = function($html, top, left){
@@ -74,8 +75,10 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                     cfg.onResizeEnd = function($html, top, left, width, height){
                         //console.log($html, top, left, width, height);
                     }
-        			pageService.get(pageService.currentIndex).components.push(new Singletext(cfg));
-                    $rootScope.$apply();
+
+        			pageService.get(pageService.currentPageIndex).components.push(new Singletext(cfg));
+                    //console.log($rootScope.currentPage.components);
+                    scope.$apply();
         		});
 
         		$(".u-toolBtn:eq(2)", toolBtnPanel).on('click', function (e) {
@@ -86,7 +89,7 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		$(".u-toolBtn:eq(2) ul li", toolBtnPanel).on('click', function (e) {
         			var index = $(".u-toolBtn:eq(2) ul li", toolBtnPanel).index(this);
         			var cfg = {};
-                    cfg.scale = $rootScope.editorScale;
+                    cfg.scale = editorService.editorScale;
                     cfg.funType = index + '';
                     cfg.funMode = index == 1? "icon" : "text";
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
@@ -97,7 +100,7 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                     cfg.onResizeEnd = function($html, top, left, width, height){
                         //console.log($html, top, left, width, height);
                     }
-                    pageService.get(pageService.currentIndex).components.push(new Externallinks(cfg));
+                    pageService.get(pageService.currentPageIndex).components.push(new Externallinks(cfg));
                     $rootScope.$apply();
         		});
 

@@ -15,15 +15,27 @@ var H5Page = function(options) {
         type: "page",
         width: 640,
         height: 1040,
-        bgColor: "",
+        bgColor: "rgb(255, 255, 255)",
         bgImage: "",
         css: null,
-        slider: "slide-page-icon-default",
-        animation: { "type": "", "name": "缩放", "effect": "a_slideZoom_bottomIn", "duration": 0.5, "delay": 0 },
-        applyAllPages: true,
-        autoTurnPage: true,
+        icons: [
+            { "name": "LiveApp", "value": "0", "icon": "slide-page-icon-default" },
+            { "name": "UpArrow", "value": "1", "icon": "slide-page-icon-up" },
+            { "name": "DownArrow", "value": "2", "icon": "slide-page-icon-down" }
+        ],
+        animations: [
+            { "type": "anime-page-slideZoomIn", "name": "缩放", "effect": "a_slideZoom_bottomIn", "duration": 0.5, "delay": 0 },
+            { "type": "anime-page-slideIn", "name": "滑动", "effect": "a_slide_bottomIn", "duration": 0.5, "delay": 0 },
+            { "type": "anime-page-fadeIn", "name": "淡入", "effect": "a_fadeIn_bottomIn", "duration": 0.5, "delay": 0 },
+            { "type": "anime-page-rotateIn", "name": "旋入", "effect": "a_rotate_bottomIn", "duration": 0.5, "delay": 0 },
+            { "type": "anime-page-xSlideIn", "name": "横向滑动", "effect": "a_xSlide_rightIn", "duration": 0.5, "delay": 0 }
+        ],
+        slideIcon: null,
+        animation: null,
+        applyAllPages: false,
+        autoTurnPage: false,
         autoTurnPageDelay: 0,
-        lockTurnPage: true,
+        lockTurnPage: false,
         zIndex: 10000,
         step: 100,
         components: []
@@ -99,6 +111,8 @@ var H5Page = function(options) {
     that.setOptions = function (options) {
         delete that.options;
         that.currentComponent = null;
+        that.defaultOptions.slideIcon = that.defaultOptions.icons[0];
+        that.defaultOptions.animation = that.defaultOptions.animations[0];
         that.options = $.extend({}, that.defaultOptions, options);
         $.extend(that, that.options);
     }
@@ -106,6 +120,7 @@ var H5Page = function(options) {
     that.animate = function (animation) {
         // body...
     }
+
     /**
     * 描述：交换数组中索引位置的元素
     * 参数：

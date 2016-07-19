@@ -70,8 +70,18 @@ var H5ComponentBase = ExClass({
             x: 0,
             y: 0,
             zIndex: 10000,
+            rotate: 0,
             center: true,
-            containerCss: { },
+            containerCss: { 
+                "width": "0px",
+                "height": "0px",
+                "top": "0px",
+                "left": "0px",
+                "transform": "rotate(0deg)",
+                "z-index": 10000,
+                "cursor": "move",
+                "display": "block"
+            },
             componentCss: { },
             innerCss: { },
             animateIn: null,
@@ -84,7 +94,7 @@ var H5ComponentBase = ExClass({
         that.id = ('h5_c_' + Math.random()).replace('.', '_');
 
         that.wrapperTemplate = [
-            '<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move">',
+            '<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move" ng-style="component.containerCss">',
                 '<div class="tl-c"></div><div class="tr-c"></div><div class="bl-c"></div><div class="br-c"></div>',
             '</div>'
         ].join('');
@@ -96,6 +106,11 @@ var H5ComponentBase = ExClass({
         //inner 控制组件的内容
         
         that.options = $.extend({}, defaultOptions, options);
+        console.log(that.options);
+        that.options.containerCss["width"] = that._scale(that.options.width);
+        that.options.containerCss["height"] = that._scale(that.options.height);
+        that.options.containerCss["top"] = that._scale(that.options.y);
+        that.options.containerCss["left"] = that._scale(that.options.x);
         //console.log(that.options);
         //$.extend(that, that.options);
 
@@ -103,17 +118,23 @@ var H5ComponentBase = ExClass({
     },
     _setCss: function () {
         var that = this;
-        that.setZIndex(that.zIndex);
-        that.setBackgroundColor(that.options.componentCss["background-color"]);
-        that.setBorderWidth(that.options.componentCss["border-width"]);
-        that.setBorderColor(that.options.componentCss["border-color"]);
-        that.setBorderRadius(that.options.componentCss["border-radius"]);
-        that.setOpacity(that.options.componentCss["opacity"]);
-        that.setRotate(that.options.componentCss["transform"]);
-        that.setWidth(that.options.width);
-        that.setHeight(that.options.height);
-        that.setX(that.options.x)
-        that.setY(that.options.y);
+        // that.setZIndex(that.zIndex);
+        // that.setBackgroundColor(that.options.componentCss["background-color"]);
+        // that.setBorderWidth(that.options.componentCss["border-width"]);
+        // that.setBorderColor(that.options.componentCss["border-color"]);
+        // that.setBorderRadius(that.options.componentCss["border-radius"]);
+        // that.setOpacity(that.options.componentCss["opacity"]);
+        // that.setRotate(that.options.componentCss["transform"]);
+        // that.setWidth(that.options.width);
+        // that.setHeight(that.options.height);
+        // that.setX(that.options.x)
+        // that.setY(that.options.y);
+    },
+    setContainerCss: function (css) {
+        var that = this;
+        for(var key in css){
+            that.$html.css(key, css[key]);
+        }
     },
     setComponentCss: function (css) {
         var that = this;
@@ -225,6 +246,7 @@ var H5ComponentBase = ExClass({
             that._setCss();
             that._bind();
 
+            that.setContainerCss(that.options.containerCss);
             that.setComponentCss(that.options.componentCss);
             that.setInnerCss(that.options.innerCss);
 
@@ -242,6 +264,7 @@ var H5ComponentBase = ExClass({
             // for (var key in that.containerCss) {
             //     that.containerCss[key]
             // }
+            that.setContainerCss(that.options.containerCss);
             that.setComponentCss(that.options.componentCss);
             that.setInnerCss(that.options.innerCss);
         }
@@ -264,13 +287,13 @@ var H5ComponentBase = ExClass({
         that._resizeend();
         that._actionChecker();
 
-        that.$html.on('click', function (event) { alert('1');
+        that.$html.on('click', function (event) { console.log("component clicked!");
             event.stopPropagation()
             that.chosen();
         });
 
-        $(".tr-c,.bl-c", that.$html).on('mouseenter', function () {
-            that.$html.css("cursor", "ne-resize");
+        $(".tr-c,.bl-c", that.$html).on('mouseenter', function (e) {
+            that.$html.css("cursor", "ne-resize"); 
         }).on('mouseleave', function (e) {
             that.$html.css("cursor", "move");
         });
@@ -278,6 +301,10 @@ var H5ComponentBase = ExClass({
         $(".tl-c,.br-c", that.$html).on('mouseenter', function () {
             that.$html.css("cursor", "nw-resize");
         }).on('mouseleave', function (e) {
+            that.$html.css("cursor", "move");
+        });
+
+        that.$inner.on("mousemove", function (e) {
             that.$html.css("cursor", "move");
         });
     },
@@ -362,7 +389,6 @@ var H5ComponentBase = ExClass({
                     }
                 }
                 cursor = interact.debug().actionCursors[cursorKey];
-
                 $(that.$html).css("cursor", cursor);
             } else {
                 action.name = 'drag';

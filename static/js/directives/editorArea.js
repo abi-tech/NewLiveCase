@@ -43,7 +43,14 @@ var H5EditorFrame = function (options) {
             '<li class="last disable"><span>删除</span></li>',
         '</ul>'
     ].join(''));
+
     that.$slider = $('<div></div>');
+
+    that.$bgImage = $([
+        '<div class=" page-bg-div" style="width: 100%; height: 100%; overflow: hidden; position: absolute; z-index: 1; top: 0px; left: 0px;">',
+            '<img style="position: absolute; width: auto; height: 100%; left: -140.288px; top: 0px;" />',
+        '</div>'
+    ].join(''));
 
     that.setPage = function (page) {
         that.page = page;
@@ -65,13 +72,34 @@ var H5EditorFrame = function (options) {
         return obj;
     }
 
-    that.animate = function (animation) {
+    that.animate = function (animation) { 
+        $("#editorFrame .u-comChoose").removeClass("u-comChoose");
         animation = animation? animation : that.page.animation;
+        if(!animation) { 
+            console.log("animation is undefined");
+            return;
+        }
         var express = animation.effect + " " + animation.duration + "s backwards";
         var end = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
         that.$html.css("animation", express).one(end, function () {
             that.$html.css("animation", "none");
         });
+    }
+
+    that.setBackgroundImage = function (image) {
+        var width = image.width / image.height * that.editorHeight;
+        var left = (that.editorWidth - width) / 2;
+        that.$bgImage.find("img").css("left", left);
+        that.$bgImage.find("img").attr("src", image.url);
+        that.$html.append(that.$bgImage);
+    }
+
+    that.setBackgroundColor = function (color) {
+        that.$html.css("background-color", color);
+    }
+
+    that.removeBackgroundImage = function () {
+        that.$bgImage.remove();
     }
 
     that.initData = function () {
@@ -100,8 +128,10 @@ var H5EditorFrame = function (options) {
         if(that.page){
             that.$slider.removeClass();
             that.$slider.addClass("slide-page-icon");
-            that.$slider.addClass(that.page.slider);
+            that.$slider.addClass(that.page.slideIcon.icon);
         }
+        that.setBackgroundImage(that.page.bgImage);
+        that.setBackgroundColor(that.page.bgColor);
 
         that.$html.append(that.$toolbar);
         that.$html.append(that.$slider);
@@ -123,7 +153,6 @@ var H5EditorFrame = function (options) {
         that.initData();
         that.initView();
         that.initEvent();
-        
     }
 
     that.init();
@@ -140,11 +169,22 @@ mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'ed
         link: function (scope, element, attrs, ngModelController) {
             ngModelController.$render = function () {
                 var viewValue = ngModelController.$viewValue;
-                $(".c-c-container", editorService.$html).remove();
+
+                $(".m-editor", element).empty();
+                var frame = new H5EditorFrame({ page: viewValue});
+                console.log('previewArea', scope, viewValue);
+
+                var $newScope = scope.$new();
+                var $html = $compile(frame.$html)($newScope);
+                $(".m-editor", element).append($html);
+
+                frame.$html.trigger('onLoad');
             }
 
-            var $html = $compile(editorService.$html)(scope);
-            $(".m-editor", element).append($html);
+            // var $newScope = scope.$new();
+            // var frame = new H5EditorFrame({ page: pageService.getCurrentPage() });
+            // var $html = $compile(frame.$html)($newScope);
+            // $(".m-editor", element).append($html);
         }
     }
 }]);

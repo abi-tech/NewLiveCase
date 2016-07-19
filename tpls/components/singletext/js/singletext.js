@@ -38,6 +38,8 @@ var Singletext = ExClass(H5ComponentBase, {
 		that.options = $.extend({}, that.defaultOptions, options);
 
 		$super(that.options);
+		$.extend(that, that.options);
+		console.log(that);
 
 		if(typeof that.options.text === 'string' && that.options.text.length > 0)
         	that.$inner.text(that.options.text);

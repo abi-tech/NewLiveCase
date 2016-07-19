@@ -38,4 +38,9 @@ mainModule.controller('mainController', [ '$rootScope', 'pageService', 'editorSe
 
     $rootScope.setCurrentPage(0, pageService.pages[0]);
 
+    $(document).on("keyup", function (e) { alert(1);
+        switch(e.keyCode){
+            case 46: alert("delete"); break;
+        }
+    })
 }]);

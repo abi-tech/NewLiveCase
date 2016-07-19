@@ -16,6 +16,13 @@ var H5 = function () {
     **/
     this.addPage = function(options){
         var page = $('<div class="page section">');
+        var bgImage = $('<img style="position: absolute; width: auto; height: 100%; left: 0px; top: 0px;">');
+        var slideIcon = $('<div class="u-guideWrap"><a href="javascript:void(0);" class="u-guideTop u-guideTop-' + options.slideIcon.value + '"></a></div>');
+        
+        page.css("background-color", options.bgColor);
+        bgImage.attr("src", options.bgImage.url);
+        page.append(bgImage);
+        page.append(slideIcon);
         this.el.append(page);
         this.pages.push(page);
         this.pageCfg.push(options);
@@ -92,7 +99,6 @@ var H5 = function () {
     **/
     this.loader = function(){
         this.el.fullpage({
-        	sectionsColor: ['#C63D0F', '#1BBC9B'],
             onLeave: function(index, nextIndex, direction){ console.log("onLeave", index, nextIndex, direction);
             	that.pages[index - 1].removeClass("z-current");
             	that.pages[index - 1].addClass("z-move");

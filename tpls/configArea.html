@@ -5,125 +5,37 @@
         <section class="c-config-wapper none">
             <!--ms-if-->
             <!-- 配置节 -->
-            <section class="c-conf-section c-conf-triggerSection z-expand">
+
+            <div ui-config-section><h2></h2><i class="icon-x20 icon-x20-down"></i></div>
+            <!-- <section class="c-conf-section c-conf-triggerSection z-expand">
                 <h2>配置</h2> <i class="icon-x20 icon-x20-down"></i>
-            </section>
+            </section> -->
 
             <!-- 类型显示区域 -->
             <div class="c-background-pop">
-                <div class="jcrop-panel-header c-background-btn">
-                    背景设置
-                    <div class="info-pop">
-                        <div class="bg"></div>
-                        <div class="info">最佳尺寸：640x1040(px)</div> <i></i>
-                    </div>
-                </div>
-
-                <!--ms-if-->
-
-                <div class="color-list f-fix f-mt-21 f-ml-18">
-                    <ul>
-                        <li style="width:31px;height:31px;" class="nonecolor f-float-l f-point"></li>
-                        <!--repeat80450534687628488314409180549587-->
-                        <li class="f-float-l f-point f-ml-7" style="background-color: rgb(255, 255, 255);"></li>
-                        <!--repeat80450534687628488314409180549587-->
-                        <li class="f-float-l f-point f-ml-7" style="background-color: rgb(153, 153, 153);"></li>
-                        <!--repeat80450534687628488314409180549587-->
-                        <li class="f-float-l f-point f-ml-7" style="background-color: rgb(0, 0, 0);"></li>
-                        <!--repeat80450534687628488314409180549587-->
-                        <li class="f-float-l f-point f-ml-7" style="background-color: rgb(126, 211, 33);"></li>
-                        <!--repeat80450534687628488314409180549587-->
-                        <li class="f-float-l f-point f-ml-7" style="background-color: rgb(80, 227, 194);"></li>
-                        <!--repeat80450534687628488314409180549587-->
-                        <li class="f-float-l f-point f-ml-7" style="background-color: rgb(248, 231, 28);"></li>
-                        <!--repeat80450534687628488314409180549587:end-->
-                        <li class="f-float-l f-ml-5 colorpick f-point">
-                            <input class="f-point" type="text" id="page_backgroundColor" avalonctrl="$page_backgroundColor_colorpicker" data-duplex-changed="initCp" style="color: rgb(255, 255, 255); background: rgb(255, 255, 255);"></li>
-                    </ul>
-                </div>
+                <div page-background-image></div>
+                <div page-background-color></div>
             </div>
 
             <!-- 配置节 end -->
             <section class="c-conf-section z-expand">
-
                 <!-- 翻页节 -->
-                <div class="f-fix slide-page">
-                    <label class="f-float-l f-mt-2" style="color:#333;line-height: 24px">翻页图标</label>
-                    <select class="u-select c-span-7 slide-page-select">
-                        <!--repeat31470317781871304013628434664804567-->
-                        <option value="0" label="LiveApp">LiveApp</option>
-                        <!--repeat31470317781871304013628434664804567-->
-                        <option value="1" label="UpArrow">UpArrow</option>
-                        <!--repeat31470317781871304013628434664804567-->
-                        <option value="2" label="DownArrow">DownArrow</option>
-                        <!--repeat31470317781871304013628434664804567:end--> </select>
-                    <span class="slide-page-line"></span>
-                </div>
-
+                <div page-slider-icon></div>
                 <hr>
-
                 <h2>翻页动画</h2>
-
-                <!-- 入场动画面板 -->
-                <div class="c-conf-panel f-mb-10 f-mt-20">
-                    <ul class="u-chooseList-large">
-                        <!--repeat37301076277514718813891202565993-->
-                        <li>
-                            <a style="background-color:#f8f8f8" href="javascript:void(0);" class="u-image-wrap f-p-0 f-wh-80 z-active">
-                                <div class="u-image-large f-wh-80 anime-page-slideZoomIn"></div>
-
-                            </a>
-                            <p>缩放</p>
-                        </li>
-                        <!--repeat37301076277514718813891202565993-->
-                        <li>
-                            <a style="background-color:#f8f8f8" href="javascript:void(0);" class="u-image-wrap f-p-0 f-wh-80">
-                                <div class="u-image-large f-wh-80 anime-page-slideIn"></div>
-
-                            </a>
-                            <p>滑动</p>
-                        </li>
-                        <!--repeat37301076277514718813891202565993-->
-                        <!--ms-if-->
-                        <!--repeat37301076277514718813891202565993-->
-                        <!--ms-if-->
-                        <!--repeat37301076277514718813891202565993-->
-                        <li>
-                            <a style="background-color:#f8f8f8" href="javascript:void(0);" class="u-image-wrap f-p-0 f-wh-80">
-                                <div class="u-image-large f-wh-80 anime-page-fadeIn"></div>
-
-                            </a>
-                            <p>淡入</p>
-                        </li>
-                        <!--repeat37301076277514718813891202565993-->
-                        <li>
-                            <a style="background-color:#f8f8f8" href="javascript:void(0);" class="u-image-wrap f-p-0 f-wh-80">
-                                <div class="u-image-large f-wh-80 anime-page-rotateIn"></div>
-
-                            </a>
-                            <p>旋入</p>
-                        </li>
-                        <!--repeat37301076277514718813891202565993-->
-                        <li>
-                            <a style="background-color:#f8f8f8" href="javascript:void(0);" class="u-image-wrap f-p-0 f-wh-80">
-                                <div class="u-image-large f-wh-80 anime-page-xSlideIn"></div>
-
-                            </a>
-                            <p>横向滑动</p>
-                        </li>
-                        <!--repeat37301076277514718813891202565993:end--> </ul>
-                </div>
-
+                <!-- 入场动画 -->
+                <div page-slide-animation></div>
                 <!-- 应用到所有页面 -->
                 <div class="c-conf-row f-mt-30">
                     <div class="f-fix f-mb-20">
                         <label class="f-float-l f-mt-2" style="color:#333">应用到所有页面</label>
-                        <div class="f-float-r flag icon-x40-flag-off"></div>
+                        <div ng-model="currentPage.applyAllPages" input-switcher></div>
                     </div>
                     <hr>
                     <div class="f-fix f-mt-20" style="position: relative">
                         <label class="f-float-l f-mt-2" style="color:#333">锁定翻页</label>
-                        <div class="f-float-r flag icon-x40-flag-off"></div>
+                        
+                        <div ng-model="currentPage.lockTurnPage" input-switcher></div>
 
                         <div class="tips-area">
                             <div class="info">
@@ -135,12 +47,11 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <hr>
                     <div class="f-fix f-mt-20 f-mb-15" style="position: relative">
                         <label class="f-float-l f-mt-2" style="color:#333">自动翻页</label>
-                        <div class="f-float-r flag icon-x40-flag-off"></div>
+                        <div ng-model="currentPage.autoTurnPage" input-switcher></div>
 
                         <div class="tips-area">
                             <div class="info">
@@ -152,10 +63,8 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
-                    <!--ms-if--> </div>
+                </div>
             </section>
             <!-- 翻页节 end --> </section>
         <!--repeat534161881778976219804144223770503-->

@@ -226,7 +226,7 @@ FileDialog.prototype.renderImagePreviewContent = function (data) {
 					var obj = data.data.list[i];
 					obj.url = "/upload/image/" +　obj.url;
 					obj.onChecked = function(item) {
-						that.options.chosen && that.options.chosen.uncheck();
+						//that.options.chosen && that.options.chosen.uncheck();
 						that.options.chosen = item;
 					}
 
@@ -314,10 +314,10 @@ File.prototype.initEvent = function () {
 	that.$html.on("click", function(e) {
 		that.options.onChecked && that.options.onChecked(that);
 
-		if(!that.options.check){
-			that.check();
-		}else{
+		if(that.options.check){
 			that.uncheck();
+		}else{
+			that.check();
 		}
 	});
 

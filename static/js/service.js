@@ -36,6 +36,10 @@ mainModule.service('pageService', ['$http', function ($http) {
         moveDown: function(index){
             if(index == service.pages.length - 1) return;
             swap(service.pages, index, index + 1);
+        },
+
+        getCurrentPage: function (argument) {
+            return this.pages[this.currentPageIndex];
         }
 
 	};

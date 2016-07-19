@@ -18,6 +18,7 @@ var H5Page = function(options) {
         bgColor: "rgb(255, 255, 255)",
         bgImage: "",
         css: null,
+        active: false,
         icons: [
             { "name": "LiveApp", "value": "0", "icon": "slide-page-icon-default" },
             { "name": "UpArrow", "value": "1", "icon": "slide-page-icon-up" },

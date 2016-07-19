@@ -104,13 +104,8 @@ var H5ComponentBase = ExClass({
         //container 在显示模式下设置 
         //component 控制组件的外观
         //inner 控制组件的内容
-        
-        that.options = $.extend({}, defaultOptions, options);
-        console.log(that.options);
-        that.options.containerCss["width"] = that._scale(that.options.width);
-        that.options.containerCss["height"] = that._scale(that.options.height);
-        that.options.containerCss["top"] = that._scale(that.options.y);
-        that.options.containerCss["left"] = that._scale(that.options.x);
+
+        that.options = $.extend(true, {}, defaultOptions, options);
         //console.log(that.options);
         //$.extend(that, that.options);
 
@@ -233,40 +228,61 @@ var H5ComponentBase = ExClass({
         that.$wrapper.addClass("u-comChoose");
         that.options.onChosenEnd();
     },
+    previewTemplate: function () {
+        return;
+    },
+    modeView: function () {
+        var that = this;
+        that.options.containerCss["width"] = that.options.width;
+        that.options.containerCss["height"] = that.options.height;
+        that.options.containerCss["top"] = that.options.y;
+        that.options.containerCss["left"] = that.options.x;
+
+        that.$wrapper = that.$container = $(that.containerTemplate);
+        that.$container.addClass("c-" + that.options.type);
+        that.$container.css("position", "absolute");
+        that.$container.append(that.$component);
+
+        that.$html = that.$container;
+        that._setCss();
+
+        that.setContainerCss(that.options.containerCss);
+        that.setComponentCss(that.options.componentCss);
+        that.setInnerCss(that.options.innerCss);
+
+        return that.$html.clone();
+    },
+    modeDesign: function () {
+        var that = this;
+        that.options.containerCss["width"] = that._scale(that.options.width);
+        that.options.containerCss["height"] = that._scale(that.options.height);
+        that.options.containerCss["top"] = that._scale(that.options.y);
+        that.options.containerCss["left"] = that._scale(that.options.x);
+
+        that.$wrapper = $(that.wrapperTemplate);
+        that.$container = $(that.containerTemplate);
+
+        that.$container.append(that.$component);
+        that.$wrapper.prepend(that.$container);
+        that.$html = that.$wrapper;
+        that.interact = interact(that.$html[0], { styleCursor: false });
+        that._setCss();
+        that._bind();
+
+        that.setContainerCss(that.options.containerCss);
+        that.setComponentCss(that.options.componentCss);
+        that.setInnerCss(that.options.innerCss);
+
+        that.chosen();
+
+        return that.$html.clone();
+    },
     _build: function() {
         var that = this;
         if(that.options.mode === '1'){
-            that.$wrapper = $(that.wrapperTemplate);
-            that.$container = $(that.containerTemplate);
-
-            that.$container.append(that.$component);
-            that.$wrapper.prepend(that.$container);
-            that.$html = that.$wrapper;
-            that.interact = interact(that.$html[0], { styleCursor: false });
-            that._setCss();
-            that._bind();
-
-            that.setContainerCss(that.options.containerCss);
-            that.setComponentCss(that.options.componentCss);
-            that.setInnerCss(that.options.innerCss);
-
-            that.chosen();
+            that.modeDesign();
         }else{
-            //that.$wrapper = $(that.wrapperTemplate);
-            that.$wrapper = that.$container = $(that.containerTemplate);
-            that.$container.addClass("c-" + that.options.type);
-            that.$container.css("position", "absolute");
-            that.$container.append(that.$component);
-            //that.$wrapper.prepend(that.$component);
-            that.$html = that.$container;
-            that._setCss();
-
-            // for (var key in that.containerCss) {
-            //     that.containerCss[key]
-            // }
-            that.setContainerCss(that.options.containerCss);
-            that.setComponentCss(that.options.componentCss);
-            that.setInnerCss(that.options.innerCss);
+            that.modeView();
         }
 
         that.$container.on('onLoad',function(){

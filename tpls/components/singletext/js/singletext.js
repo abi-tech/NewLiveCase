@@ -8,7 +8,10 @@ var Singletext = ExClass(H5ComponentBase, {
         	y: 108,
         	width: 417,
         	height: 80,
-        	text: "",
+        	text: "右侧输入文本",
+        	containerCss: {
+        		"line-height": 1
+        	},
         	componentCss: {
 				"border-width": "0px", 
 				"border-color": "rgba(204, 204, 204, 0)", 
@@ -28,22 +31,22 @@ var Singletext = ExClass(H5ComponentBase, {
         }
 
 		that.componentTemplate = [
-			'<div inside-styles="" class="text-wrap">',
-			    '<div class="text-content">右侧输入文本</div>',
+			'<div inside-styles="" class="text-wrap" ng-style="component.componentCss">',
+			    '<div class="text-content" ng-style="component.innerCss" ng-bind="component.text"></div>',
 			'</div>'
 		].join('');
 
 		that.$component = $(that.componentTemplate);
 		that.$inner = that.$component.find(".text-content");
-		that.options = $.extend({}, that.defaultOptions, options);
+		that.options = $.extend(true, {}, that.defaultOptions, options);
 
 		$super(that.options);
 		$.extend(that, that.options);
-		console.log(that);
+		that.$container.addClass("c-single-text");
 
-		if(typeof that.options.text === 'string' && that.options.text.length > 0)
-        	that.$inner.text(that.options.text);
-        else
-        	that.$inner.text('右侧输入文本');
+		// if(typeof that.options.text === 'string' && that.options.text.length > 0)
+  //       	that.$inner.text(that.options.text);
+  //       else
+  //       	that.$inner.text('右侧输入文本');
     }
 });

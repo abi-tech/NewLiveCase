@@ -65,7 +65,6 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
 
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {
                     var cfg = {};
-                    cfg.text = '';
                     cfg.scale = editorService.editorScale;
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
                     cfg.animateOut = { effect: "bounceOut", duration: 1 };

@@ -36,6 +36,10 @@ mainModule.controller('mainController', [ '$rootScope', 'pageService', 'editorSe
         $(".u-comChoose", editorService.$html).removeClass("u-comChoose");
     }
 
+    $rootScope.pageChanged = function (index) {
+        $rootScope.$broadcast("page.changed", index);
+    }
+    
     $rootScope.setCurrentPage(0, pageService.pages[0]);
 
     $(document).on("keyup", function (e) { alert(1);

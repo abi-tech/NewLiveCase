@@ -23,6 +23,7 @@ mainModule.directive("pageBackgroundImage", ['$rootScope', '$compile', 'pageServ
             '</div>'
         ].join(''),
         replace: true,
+        scope: {},
         link: function (scope, element, attrs) {
             var tpl = $([
                 '<div class="page-bg-div" style="width: 100%; height: 100%; overflow: hidden; position: absolute; z-index: 1; top: 0px; left: 0px;">',
@@ -118,6 +119,7 @@ mainModule.directive("pageBackgroundColor", ['$rootScope', '$compile', 'pageServ
             '</div>'
         ].join(''),
         replace: true,
+        scope: {},
         link: function (scope, element, attrs) {
             var initEvent = function () {
                 $("li", element).on("click", function (e) {

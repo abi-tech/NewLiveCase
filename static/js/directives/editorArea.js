@@ -9,7 +9,7 @@
 <div class="u-guideWrap"><a href="javascript:void(0);" class="u-guideTop"></a></div>
 <div ng-repeat="component in currentPage.components" preview="0" editor-area-component></div>
 */
-var H5EditorFrame = function (options) {
+var EditorFrameBuilder = function (options) {
     var that = this;
 
     that.defaultOptions = {
@@ -26,7 +26,7 @@ var H5EditorFrame = function (options) {
     
     that.$html = $([
         '<div id="editorFrame" class="u-page-border page-container u-page-active" bg-layout="center">',
-            '<div ng-repeat="component in currentPage.components" preview="0" editor-area-component></div>',
+            '<div ng-repeat="component in components" preview="0" editor-area-component></div>',
         '</div>'
     ].join(''));
 
@@ -58,7 +58,7 @@ var H5EditorFrame = function (options) {
 
     that.setOptions = function (options) {
         delete that.options;
-        that.options = $.extend({}, that.defaultOptions, options);
+        that.options = $.extend(true, {}, that.defaultOptions, options);
         $.extend(that, that.options);
     }
 
@@ -73,7 +73,6 @@ var H5EditorFrame = function (options) {
     }
 
     that.animate = function (animation) { 
-        $("#editorFrame .u-comChoose").removeClass("u-comChoose");
         animation = animation? animation : that.page.animation;
         if(!animation) { 
             console.log("animation is undefined");
@@ -165,37 +164,43 @@ mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'ed
         restrict: "A",
         template: '<div class="g-editor"><section class="m-editor"></section></div>',
         replace: true,
-        require: 'ngModel',
-        link: function (scope, element, attrs, ngModelController) {
-            ngModelController.$render = function () {
-                var viewValue = ngModelController.$viewValue;
+        scope: {},
+        link: function (scope, element, attrs) {
+            var $newScope;
+            var init = function (index) {
+                $newScope && $newScope.$destroy();
+                delete $newScope;
+                $newScope = scope.$new();
+                $newScope.components = pageService.pages[index].components;
 
-                $(".m-editor", element).empty();
-                var frame = new H5EditorFrame({ page: viewValue});
-                console.log('previewArea', scope, viewValue);
-
-                var $newScope = scope.$new();
+                console.log($newScope.components);
+                $("#editorFrame", element).remove();
+                var frame = new EditorFrameBuilder({ page: pageService.pages[index] });
                 var $html = $compile(frame.$html)($newScope);
                 $(".m-editor", element).append($html);
-
-                frame.$html.trigger('onLoad');
+                $("#editorFrame").trigger("onLoad");
             }
 
-            // var $newScope = scope.$new();
-            // var frame = new H5EditorFrame({ page: pageService.getCurrentPage() });
-            // var $html = $compile(frame.$html)($newScope);
-            // $(".m-editor", element).append($html);
+            scope.$on('page.changed', function (event, index) {
+                console.log('page.changed', index);
+                pageService.currentPageIndex = index;
+                init(index);
+                //$newScope.$apply();
+            });
+
+            init(0);
         }
     }
 }]);
 
-mainModule.directive("editorAreaComponent", function () {
+mainModule.directive("editorAreaComponent", ['$compile', function ($compile) {
     return {
         restrict: 'A',
         template: '<div></div>',
         replace: true,
         link: function (scope, element, attrs) {
-            element.replaceWith(scope.component.$html);
+            var $html = $compile(scope.component.$html)(scope);
+            element.replaceWith($html);
         }
     }
-});
+}]);

@@ -9,8 +9,12 @@ mainModule.service('pageService', ['$http', function ($http) {
             return service.pages[index];
         },
 
-        add: function (index, page) {
-            service.pages.splice(index, 0, new H5Page());
+        add: function (index) {
+            if(!index){
+                service.pages.push(new H5Page({ active: true }));
+                return;
+            }
+            service.pages.splice(index, 0, new H5Page({ active: true }));
         },
 
         delete: function(index){
@@ -28,12 +32,12 @@ mainModule.service('pageService', ['$http', function ($http) {
             service.pages.splice(index, 0, page);
         },
 
-        moveUp: function(index){
+        up: function(index){
             if(index == 0) return;
             swap(service.pages, index, index - 1);
         },
 
-        moveDown: function(index){
+        down: function(index){
             if(index == service.pages.length - 1) return;
             swap(service.pages, index, index + 1);
         },
@@ -73,6 +77,6 @@ mainModule.service('editorService', ['$http', 'pageService', function ($http, pa
     var options = {
         page: pageService.pages[0]
     };
-    var editor = new H5EditorFrame(options);
+    var editor = new EditorFrameBuilder(options);
     return editor;
 }]);

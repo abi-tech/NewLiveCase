@@ -231,7 +231,7 @@ mainModule.directive("pageComponent", ['$rootScope', '$compile', 'pageService', 
         template: '<div></div>',
         replace: true,
         link: function (scope, element, attrs) {
-            var $html = $compile(scope.component.$html.clone())(scope);
+            var $html = $compile(scope.component.$view)(scope);
             element.replaceWith($html);
         }
     }

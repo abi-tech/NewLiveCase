@@ -152,8 +152,10 @@ var Externallinks = ExClass(H5ComponentBase, {
 
 		that.initBackgroundColor();
     	that.initBorderColor();
-		that.setComponentCss(that.options.componentCss);
-		that.setInnerCss(that.options.innerCss);
+		that._setCss(that.$component, that.options.componentCss);
+        that._setCss(that.$inner, that.options.innerCss);
+        // that._setCss(that.$viewComponent, that.options.componentCss);
+        // that._setCss(that.$viewInner, that.options.innerCss);
 
 		if(that.$html) that.$html.css("height", that.options.text.height * that.options.scale);
     	//设置文字
@@ -179,6 +181,9 @@ var Externallinks = ExClass(H5ComponentBase, {
 		if(that.$component) delete that.$component;
 		that.$component = $(that.componentTemplate);
 
+        if(that.$viewComponent) delete that.viewComponent;
+        that.$viewComponent = $(that.componentTemplate);
+
 		if(that.$container)
 			that.$container.children().replaceWith(that.$component);
 
@@ -190,8 +195,10 @@ var Externallinks = ExClass(H5ComponentBase, {
     	that.initBorderColor();
     	this.options.componentCss["background-color"] = "rgba(225, 225, 225, 0)";
     	this.options.componentCss["border-color"] = "rgba(225, 225, 225, 0)";
-    	that.setComponentCss(that.options.componentCss);
-		that.setInnerCss(that.options.innerCss);
+    	that._setCss(that.$component, that.options.componentCss);
+		that._setCss(that.$inner, that.options.innerCss);
+        that._setCss(that.$viewComponent, that.options.componentCss);
+        that._setCss(that.$viewInner, that.options.innerCss);
 
 		if(that.$html) that.$html.css("height", that.options.icon.height * that.options.scale);
     	//设置图标

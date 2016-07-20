@@ -111,36 +111,9 @@ var H5ComponentBase = ExClass({
 
         that._build();
     },
-    _setCss: function () {
-        var that = this;
-        // that.setZIndex(that.zIndex);
-        // that.setBackgroundColor(that.options.componentCss["background-color"]);
-        // that.setBorderWidth(that.options.componentCss["border-width"]);
-        // that.setBorderColor(that.options.componentCss["border-color"]);
-        // that.setBorderRadius(that.options.componentCss["border-radius"]);
-        // that.setOpacity(that.options.componentCss["opacity"]);
-        // that.setRotate(that.options.componentCss["transform"]);
-        // that.setWidth(that.options.width);
-        // that.setHeight(that.options.height);
-        // that.setX(that.options.x)
-        // that.setY(that.options.y);
-    },
-    setContainerCss: function (css) {
-        var that = this;
+    _setCss: function ($html, css) {
         for(var key in css){
-            that.$html.css(key, css[key]);
-        }
-    },
-    setComponentCss: function (css) {
-        var that = this;
-        for(var key in css){
-            that.$component.css(key, css[key]);
-        }
-    },
-    setInnerCss: function (css) {
-        var that = this;
-        for(var key in css){
-            that.$inner.css(key, css[key]);
+            $html.css(key, css[key]);
         }
     },
     setZIndex: function(zIndex){
@@ -231,28 +204,31 @@ var H5ComponentBase = ExClass({
     previewTemplate: function () {
         return;
     },
-    modeView: function () {
+    buildViewer: function () {
         var that = this;
-        that.options.containerCss["width"] = that.options.width;
-        that.options.containerCss["height"] = that.options.height;
-        that.options.containerCss["top"] = that.options.y;
-        that.options.containerCss["left"] = that.options.x;
 
-        that.$wrapper = that.$container = $(that.containerTemplate);
-        that.$container.addClass("c-" + that.options.type);
-        that.$container.css("position", "absolute");
-        that.$container.append(that.$component);
+        //生成模板
+        that.$viewContainer = $(that.containerTemplate);
+        that.$viewComponent = $(that.componentTemplate);
+        that.$viewInner = $(that.innerTemplate);
+        that.$view = that.$viewContainer;
+        //组织结构
+        that.$viewComponent.append(that.$viewInner);
+        that.$viewContainer.append(that.$viewComponent);
+        //设置样式
+        that.$viewContainer.addClass("c-" + that.options.type);
+        that.$viewContainer.css("position", "absolute");
 
-        that.$html = that.$container;
-        that._setCss();
-
-        that.setContainerCss(that.options.containerCss);
-        that.setComponentCss(that.options.componentCss);
-        that.setInnerCss(that.options.innerCss);
-
-        return that.$html.clone();
+        var containerCss = $.extend({}, that.options.containerCss)
+        containerCss["width"] = that.options.width;
+        containerCss["height"] = that.options.height;
+        containerCss["top"] = that.options.y;
+        containerCss["left"] = that.options.x;
+        that._setCss(that.$viewContainer, containerCss);
+        that._setCss(that.$viewComponent, that.options.componentCss);
+        that._setCss(that.$viewInner, that.options.innerCss);
     },
-    modeDesign: function () {
+    buildHtml: function () {
         var that = this;
         that.options.containerCss["width"] = that._scale(that.options.width);
         that.options.containerCss["height"] = that._scale(that.options.height);
@@ -266,12 +242,11 @@ var H5ComponentBase = ExClass({
         that.$wrapper.prepend(that.$container);
         that.$html = that.$wrapper;
         that.interact = interact(that.$html[0], { styleCursor: false });
-        that._setCss();
         that._bind();
-
-        that.setContainerCss(that.options.containerCss);
-        that.setComponentCss(that.options.componentCss);
-        that.setInnerCss(that.options.innerCss);
+        console.log(that.options.containerCss);
+        that._setCss(that.$wrapper, that.options.containerCss);
+        that._setCss(that.$component, that.options.componentCss);
+        that._setCss(that.$inner, that.options.innerCss);
 
         that.chosen();
 
@@ -279,11 +254,9 @@ var H5ComponentBase = ExClass({
     },
     _build: function() {
         var that = this;
-        if(that.options.mode === '1'){
-            that.modeDesign();
-        }else{
-            that.modeView();
-        }
+        
+        that.buildViewer();
+        that.buildHtml();
 
         that.$container.on('onLoad',function(){
             that.animate(that.options.animateIn);

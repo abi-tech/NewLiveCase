@@ -50,7 +50,7 @@ var H5 = function () {
                 component = new Externallinks(options);
             	break;
         }
-        page.append(component.$html);
+        page.append(component.$view);
         return this;
     }
 

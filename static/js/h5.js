@@ -94,7 +94,7 @@ var H5ComponentBase = ExClass({
         that.id = ('h5_c_' + Math.random()).replace('.', '_');
 
         that.wrapperTemplate = [
-            '<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move" ng-style="component.containerCss">',
+            '<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move" ng-style="component.containerCss" ng-click="click(component, $event)">',
                 '<div class="tl-c"></div><div class="tr-c"></div><div class="bl-c"></div><div class="br-c"></div>',
             '</div>'
         ].join('');
@@ -226,7 +226,7 @@ var H5ComponentBase = ExClass({
         containerCss["left"] = that.options.x;
         that._setCss(that.$viewContainer, containerCss);
         that._setCss(that.$viewComponent, that.options.componentCss);
-        that._setCss(that.$viewInner, that.options.innerCss);
+        that._setCss(that.$viewInner, that.options.innerCss); console.log("h5", that.$viewInner);
     },
     buildHtml: function () {
         var that = this;
@@ -237,13 +237,14 @@ var H5ComponentBase = ExClass({
 
         that.$wrapper = $(that.wrapperTemplate);
         that.$container = $(that.containerTemplate);
-
+        that.$inner = $(that.innerTemplate);
+        
+        that.$component.append(that.$inner);
         that.$container.append(that.$component);
         that.$wrapper.prepend(that.$container);
         that.$html = that.$wrapper;
         that.interact = interact(that.$html[0], { styleCursor: false });
         that._bind();
-        console.log(that.options.containerCss);
         that._setCss(that.$wrapper, that.options.containerCss);
         that._setCss(that.$component, that.options.componentCss);
         that._setCss(that.$inner, that.options.innerCss);
@@ -273,13 +274,14 @@ var H5ComponentBase = ExClass({
         var that = this;
         that._drag();
         that._resize();
+        that._moveend();
         that._resizeend();
         that._actionChecker();
 
-        that.$html.on('click', function (event) { console.log("component clicked!");
-            event.stopPropagation()
-            that.chosen();
-        });
+        // that.$html.on('click', function (event) { console.log("component clicked!");
+        //     event.stopPropagation()
+        //     that.chosen();
+        // });
 
         $(".tr-c,.bl-c", that.$html).on('mouseenter', function (e) {
             that.$html.css("cursor", "ne-resize"); 
@@ -357,6 +359,17 @@ var H5ComponentBase = ExClass({
             //TODO 移动时修改 top left width height
             if(typeof that.onResizeEnd === 'function')
                 that.onResizeEnd(that.$html, that.options.x, that.options.y, that.options.width, that.options.height);
+        });
+    },
+    _moveend: function () {
+        var that = this;
+        that.interact.on('dragend', function(event){
+            var containerCss = $.extend({}, that.options.containerCss)
+            containerCss["width"] = that.options.width;
+            containerCss["height"] = that.options.height;
+            containerCss["top"] = that.options.y;
+            containerCss["left"] = that.options.x;
+            that._setCss(that.$viewContainer, containerCss);
         });
     },
     _resizeend: function(){

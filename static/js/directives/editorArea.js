@@ -193,12 +193,18 @@ mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'ed
     }
 }]);
 
-mainModule.directive("editorAreaComponent", ['$compile', function ($compile) {
+mainModule.directive("editorAreaComponent", ['$rootScope', '$compile', function ($rootScope, $compile) {
     return {
         restrict: 'A',
         template: '<div></div>',
         replace: true,
         link: function (scope, element, attrs) {
+
+            scope.click = function (component, $event) {
+                $event.stopPropagation();
+                component.chosen();
+                $rootScope.currentComponent = component;
+            }
             var $html = $compile(scope.component.$html)(scope);
             element.replaceWith($html);
         }

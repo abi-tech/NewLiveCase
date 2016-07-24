@@ -69,6 +69,7 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
                     cfg.animateOut = { effect: "bounceOut", duration: 1 };
                     cfg.onDragEnd = function($html, top, left){
+                        $rootScope.$apply();
                         //console.log($html, top, left);
                     }
                     cfg.onResizeEnd = function($html, top, left, width, height){

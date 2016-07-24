@@ -30,23 +30,25 @@ var Singletext = ExClass(H5ComponentBase, {
 			}
         }
 
-		that.componentTemplate = [
-			'<div inside-styles="" class="text-wrap" ng-style="component.componentCss">',
-			    '<div class="text-content" ng-style="component.innerCss" ng-bind="component.text"></div>',
-			'</div>'
-		].join('');
+		that.componentTemplate = '<div inside-styles="" class="text-wrap" ng-style="component.componentCss"></div>';
+		that.innerTemplate = '<div class="text-content" ng-style="component.innerCss" ng-bind="component.text"></div>';
+		that.confTemplate = '';
 
 		that.$component = $(that.componentTemplate);
-		that.$inner = that.$component.find(".text-content");
+		that.$inner = $(that.innerTemplate);
 		that.options = $.extend(true, {}, that.defaultOptions, options);
 
 		$super(that.options);
 		$.extend(that, that.options);
 		that.$container.addClass("c-single-text");
 
-		// if(typeof that.options.text === 'string' && that.options.text.length > 0)
-  //       	that.$inner.text(that.options.text);
-  //       else
-  //       	that.$inner.text('右侧输入文本');
+		if(typeof that.options.text === 'string' && that.options.text.length > 0){
+        	that.$inner.text(that.options.text);
+        	that.$viewInner.text(that.options.text);
+		}
+        else{
+        	that.$inner.text('右侧输入文本');
+        	that.$viewInner.text('右侧输入文本');
+        }
     }
 });

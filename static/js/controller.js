@@ -39,6 +39,10 @@ mainModule.controller('mainController', [ '$rootScope', 'pageService', 'editorSe
     $rootScope.pageChanged = function (index) {
         $rootScope.$broadcast("page.changed", index);
     }
+
+    $rootScope.componentChanged = function (component) {
+        $rootScope.$broadcast("component.changed", component);
+    }
     
     $rootScope.setCurrentPage(0, pageService.pages[0]);
 

@@ -1508,15 +1508,15 @@ div .oni-scrollbar-arrow-down b {
 	width: 69px;
 }
 .c-singletext.u-conf-section .c-conf-row-1 [type=text-align-list] {
-	/*left: 139px;*/
+	left: 139px;
 	width: 69px;
 }
 .c-singletext.u-conf-section .c-conf-row-1 [type=line-height-list] {
-	/*left: 209px;*/
+	left: 209px;
 	width: 69px;
 }
 .c-singletext.u-conf-section .c-conf-row-1 .font-color {
-	/*position: relative;*/
+	position: relative;
 }
 .c-singletext.u-conf-section .c-conf-row-1 .font-color input {
 	position: absolute;

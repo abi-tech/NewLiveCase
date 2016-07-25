@@ -5,7 +5,7 @@ function argumentNames(fn) {
 
 
 var ExClass = function (baseClass, prop) {
-    // 只接受一个参数的情况 - jClass(prop)
+    // 只接受一个参数的情况 - jClass(prop) 
     if (typeof (baseClass) === "object") {
         prop = baseClass;
         baseClass = null;
@@ -100,6 +100,62 @@ var H5ComponentBase = ExClass({
         ].join('');
 
         that.containerTemplate = '<div class="h5_component"></div>';
+
+        that.confHeaderTemplate = [
+            '<header class="c-conf-header">',
+                '<div class="c-compnent-icon"></div>',
+                '<span style="color:#444"></span>',
+            '</header>'
+        ].join('');
+
+        that.confFacadeTemplate = [
+            '<section class="c-conf-section c-conf-tabSection">',
+                '<ul class="u-tab z-singleLine">',
+                    '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',
+                    '<li><a href="javascript:void(0);">动画</a></li>',
+                '</ul>',
+            '</section>',
+            '<section class="c-conf-section c-conf-style z-expand">',
+                '<div class="c-conf-panel">',
+                    '<div class="c-conf-row">',
+                        '<label class="c-input-label">背景</label>',
+                        '<div class="c-input-box"><div ng-model="currentComponent.borderColor" ipr-colorpicker></div></div>',
+                    '</div>',
+                '</div>',
+                '<div class="c-conf-panel">',
+                    '<div class="c-conf-row">',
+                        '<label class="c-input-label">边框</label>',
+                        '<div class="c-input-box"></div>',
+                    '</div>',
+                '</div>',
+                '<div class="c-conf-panel">',
+                    '<div class="c-conf-row">',
+                        '<label class="c-input-label">圆角</label>',
+                        '<div class="c-input-box"></div>',
+                    '</div>',
+                '</div>',
+                '<div class="c-conf-panel">',
+                    '<div class="c-conf-row">',
+                        '<label class="c-input-label">透明</label>',
+                        '<div class="c-input-box"></div>',
+                    '</div>',
+                '</div>',
+                '<div class="c-conf-panel">',
+                    '<div class="c-conf-row">',
+                        '<label class="c-input-label">旋转</label>',
+                        '<div class="c-input-box"></div>',
+                    '</div>',
+                '</div>',
+            '</section>'
+        ].join('');
+
+        that.confAnimationTemplate = [
+            ''
+        ].join('');
+
+        that.confPositionTemplate = [
+            '<div config-position></div>'
+        ].join('');
         //wrapper 在设计模式下加载 用于组件的 位置 宽高 大小 控制
         //container 在显示模式下设置 
         //component 控制组件的外观

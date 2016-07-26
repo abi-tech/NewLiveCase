@@ -50,11 +50,16 @@ var ConfFontSize = function (options) {
 	that.$html = $(template.compile(that.template)({ items: that.options.list, selected: that.options.selected }));
 
 	$("li", that.$html).on("click", function (e) {
+		e.stopPropagation();
 		var $this = $(this);
 		var idx = $("li", that.$html).index($this);
 		$("li", that.$html).removeClass("selected");
 		$this.addClass("selected");
 		that.options.selectEnd(that.options.list[idx]);
+		that.$html.hide();
+	});
+
+	$("body").on("click", function (e) {
 		that.$html.hide();
 	});
 }
@@ -90,11 +95,16 @@ var ConfTextAlign = function (options) {
 	that.$html = $(template.compile(that.template)({ items: that.options.list, selected: that.options.selected }));
 
 	$("li", that.$html).on("click", function (e) {
+		e.stopPropagation();
 		var $this = $(this);
 		var idx = $("li", that.$html).index($this);
 		$("li", that.$html).removeClass("selected");
 		$this.addClass("selected");
 		that.options.selectEnd(that.options.list[idx]);
+		that.$html.hide();
+	});
+
+	$("body").on("click", function (e) {
 		that.$html.hide();
 	});
 }
@@ -132,11 +142,16 @@ var ConfLineHeight = function (options) {
 	that.$html = $(template.compile(that.template)({ items: that.options.list, selected: that.options.selected }));
 
 	$("li", that.$html).on("click", function (e) {
+		e.stopPropagation();
 		var $this = $(this);
 		var idx = $("li", that.$html).index($this);
 		$("li", that.$html).removeClass("selected");
 		$this.addClass("selected");
 		that.options.selectEnd(that.options.list[idx]);
+		that.$html.hide();
+	});
+
+	$("body").on("click", function (e) {
 		that.$html.hide();
 	});
 }
@@ -169,6 +184,7 @@ var ConfFontFamily = function (options) {
 	that.$html = $(template.compile(that.template)({ items: that.options.list, selected: that.options.selected }));
 
 	$("li", that.$html).on("click", function (e) {
+		e.stopPropagation();
 		var $this = $(this);
 		var idx = $("li", that.$html).index($this);
 		$("li", that.$html).removeClass("selected");
@@ -176,43 +192,57 @@ var ConfFontFamily = function (options) {
 		that.options.selectEnd(that.options.list[idx]);
 		that.$html.hide();
 	});
+
+	$("body").on("click", function (e) {
+		that.$html.hide();
+	});
 }
 
-var ConfFontBIU = function (options) {
+/**
+* 功能： 封装固定结构的布局类
+**/
+var UTab = function (options) {
 	var that = this;
-	that.defaultOptions = {
-		selected: [],
-		list: [ 
-			{ "name": "b", "value": "b"},
-			{ "name": "i", "value": "i"},
-			{ "name": "u", "value": "u"},
+
+	var defaultOptions = {
+		enable: false,
+		single: true,
+		list: [
+			{ liClass: "", alinkClass: "", divClass: "", innerDom: null, selected: false }
 		],
-		selectEnd: function (items) {
-			console.log(items);
+		selectEnd: function (i, n) {
+
 		}
-	};
+	}
 
 	that.options = $.extend(true, {}, that.defaultOptions, options);
-	that.template = [
-		'<ul class="u-tab">',
-			'{{ each items as item i }}',
-			'<li class=""><a class="small"><div class="icon-x16 x-icon-{{ value }}"></div></a></li>',
-			'{{ /each }}',
-		'</ul>'
-	].join('');
 
-	that.$html = $(template.compile(that.template)({ items: that.options.list }));
+	that.$html = $('<ul class="u-tab"></ul>');
+
+	$.each(that.options.list, function (i, n) {
+		var $li = $('<li><a><div class="icon-x16"></div></a></li>');
+		var $a = $li.find("a");
+		var $div = $li.find("div");
+		$li.addClass(n.liClass);
+		$a.addClass(n.alinkClass);
+		$div.addClass(n.divClass);
+		n.innerDom && $li.prepend(n.innerDom);
+		that.$html.append($li);
+	});
 
 	$("li", that.$html).on("click", function (e) {
-		var $this = this;
-		$this.toggleClass("selected");
-
-		var items = $.map($("li", that.$html), function(n){
-			console.log(n);
-			return n;
-		});
-		that.options.selectEnd(items);
-		that.$html.hide();
+		e.stopPropagation();
+		var $this = $(this);
+		var idx = $("li", that.$html).index($this);
+		that.options.selectEnd(idx, that.options.list[idx]);
+		if(that.options.enable){
+			if(that.options.single){
+				$("li", that.$html).removeClass("selected");
+				$this.addClass("selected");
+			}else{
+				$this.toggleClass("selected");
+			}
+		}
 	});
 }
 
@@ -260,6 +290,7 @@ var Singletext = ExClass(H5ComponentBase, {
 		$super(that.options);
 		$.extend(that, that.options);
 		that.$container.addClass("c-single-text");
+		
 		that.buildConfig();
 		if(typeof that.options.text === 'string' && that.options.text.length > 0){
         	that.$inner.text(that.options.text);
@@ -277,81 +308,20 @@ var Singletext = ExClass(H5ComponentBase, {
     		'<section class="c-conf-section z-expand" style="display: block;">',
     			'<section class="u-conf-section c-singletext">',
 	    			'<div class="c-conf-row"><textarea placeholder="亲，在这里输入文本哦"></textarea></div>',
-	    			'<div class="c-conf-row c-conf-row-1">',
-	    				'<ul class="u-tab">',
-				            '<li class="dropdown font-size">',
-				                '<a class="small"><div class="icon-x16 x-icon-font-size"></div></a>',
-				            '</li>',
-				            '<li class="font-color">',
-				                '<input class="dropdown font-color" style="color: rgb(0, 0, 0); background: rgb(4, 51, 255);">',
-				                '<div class="font-color-layer" style="background-color: rgb(4, 51, 255);"></div>',
-				                '<a class="small"><div class="icon-x16 x-icon-font-color"></div></a>',
-				            '</li>',
-				            '<li class="dropdown text-align">',
-				                '<a class="small"><div class="icon-x16 x-icon-text-align x-icon-center"></div></a>',
-				            '</li>',
-				            '<li class="dropdown line-height">',
-				                '<a class="small"><div class="icon-x16 x-icon-line-height"></div></a>',
-				            '</li>',
-				        '</ul>',
-	    			'</div>',
+	    			'<div class="c-conf-row c-conf-row-1"></div>',
 	    			'<div class="c-conf-row c-conf-row-2">',
-				        '<div class="c-input-box box-lf">',
-				            '<ul class="u-tab">',
-				                '<li class="dropdown font-face">',
-				                    '<a class="small"><div class="icon-x16 x-icon-display x-icon-SimHei"></div></a>',
-				                '</li>',
-				            '</ul>',
-				        '</div>',
-				        '<div class="c-input-box box-rf">',
-				            '<ul class="u-tab">',
-				                '<li><a class="small"><div class="icon-x16 x-icon-b"></div></a></li>',
-				                '<li><a class="small"><div class="icon-x16 x-icon-i"></div></a></li>',
-				                '<li><a class="small"><div class="icon-x16 x-icon-u"></div></a></li>',
-				            '</ul>',
-				        '</div>',
+				        '<div class="c-input-box box-lf"></div>', 
+				        '<div class="c-input-box box-rf"></div>',
 				    '</div>',
 	    		'</section>',
     		'</section>'
     	].join('');
 
-    	var confFontSize = new ConfFontSize();
-    	var confTextAlign = new ConfTextAlign();
-    	var confLineHeight = new ConfLineHeight();
-    	var confFontFamily = new ConfFontFamily();
-    	var $conf = $(confTemplate);
-    	$(".c-conf-row.c-conf-row-1", $conf).append(confFontSize.$html);
-    	$(".c-conf-row.c-conf-row-1", $conf).append(confTextAlign.$html);
-    	$(".c-conf-row.c-conf-row-1", $conf).append(confLineHeight.$html);
-    	$(".c-conf-row.c-conf-row-2 div:eq(0)", $conf).append(confFontFamily.$html);
+    	
+    	that.$conf = $(confTemplate);
 
-    	$(".dropdown.font-size", $conf).on("click", function (e) {
-    		confFontSize.$html.show();
-    		confTextAlign.$html.hide();
-    		confLineHeight.$html.hide();
-    		confFontFamily.$html.hide();
-    	});
-
-    	$(".dropdown.text-align", $conf).on("click", function (e) {
-    		confFontSize.$html.hide();
-    		confTextAlign.$html.show();
-    		confLineHeight.$html.hide();
-    		confFontFamily.$html.hide()
-    	});
-
-    	$(".dropdown.line-height", $conf).on("click", function (e) {
-    		confFontSize.$html.hide();
-    		confTextAlign.$html.hide();
-    		confLineHeight.$html.show();
-    		confFontFamily.$html.hide()
-    	});
-
-    	$(".dropdown.font-face", $conf).on("click", function (e) {
-    		confFontSize.$html.hide();
-    		confTextAlign.$html.hide();
-    		confLineHeight.$html.hide();
-    		confFontFamily.$html.show()
-    	});
+    	that._initRow1();
+    	that._initRow2();
 
     	var tpl = [
     		that.confHeaderTemplate,
@@ -363,6 +333,82 @@ var Singletext = ExClass(H5ComponentBase, {
 
     	that.$config = $('<section class="c-config-wapper"></section>');
     	that.$config.append($(that.confHeaderTemplate));
-    	that.$config.append($conf);
+    	that.$config.append(that.$conf);
+    	that.$config.append($(that.confFacadeTemplate));
+    	that.$config.append($(that.confAnimationTemplate));
+    	that.$config.append($(that.confPositionTemplate));
+    },
+    _initConfig: function () {
+    	var that = this;
+    },
+    _initRow1: function () {
+    	var that = this;
+    	var confFontSize = new ConfFontSize();
+    	var confTextAlign = new ConfTextAlign();
+    	var confLineHeight = new ConfLineHeight();
+    	var uTab = new UTab({
+    		list: [
+    			{ liClass: "dropdown font-size", alinkClass: "small", divClass: "icon-x16 x-icon-font-size" },
+    			{ liClass: "font-size", alinkClass: "small", divClass: "icon-x16 x-icon-font-color" },
+    			{ liClass: "dropdown text-align", alinkClass: "small", divClass: "icon-x16 x-icon-center" },
+    			{ liClass: "dropdown line-height", alinkClass: "small", divClass: "icon-x16 x-icon-line-height" }
+    		],
+    		selectEnd: function (i, n) {
+    			console.log(i, n);
+			}
+    	});
+    	$(".c-conf-row.c-conf-row-1", that.$conf).append(uTab.$html);
+    	$(".c-conf-row.c-conf-row-1", that.$conf).append(confFontSize.$html);
+    	$(".c-conf-row.c-conf-row-1", that.$conf).append(confTextAlign.$html);
+    	$(".c-conf-row.c-conf-row-1", that.$conf).append(confLineHeight.$html);
+
+    	$(".dropdown.font-size", that.$conf).on("click", function (e) {
+    		$(".dropdown-list").hide();
+    		confFontSize.$html.show();
+    	});
+
+    	$(".dropdown.text-align", that.$conf).on("click", function (e) {
+    		$(".dropdown-list").hide();
+    		confTextAlign.$html.show();
+    	});
+
+    	$(".dropdown.line-height", that.$conf).on("click", function (e) {
+    		$(".dropdown-list").hide();
+    		confLineHeight.$html.show();
+    	});
+    },
+    _initRow2: function () {
+    	var that = this;
+
+    	var confFontFamily = new ConfFontFamily();
+    	var uTab1 = new UTab({
+    		list: [
+    			{ liClass: "dropdown font-face", alinkClass: "small", divClass: "icon-x16 x-icon-display x-icon-SimHei" }
+    		],
+    		selectEnd: function (i, n) {
+    			console.log(i, n);
+			}
+    	});
+
+    	var uTab2 = new UTab({
+    		enable: true,
+    		list: [
+    			{ liClass: "", alinkClass: "small", divClass: "icon-x16 x-icon-b" },
+    			{ liClass: "", alinkClass: "small", divClass: "icon-x16 x-icon-i" },
+    			{ liClass: "", alinkClass: "small", divClass: "icon-x16 x-icon-u" }
+    		],
+    		selectEnd: function (i, n) {
+    			console.log(i, n);
+			}
+    	});
+
+    	$(".c-conf-row.c-conf-row-2>div:eq(0)", that.$conf).append(uTab1.$html);
+    	$(".c-conf-row.c-conf-row-2>div:eq(0)", that.$conf).append(confFontFamily.$html);
+    	$(".c-conf-row.c-conf-row-2>div:eq(1)", that.$conf).append(uTab2.$html);
+
+    	$(".dropdown.font-face", that.$conf).on("click", function (e) {
+    		$(".dropdown-list").hide();
+    		confFontFamily.$html.show()
+    	});
     }
 });

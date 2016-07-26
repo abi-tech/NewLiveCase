@@ -1,9 +1,10 @@
 ﻿{
-    "category": [
+    "categories": [
         {
             "id": 0,
             "pid": 0,
-            "name": "我的音频"
+            "name": "我的音频",
+            "children": []
         },
         {
             "id": "122",
@@ -119,7 +120,8 @@
             "name": "新节点",
             "created": "1447035011",
             "position": "16",
-            "mime": "audio"
+            "mime": "audio",
+            "children": []
         }
     ]
 }

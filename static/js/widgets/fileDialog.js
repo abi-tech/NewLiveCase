@@ -23,7 +23,6 @@ var tpl_file_dialog = [
 					'<div class="previewCtrl"></div>',
 					'<div class="imagePreview">',
 						'<div class="typebra none"><ul></ul></div>',
-						'<div class="imagePreviewContent"><div class="img-noData">没有更多素材了</div></div>',
 					'</div>',
 					'<div class="u-delete">',
 						'<span>批量删除</span>',
@@ -73,12 +72,28 @@ var FileDialog = function (options) {
 
 	that.mask = '<div class="oni-dialog-layout u-dialog-layout" style=""></div>'
 	that.template = tpl_file_dialog;
-	that.options = $.extend({}, defaultOptions, options);
+	that.options = $.extend(true, {}, defaultOptions, options);
 	that.init();
 }
 
 FileDialog.prototype.init = function () {
 	var that = this;
+	var tpl_header_image = [
+		'<div class="imagePreviewContent"><div class="img-noData">没有更多素材了</div></div>',
+	].join('');
+
+	var tpl_header_music = [
+		'<div class="audiocontrol active first">',
+			'<div class="name"><p class="gray" style="margin-left:60px;">名称</p></div>',
+			'<div class="size"><p class="gray">大小</p></div>',
+			'<div class="control"><p class="gray">操作</p></div>',
+		'</div>',
+	].join('');
+
+	var tpl_body_image = '<div class="imagePreviewContent nonebra"><div class="img-noData">没有更多素材了</div></div>';
+
+	var tpl_body_music = '<ul class="audioContent"></ul>';
+
 	that.$mask = $(that.mask);
 	that.$html = $(that.template);
 	that.$dialog = that.$html.find("#fileDialog");
@@ -89,7 +104,8 @@ FileDialog.prototype.init = function () {
 	that.$btnOk = $("#btnOk", that.$html);
 	that.$btnCancel = $("#btnCancel", that.$html);
 	that.$typebra = $(".imagePreview>div.typebra", that.$html);
-	that.$imagePreviewContent = $(".imagePreview>div.imagePreviewContent", that.$html);
+	that.$header = $(that.options.type === 'image'? tpl_header_image : tpl_header_music);
+	that.$content = $(that.options.type === 'image'? tpl_body_image : tpl_body_music);
 
 	that.initData();
 	that.initView();
@@ -135,6 +151,15 @@ FileDialog.prototype.initView = function () {
 	}
 	that.$previewCtrl.append($ul);
 
+	if(that.options.type === "image"){
+		that.$filePreview.append(that.$content);
+	}else{
+		var wrapper = $('<div class="audio imagePreviewContent nonebra">');
+		wrapper.append(that.$content);
+		that.$filePreview.append(that.$header);
+		that.$filePreview.append(wrapper);
+	}
+	that.$filePreview.append('<div class="previewFooterBg"></div>');
 	that.dockCenter();
 }
 
@@ -169,15 +194,25 @@ FileDialog.prototype.initEvent = function () {
 		var tpl_empty = '';
 		var tpl_data = '<div class="typebra"><ul></ul></div>';
 
+		that._destroyFiles();
 		if(index >= 0){
 			that.renderTypebra(that.options.categories[index]);
-			that.renderImagePreviewContent(that.options.categories[index].children[0]);
+			that.renderContent(that.options.categories[index].children[0]);
 		}
 	});
 
 	$(window).on("resize", function (e) {
 		that.dockCenter();
 	});
+}
+
+FileDialog.prototype._destroyFiles = function () {
+	var that = this;
+	$.each(that.options.fileList, function (i, n) {
+		if(n.options.playing)
+			n.pause();
+	});
+	that.options.fileList.length = 0;
 }
 
 FileDialog.prototype.renderTypebra = function (data) {
@@ -194,10 +229,14 @@ FileDialog.prototype.renderTypebra = function (data) {
 		if(i == 0) $li.addClass("active");
 	}
 
-	if(data.children.length == 0) 
+	if(data.children.length == 0) {
 		that.$typebra.addClass("none");
-	else
+		that.$content.addClass("nonebra");
+	}
+	else{
 		that.$typebra.removeClass("none");
+		that.$content.parent().removeClass("nonebra");
+	}
 
 	that.$typebra.append($ul);
 
@@ -206,13 +245,14 @@ FileDialog.prototype.renderTypebra = function (data) {
 		$(this).siblings().removeClass("active");
 		$(this).addClass("active");
 
-		that.renderImagePreviewContent(data.children[index]);
+		that._destroyFiles();
+		that.renderContent(data.children[index]);
 	});
 }
 
-FileDialog.prototype.renderImagePreviewContent = function (data) {
+FileDialog.prototype.renderContent = function (data) {
 	var that = this;
-	that.$imagePreviewContent.empty();
+	that.$content.empty();
 	var $empty = $('<div class="img-noData">没有更多素材了</div>');
 	if(data){
 		var url = "/static/data/" + that.options.type + "_pid_" + data.pid + "_id_" + data.id + ".json";
@@ -224,20 +264,32 @@ FileDialog.prototype.renderImagePreviewContent = function (data) {
 			success: function(data){
 				for (var i = 0; i < data.data.list.length; i++) {
 					var obj = data.data.list[i];
-					obj.url = "/upload/image/" +　obj.url;
+					obj.type = that.options.type;
+					obj.url = "/upload/" + that.options.type + "/"　+ obj.url;
 					obj.onChecked = function(item) {
-						//that.options.chosen && that.options.chosen.uncheck();
+						$.each(that.options.fileList, function (i, n) {
+							if(n.options.check && item != n)
+								n.uncheck();
+						});
 						that.options.chosen = item;
+					}
+					obj.onPlay = function(item) {
+						$.each(that.options.fileList, function (i, n) {
+							if(n.options.playing && item != n)
+								n.pause();
+						});
 					}
 
 					var file = new File(obj);
-					that.$imagePreviewContent.append(file.$html);
+					that.$content.append(file.$html);
+					that.options.fileList.push(file);
 				}
 			}
 		});
 	}
 
-	that.$imagePreviewContent.append($empty);
+	if(that.options.type === "image")
+		that.$content.append($empty);
 }
 
 FileDialog.prototype.show = function () {
@@ -250,6 +302,7 @@ FileDialog.prototype.show = function () {
 
 FileDialog.prototype.hide = function () {
 	var that = this;
+	that._destroyFiles();
 	that.$mask.remove();
 	that.$html.remove();
 }
@@ -273,14 +326,17 @@ FileDialog.prototype.setOptions = function (options) {
 var File = function(options){
 	var that = this;
 	var defaultOptions = { 
+		type: "image", //image music
 		name: "", 
 		url: "",
-		size: 0,
+		size: "",
 		width: 0,
 		height: 0,
 		check: false,
+		playing: false,
 		canDelete: false,
-		onChecked: function(item){}
+		onChecked: function(item){},
+		onPlay: function(item){}
 	};
 
 	var imageTemplate = [
@@ -293,31 +349,50 @@ var File = function(options){
 	'</div>'
 	].join('');
 
-	that.template = imageTemplate;
+	var musicTemplate = [
+	'<li class="audiocontrol">',
+		'<div class="name"><div class="nochoose"></div><p class="nametxt">{{ name }}</p></div>',
+		'<div class="size"><p>{{ size }}</p></div>',
+		'<div class="control"><div class="icon-x24 icon-x24-play"></div>',
+	'</li>'
+	].join('');
+
 	that.options = $.extend({}, defaultOptions, options);
+	that.template = that.options.type === "image"? imageTemplate : musicTemplate;
 	that.init();
 }
 
 File.prototype.init = function () {
 	var that = this;
 	var html = template.compile(that.template)(that.options);
+	that.image = new Image;
+	that.audio = new Audio; 
 	that.$html = $(html);
-	if(that.options.canDelete){
+	that.$btn0 = $("div.control>div:eq(0)", that.$html);
+	
+	if(that.options.type === "image" && that.options.canDelete){
 		that.$html.append('<div class="close"></div>');
+	}else if(that.options.type === "music" && that.options.canDelete){
+		$(".control", that.$html).append('</div><div class="icon-x24 icon-x24-resdelete"></div>');
 	}
-	that.calc();
+
+	if(that.options.type === "image")
+		that.calc();
+
 	that.initEvent();
 }
 
 File.prototype.initEvent = function () {
 	var that = this;
 	that.$html.on("click", function(e) {
-		that.options.onChecked && that.options.onChecked(that);
+		e.stopPropagation();
 
+		that.options.onChecked && that.options.onChecked(that);
+		that.options.check = !that.options.check;
 		if(that.options.check){
-			that.uncheck();
-		}else{
 			that.check();
+		}else{
+			that.uncheck();
 		}
 	});
 
@@ -325,29 +400,69 @@ File.prototype.initEvent = function () {
 		e.stopPropagation();
 		alert("do delete!");
 	});
+
+	$("div.control>div:eq(0)", that.$html).on("click", function (e) {
+		e.stopPropagation();
+
+		that.options.onPlay && that.options.onPlay(that);
+		that.options.playing = !that.options.playing;
+		if(that.options.playing){
+			that.play();
+		}else{
+			that.pause();
+		}
+	});
 }
 
 File.prototype.check = function () {
 	var that = this;
-	$(".dz-details>div.check", that.$html).remove();
-	$(".dz-details", that.$html).append('<div class="check"></div>');
+	if(that.options.type === "image"){
+		$(".dz-details>div.check", that.$html).remove();
+		$(".dz-details", that.$html).append('<div class="check"></div>');
+	}else if(that.options.type === "music"){
+		$(".choose", that.$html).remove();
+		$(".nametxt", that.$html).prepend('<div class="choose"></div>');
+	}
 	that.options.check = true;
 }
 
 File.prototype.uncheck = function () {
 	var that = this;
-	$(".dz-details>div.check", that.$html).remove();
+	if(that.options.type === "image"){
+		$(".dz-details>div.check", that.$html).remove();
+	}else if(that.options.type === "music"){
+		$(".choose", that.$html).remove();
+	}
 	that.options.check = false;
 }
 
 File.prototype.calc = function () {
 	var that = this;
-	var img = new Image;    
-	img.onload = function(){        
-		that.options.width = img.width;
-		that.options.height = img.height;
+	that.image.onload = function(){        
+		that.options.width = that.image.width;
+		that.options.height = that.image.height;
 	};
-	img.src = that.options.url; 
+	that.image.src = that.options.url; 
+}
+
+File.prototype.play = function () {
+	var that = this;
+	that.audio.loop = true;
+	that.audio.src = that.options.url; 
+	that.audio.play();
+	that.$btn0.removeClass("icon-x24-pause");
+	that.$btn0.removeClass("icon-x24-play");
+	that.$btn0.addClass("icon-x24-pause");
+	that.options.playing = true;
+}
+
+File.prototype.pause = function () {
+	var that = this;
+	that.audio.pause();
+	that.$btn0.removeClass("icon-x24-pause");
+	that.$btn0.removeClass("icon-x24-play");
+	that.$btn0.addClass("icon-x24-play");
+	that.options.playing = false;
 }
 
 

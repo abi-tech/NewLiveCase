@@ -235,7 +235,10 @@ FileDialog.prototype.renderTypebra = function (data) {
 	}
 	else{
 		that.$typebra.removeClass("none");
-		that.$content.parent().removeClass("nonebra");
+		if(that.options.type === 'image')
+			that.$content.removeClass("nonebra");
+		else if(that.options.type === 'music')
+			that.$content.parent().removeClass("nonebra");
 	}
 
 	that.$typebra.append($ul);

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<title></title>
+	<link href="/static/css/all.min.css" rel="stylesheet" />
+    <link href="/static/css/all.css" rel="stylesheet" />
+    <style>
+        .global-loading{display:none}.global-loading .loading-cover{height:100%;width:100%;position:fixed;top:0;left:0;background:#f8f8f8}.loading-gif{background-image:url(http://img.liveapp.cn/group3/eng/77/5a/55850e921412ba2144f9c1a8648f_14661507730055_5763a.gif);position:absolute;top:5px;left:5px;width:150px;height:150px;border-radius:50%;background-size:150px 150px}.loading-svg{transform:rotate(-90deg);border-radius:50%;position:absolute;top:0;left:0}.loading-svg circle{fill:#dedede;stroke:#36b34a;stroke-width:10}.global-loading{position:fixed;top:50%;left:50%;margin:-180px auto auto -75px;width:160px;height:479px;opacity:1;-webkit-transition:all .5s;z-index:99999}.global-loading .lineWrap{position:absolute;width:100%;height:100%}.global-loading .logoText{background-image:url(/web//img/loading/logo.png);position:absolute;top:215px;left:-20px;display:block;width:200px;height:80px;background-repeat:no-repeat;background-size:200px 47px}.global-loading .logoText span{position:absolute;bottom:0;display:block;line-height:19px;font-size:18px;color:#1d1d1b;letter-spacing:7px}.global-loading .percentage{position:absolute;bottom:50px;left:-370px;display:block;letter-spacing:1px;width:900px;line-height:14px;text-align:center;font-size:14px;color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    </style>
+    <link href="/static/css/extend.css" rel="stylesheet" />
+    <link href="/static/css/animate.min.css" rel="stylesheet" />
+	<script src="/static/plugins/jquery/2.2.3/jquery.min.js"></script>
+	<script src="/static/plugins/template/template.js"></script>
+
+	<script src="/static/js/widgets/ChooseList.js"></script>
+</head>
+<body class="g-body g-case-body theme">
+	<div class="g-config">
+		<section class="c-config">
+			<section class="c-config-wapper">
+				<section class="c-conf-section c-conf-animeSection">
+					<div class="c-conf-panel" style="display: block;">
+						<div class="c-conf-panel f-mt-4" style="display: block;">
+							<div class="c-conf-row c-conf-row-3">
+
+							</div>
+						</div>
+					</div>
+					<div class="u-dialog" style="display: block; top: 449px; height: 230px;">
+				        <header class="u-dialog-head">选择动画</header>
+				        <section class="u-dialog-body">
+				        </section>
+				    </div>
+			    </section>
+
+
+			</section>
+		</section>
+	</div>
+
+	
+	<script type="text/javascript">
+		$(function () {
+			var chooseList1 = new ChooseList({
+				type: "normal",
+				value: "bounceIn",
+				list: [
+					{ "name": "弹入", "effect": "bounceIn" },
+					{ "name": "淡入", "effect": "fadeIn" },
+					{ "name": "翻入", "effect": "flipIn" },
+					{ "name": "旋入", "effect": "rotateIn" },
+					{ "name": "渐进放大", "effect": "zoomIn" }
+				],
+				onChosenEnd: function (idx, data) {
+					console.log(idx, data);
+				}
+			});
+
+			var chooseList2 = new ChooseList({
+				type: "small",
+				value: "bounceIn",
+				anim: true,
+				list: [
+					{ "name": "弹入", "effect": "bounceIn" },
+					{ "name": "从上弹入", "effect": "bounceInDown" },
+					{ "name": "从下弹入", "effect": "bounceInUp" },
+					{ "name": "从左弹入", "effect": "bounceInLeft" },
+					{ "name": "从右弹入", "effect": "bounceInRight" }
+				],
+				onChosenEnd: function (idx, data, item) {
+					console.log(idx, data);
+				}
+			});
+
+			$(".u-dialog-body").append(chooseList1.$html);
+
+			$(".c-conf-row-3").append(chooseList2.$html);
+		});
+	</script>
+
+</body>
+</html>

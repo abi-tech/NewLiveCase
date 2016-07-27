@@ -3,9 +3,9 @@ var Spinner = function (options) {
 
     var defaultOptions = {
     	min: 0,
-    	max: 0,
+    	max: 10,
     	step: 1,
-    	value: 0,
+    	val: 0,
     	onChange: function (val) {
     		// body...
     	}
@@ -17,14 +17,14 @@ var Spinner = function (options) {
     	'<div class="u-spinner">',
             '<div class="oni-spinner oni-widget">',
             	'<button type="button" class="oni-btn">',
-            		'<i class="oni-icon oni-icon-minus"></i>',
+            		'<i class="oni-icon oni-icon-minus">-</i>',
             	'</button>',
             	'<div class="oni-textbox oni-widget-content">',
             		'<div class="oni-textbox-input-wrap">',
             		'<input type="text" class="oni-textbox-input" style="width: auto;"></div>',
             	'</div>',
             	'<button type="button" class="oni-btn">',
-            		'<i class="oni-icon oni-icon-plus"></i>',
+            		'<i class="oni-icon oni-icon-plus">+</i>',
             	'</button>',
             '</div>',
         '</div>'
@@ -36,17 +36,40 @@ var Spinner = function (options) {
     var $btnAdd = $("button:eq(1)", that.$html);
     var $textbox = $("input.oni-textbox-input", that.$html);
 
-    $textbox.val(that.options.value);
+    $textbox.val(that.options.val);
+
+    that.valid = function () {
+        var val = $textbox.val();
+        val = val.replace(/[^0-9-]+/,'');
+        $textbox.val(val);
+    }
 
     $btnSub.on("click", function (e) {
     	e.stopPropagation();
-    	var curr = $textbox.val();
-    	if();
+    	var temp = parseInt($textbox.val()) - that.options.step;
+    	if(temp <= that.options.min){
+            that.options.val = that.options.min;
+            $textbox.val(that.options.val);
+            return;
+        }
+        that.options.val = temp;
+        $textbox.val(that.options.val);
     });
 
     $btnAdd.on("click", function (e) {
     	e.stopPropagation();
 
+        var temp = parseInt($textbox.val()) + that.options.step;
+        if(temp >= that.options.max){
+            that.options.val = that.options.max;
+            $textbox.val(that.options.val);
+            return;
+        }
+        that.options.val = temp;
+        $textbox.val(that.options.val);
+    });
 
+    $textbox.on("keyup", function (e) {
+        that.valid();
     });
 }

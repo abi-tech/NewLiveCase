@@ -124,16 +124,21 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         			alert('nav2effect');
         		});
 
-        		$nav2music.on('click', function (e) { 
-        			var $dlgAudio = $compile('<div audio-dialog></div>')(scope);
-        			var $cover = $('<div class="g-cover"></div>');
+                var globalMusic = new GlobalMusic({ 
+                    onChosenEnd: function (data) {
+                        if(!data){
+                            $("i", $nav2music).removeClass().addClass("icon-x20 icon-x22-nomusic");
+                            $("p", $nav2music).removeClass().text("背景音乐");
+                        }else{
+                            $("i", $nav2music).removeClass().addClass("icon-x20 icon-x22-hasmusic");
+                            $("p", $nav2music).addClass("textCarouselClz active").text(data.name);
+                        }
+                        
+                    }
+                });
 
-        			$("body").append($cover);
-        			$("body").append($dlgAudio);
-        			$cover.on("click", function (e) {
-        				$cover.remove();
-        				$dlgAudio.remove();
-        			});
+        		$nav2music.on('click', function (e) { 
+        			globalMusic.show();
         		});
 
         		$btnSave.on('click', function (e) {

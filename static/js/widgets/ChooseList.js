@@ -43,7 +43,7 @@ var ChooseList = function (options) {
 		'{{ each list as item i }}',
 	    '<li>',
 	        '<a href="javascript:void(0);" class="u-image-wrap u-image {{if selected == item.effect}}z-active{{/if}}">',
-	            '<div class="u-image-small anime-in"></div>',
+	            '<div class="u-image-small anime-{{ item.direction }}"></div>',
 	            '<i class="icon-x22 icon-x22-tick-circle"></i>',
 	        '</a>',
 	        '<p>{{ item.name }}</p>',
@@ -69,9 +69,13 @@ var ChooseList = function (options) {
 		var data = that.options.list[index];
 		var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
 		var exp = data.effect + " 0.8s backwards";
-		$("li:eq(" + index + ")>a>div.anime-in", that.$html).css("animation", exp).one(animationEnd, function() {
+		$("li:eq(" + index + ")>a>div", that.$html).css("animation", exp).one(animationEnd, function() {
 	        $(this).css("animation", "none");
 	    });
+	}
+
+	that.unchoose = function () {
+		$("li>a", that.$html).removeClass("z-active");
 	}
 
 	$("li", that.$html).on("click", function (e) {
@@ -87,12 +91,12 @@ var ChooseList = function (options) {
 			var $this = $(this);
 			var idx = $("li", that.$html).index($this);
 			that.animate(idx);
+		}).on("mouseleave", function (e) {
+			var $this = $(this);
+			var idx = $("li", that.$html).index($this);
+			$("li:eq(" + idx + ")>a>div", that.$html).css("animation", "none");
 		});
 	}
-	
 
-	$("li", that.$html).on("click", function (e) {
-	});
-	
 }
 

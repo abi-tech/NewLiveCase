@@ -173,7 +173,6 @@ mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'ed
                 $newScope = scope.$new();
                 $newScope.components = pageService.pages[index].components;
 
-                console.log($newScope.components);
                 $("#editorFrame", element).remove();
                 var frame = new EditorFrameBuilder({ page: pageService.pages[index] });
                 var $html = $compile(frame.$html)($newScope);
@@ -182,12 +181,14 @@ mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'ed
             }
 
             scope.$on('page.changed', function (event, index) {
-                console.log('page.changed', index);
                 pageService.currentPageIndex = index;
                 init(index);
-                //$newScope.$apply();
             });
 
+            $(".m-editor", element).on("click", function (e) {
+                $rootScope.currentComponent = null;
+                $rootScope.componentChanged(null);
+            });
             init(0);
         }
     }
@@ -204,6 +205,7 @@ mainModule.directive("editorAreaComponent", ['$rootScope', '$compile', function 
                 $event.stopPropagation();
                 component.chosen();
                 $rootScope.currentComponent = component;
+                console.log($rootScope.currentComponent);
             }
             var $html = $compile(scope.component.$html)(scope);
             element.replaceWith($html);

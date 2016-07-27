@@ -317,8 +317,21 @@ var Singletext = ExClass(H5ComponentBase, {
     		'</section>'
     	].join('');
 
-    	
+    	var confTabSection = [
+    		'<section class="c-conf-section c-conf-tabSection">',
+                '<ul class="u-tab z-singleLine">',
+                    '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',
+                    '<li><a href="javascript:void(0);">动画</a></li>',
+                '</ul>',
+            '</section>',
+    	].join('');
+
+    	var confAnimation = new ConfAnimation({});
     	that.$conf = $(confTemplate);
+    	that.$confTabSection = $(confTabSection);
+    	that.$confStyle = $(that.confFacadeTemplate);
+		that.$confAnimation = confAnimation.$html;
+		that.$confPosition = $(that.confPositionTemplate);
 
     	that._initRow1();
     	that._initRow2();
@@ -334,9 +347,66 @@ var Singletext = ExClass(H5ComponentBase, {
     	that.$config = $('<section class="c-config-wapper"></section>');
     	that.$config.append($(that.confHeaderTemplate));
     	that.$config.append(that.$conf);
-    	that.$config.append($(that.confFacadeTemplate));
-    	that.$config.append($(that.confAnimationTemplate));
-    	that.$config.append($(that.confPositionTemplate));
+    	that.$config.append(that.$confTabSection);
+    	that.$config.append(that.$confStyle);
+    	that.$config.append(that.$confAnimation);
+    	that.$config.append(that.$confPosition);
+
+    	that.$confStyle.show();
+    	that.$confAnimation.hide();
+
+    	$("ul li", that.$confTabSection).on("click", function (e) {
+    		e.stopPropagation();
+    		var $this = this;
+    		$("ul li>a", that.$confTabSection).removeClass("z-active");
+    		$("a", $this).addClass("z-active");
+    		var idx = $("ul li", that.$confTabSection).index($this);
+    		switch(idx){
+    			case 0: that.$confStyle.show(); that.$confAnimation.hide(); break;
+    			case 1: that.$confStyle.hide(); that.$confAnimation.show(); break;
+    		}
+    	});
+
+    	that.$bgColor = $([
+    		'<div class="u-colorpicker">',
+                '<input type="text" style="color: rgb(0, 0, 0); background: rgb(225, 225, 225);">',
+                '<a href="javascript:void(0);" class="small"><i class="icon-x20 icon-x20-color"></i></a>',
+            '</div>'
+    	].join(''));
+
+    	that.$borderWidth = $([
+    		'<div class="u-colorpicker f-ml-6">',
+                '<input type="text" style="color: rgb(0, 0, 0); background: rgb(225, 225, 225);">',
+                '<a href="javascript:void(0);" class="small"><i class="icon-x20 icon-x20-color"></i></a>',
+            '</div>'
+    	].join(''));
+
+    	that.$bgColor.colorpicker({
+    		onChange: function(color){
+    			console.log(color);
+    		}
+        });
+
+        that.$borderWidth.colorpicker({
+    		onChange: function(color){
+    			console.log(color);
+    		}
+        });
+
+        function onChange(data) {
+        	console.log(data);
+        }
+        var spinner = new Spinner();
+        var borderRadiusSlider = new Slider({ val: 0, min: 0, max: 50, step: 1, onChange: onChange });
+        var opacitySlider = new Slider({ val: 0, min: 0, max: 100, step: 1, onChange: onChange });
+        var rotateSlider = new Slider({ val: 0, min: 0, max: 360, step: 1, onChange: onChange });
+
+        $("div.c-conf-panel:eq(0)>div.c-conf-row>div.c-input-box", that.$confStyle).append(that.$bgColor);
+        $("div.c-conf-panel:eq(1)>div.c-conf-row>div.c-input-box", that.$confStyle).append(spinner.$html);
+        $("div.c-conf-panel:eq(1)>div.c-conf-row>div.c-input-box", that.$confStyle).append(that.$borderWidth);
+        $("div.c-conf-panel:eq(2)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(borderRadiusSlider.$html);
+        $("div.c-conf-panel:eq(3)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(opacitySlider.$html);
+        $("div.c-conf-panel:eq(4)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(rotateSlider.$html);
     },
     _initConfig: function () {
     	var that = this;

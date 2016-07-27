@@ -109,12 +109,6 @@ var H5ComponentBase = ExClass({
         ].join('');
 
         that.confFacadeTemplate = [
-            '<section class="c-conf-section c-conf-tabSection">',
-                '<ul class="u-tab z-singleLine">',
-                    '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',
-                    '<li><a href="javascript:void(0);">动画</a></li>',
-                '</ul>',
-            '</section>',
             '<section class="c-conf-section c-conf-style z-expand">',
                 '<div class="c-conf-panel">',
                     '<div class="c-conf-row">',
@@ -141,7 +135,7 @@ var H5ComponentBase = ExClass({
                     '</div>',
                 '</div>',
                 '<div class="c-conf-panel">',
-                    '<div class="c-conf-row">',
+                    '<div class="c-conf-row c-conf-row-2">',
                         '<label class="c-input-label">旋转</label>',
                         '<div class="c-input-box"></div>',
                     '</div>',
@@ -282,7 +276,7 @@ var H5ComponentBase = ExClass({
         containerCss["left"] = that.options.x;
         that._setCss(that.$viewContainer, containerCss);
         that._setCss(that.$viewComponent, that.options.componentCss);
-        that._setCss(that.$viewInner, that.options.innerCss); console.log("h5", that.$viewInner);
+        that._setCss(that.$viewInner, that.options.innerCss); //console.log("h5", that.$viewInner);
     },
     buildHtml: function () {
         var that = this;
@@ -377,8 +371,8 @@ var H5ComponentBase = ExClass({
                 $(event.target).css('left', x);
                 $(event.target).css('top', y);
 
-                that.options.x = x / that.options.scale;
-                that.options.y = y / that.options.scale;
+                that.options.x = parseInt(x / that.options.scale);
+                that.options.y = parseInt(y / that.options.scale);
 
                 //TODO 移动时修改 top left
                 if(typeof that.onDragEnd === 'function')
@@ -407,10 +401,10 @@ var H5ComponentBase = ExClass({
             $(event.target).css('width', w);
             $(event.target).css('height', h);
 
-            that.options.x = x / that.options.scale;
-            that.options.y = y / that.options.scale;
-            that.options.width = w / that.options.scale;
-            that.options.height = h / that.options.scale;
+            that.options.x = parseInt(x / that.options.scale);
+            that.options.y = parseInt(y / that.options.scale);
+            that.options.width = parseInt(w / that.options.scale);
+            that.options.height = parseInt(h / that.options.scale);
 
             //TODO 移动时修改 top left width height
             if(typeof that.onResizeEnd === 'function')
@@ -503,18 +497,4 @@ var ConfCommon = function (options) {
     $("#top", that.$html).attr("ng-model", that.options.y);
     $("#width", that.$html).attr("ng-model", that.options.w);
     $("#height", that.$html).attr("ng-model", that.options.h);
-}
-
-
-
-var ConfAnimation = function (options) {
-    var that = this;
-
-    var defaultOptions = {
-    }
-
-    that.options = $.extend({}, defaultOptions, options);
-
-    var tpl_wrapper = '<section class="c-conf-section c-conf-animeSection"></section>';
-    that.$html = $(tpl_wrapper);
 }

@@ -3,6 +3,10 @@ var ConfigAreaBuilder = function (options) {
     };
 }
 
+var ConfPage = function (options) {
+    // body...
+}
+
 mainModule.directive("configArea", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
     return {
         restrict: "A",
@@ -10,15 +14,33 @@ mainModule.directive("configArea", ['$rootScope', '$compile', 'pageService', fun
         replace: true,
         scope: {},
         link: function (scope, element, attrs) {
+            $rootScope.$watch('currentPage', function (newVal, oldVal) {
+                if(!$rootScope.currentPage) return;
+                $(".c-config", element).empty();
+                var tpl = [
+                '<section class="c-config-wapper none">',
+                    '<section class="c-conf-section c-conf-triggerSection z-expand">',
+                        '<h2>配置</h2><i class="icon-x20 icon-x20-down"></i>',
+                    '</section>',
+                    '<div class="c-background-pop">',
+                        '<div page-background-image></div>',
+                        '<div page-background-color></div>',
+                    '</div>',
+                    '<section class="c-conf-section z-expand">',
+                        '<div page-slider-icon></div><hr>',
+                        '<h2>翻页动画</h2>',
+                        '<div page-slide-animation></div>',
+                    '</section>',
+                '</section>'
+                ].join('');
 
+                var $html = $compile(tpl)($rootScope);
+                $(".c-config", element).append($html);
+            });
 
         	$rootScope.$watch('currentComponent', function (newVal, oldVal) {
-                console.log(newVal, oldVal);
-
-                $(".c-config", element).empty();
-
                 if(!$rootScope.currentComponent) return;
-
+                $(".c-config", element).empty();
                 var $html = $compile($rootScope.currentComponent.$config)($rootScope);
             	$(".c-config", element).append($html);
             });
@@ -53,7 +75,7 @@ mainModule.directive('configPosition', function () {
             '</section>'
         ].join(''),
         link: function (scope, element, attrs) {
-
+            console.log(scope.currentComponent);
         }
     };
 });

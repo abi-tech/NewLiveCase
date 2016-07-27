@@ -30,9 +30,17 @@ var Singleimage = ExClass(H5ComponentBase, {
 	        	'display': 'block'
 			}
         }
-		that.componentTemplate = '<div class="c-singleimage preview-container" inside-styles=""></div>';
-		that.innerTemplate = '<img class="jcrop-preview newImg" src="" />';
-		that.configTemplate = '<div image-cropper></div><div config-position></div>';
+		that.componentTemplate = '<div class="c-singleimage preview-container" inside-styles="" ng-style="component.componentCss"></div>';
+		that.innerTemplate = '<img class="jcrop-preview newImg" ng-style="component.innerCss" ng-src="{{ component.url }}"/>';
+		that.configTemplate = [
+        '<section class="c-config-wapper">',
+            '<header class="c-conf-header">',
+                '<div class="c-compnent-icon"></div>',
+                '<span style="color:#444"></span>',
+            '</header>',
+            '<div image-cropper></div><div config-position></div>',
+        '</section>'
+        ].join('');
 
 		//子类控制自身组件的外观 内容
 		//父类控制在design模式和view模式下与配置类互动
@@ -63,7 +71,7 @@ mainModule.directive("imageCropper", function () {
         template: [
 		    '<section class="c-conf-section z-expand" style="display: block;">',
 		        '<section class="c-conf-panel">',
-		            '<div class="jcrop-panel-header" style="overflow: hidden">更换图片</div>',
+		            '<div class="jcrop-panel-header">更换图片</div>',
 		            '<div class="jcrop-panel">',
 		                '<div class="jcrop-wrap">',
 		                    '<img id="image" />',
@@ -84,12 +92,19 @@ mainModule.directive("imageCropper", function () {
         replace: true,
         link: function (scope, element, attrs) {
             var $image = $('.jcrop-wrap>img', element);
-
-            // ngModelController.$render = function () {
-            //     var viewValue = ngModelController.$viewValue;
-            // }
+            var $btn = $('.jcrop-panel-header', element);
             $image.attr("src", scope.currentComponent.options.url);
 
+            $btn.on("click", function (e) {
+                var fileDialog = new FileDialog({
+                    type: "image", // image music
+                    onChosenEnd: function (item) {
+                        //$image.attr("src", item.url);
+                        scope.currentComponent.options.url = item.url;
+                    }
+                });
+                fileDialog.show();
+            });
             function initCropperBox() {
                 var ratio = 0.2;
                 $image.cropper('setCropBoxData', {
@@ -102,21 +117,15 @@ mainModule.directive("imageCropper", function () {
 
             var options = {
                 viewMode: 2,
-                //dragMode: 'none',
-                //preview: '.preview-container',
                 aspectRatio: 'NaN',
                 modal: false,
                 checkCrossOrigin: false,
-                //preview: '.img-preview',
-                //background: false,
                 autoCrop: false,
                 autoCropArea: 1,
-                //scalable: true,
                 zoomOnWheel: false,
                 built: function () {
                     initCropperBox();
                     $image.cropper('crop');
-                    //$image.cropper('clear');
                 }
             }
 
@@ -133,31 +142,24 @@ mainModule.directive("imageCropper", function () {
                     case 3: options.aspectRatio = 1.7777777777777777; break;
                     case 4: break;
                 } 
-                console.log(data, options);
                 if (data == 4) return;
 
                 $image.cropper('setAspectRatio', options.aspectRatio);
-                
             });
 
             $image.on('cropend.cropper', function (e) {
-                console.log(e); // cropstart
-                console.log(e.namespace); // cropper
-                console.log(e.action); // ...
-                console.log(e.originalEvent.pageX);
-
-                // Prevent to start cropping, moving, etc if necessary
                 if (e.action === 'crop') {
                     e.preventDefault();
                 }
             });
             $image.on('crop.cropper', function (e) {
-                console.log(e);
+                scope.currentComponent.width = e.width;
+                scope.currentComponent.height = e.height;
 
-                // scope.currentComponent.containerCss["width"] = e.width;
-                // scope.currentComponent.containerCss["height"] = e.height;
-                // scope.currentComponent.innerCss["margin-top"] = -e.y;
-                // scope.currentComponent.innerCss["margin-left"] = -e.x;
+                scope.currentComponent.options.containerCss["width"] = e.width;
+                scope.currentComponent.options.containerCss["height"] = e.height;
+                scope.currentComponent.options.innerCss["margin-top"] = -e.y;
+                scope.currentComponent.options.innerCss["margin-left"] = -e.x;
 
                 scope.currentComponent.$viewInner.css("margin-top", -e.y);
                 scope.currentComponent.$viewInner.css("margin-left", -e.x);

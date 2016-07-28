@@ -246,6 +246,61 @@ var UTab = function (options) {
 	});
 }
 
+mainModule.directive("confSingletext", ['$rootScope', '$compile', 'pageService', 'editorService',
+    function ($rootScope, $compile, pageService, editorService) {
+    return {
+        restrict: "A",
+        template: [
+    		'<section class="c-conf-section z-expand" style="display: block;">',
+    			'<section class="u-conf-section c-singletext">',
+	    			'<div class="c-conf-row"><textarea placeholder="亲，在这里输入文本哦" ng-model="currentComponent.options.text"></textarea></div>',
+	    			'<div class="c-conf-row c-conf-row-1"></div>',
+	    			'<div class="c-conf-row c-conf-row-2">',
+				        '<div class="c-input-box box-lf"></div>', 
+				        '<div class="c-input-box box-rf"></div>',
+				    '</div>',
+	    		'</section>',
+    		'</section>'
+    	].join(''),
+        replace: true,
+        link: function (scope, element, attrs) {
+        	var confFontSize = new ConfFontSize();
+	    	var confTextAlign = new ConfTextAlign();
+	    	var confLineHeight = new ConfLineHeight();
+	    	var uTab = new UTab({
+	    		list: [
+	    			{ liClass: "dropdown font-size", alinkClass: "small", divClass: "icon-x16 x-icon-font-size" },
+	    			{ liClass: "font-size", alinkClass: "small", divClass: "icon-x16 x-icon-font-color" },
+	    			{ liClass: "dropdown text-align", alinkClass: "small", divClass: "icon-x16 x-icon-center" },
+	    			{ liClass: "dropdown line-height", alinkClass: "small", divClass: "icon-x16 x-icon-line-height" }
+	    		],
+	    		selectEnd: function (i, n) {
+	    			console.log(i, n);
+				}
+	    	});
+
+	    	$(".c-conf-row.c-conf-row-1", that.$conf).append(uTab.$html);
+	    	$(".c-conf-row.c-conf-row-1", that.$conf).append(confFontSize.$html);
+	    	$(".c-conf-row.c-conf-row-1", that.$conf).append(confTextAlign.$html);
+	    	$(".c-conf-row.c-conf-row-1", that.$conf).append(confLineHeight.$html);
+
+	    	$(".dropdown.font-size", that.$conf).on("click", function (e) {
+	    		$(".dropdown-list").hide();
+	    		confFontSize.$html.show();
+	    	});
+
+	    	$(".dropdown.text-align", that.$conf).on("click", function (e) {
+	    		$(".dropdown-list").hide();
+	    		confTextAlign.$html.show();
+	    	});
+
+	    	$(".dropdown.line-height", that.$conf).on("click", function (e) {
+	    		$(".dropdown-list").hide();
+	    		confLineHeight.$html.show();
+	    	});
+       	}
+    }
+}]);
 var Singletext = ExClass(H5ComponentBase, {
     initialize: function($super, options) { 
     	var that = this;
@@ -307,7 +362,7 @@ var Singletext = ExClass(H5ComponentBase, {
     	var confTemplate = [
     		'<section class="c-conf-section z-expand" style="display: block;">',
     			'<section class="u-conf-section c-singletext">',
-	    			'<div class="c-conf-row"><textarea placeholder="亲，在这里输入文本哦"></textarea></div>',
+	    			'<div class="c-conf-row"><textarea placeholder="亲，在这里输入文本哦" ng-model="currentComponent.text"></textarea></div>',
 	    			'<div class="c-conf-row c-conf-row-1"></div>',
 	    			'<div class="c-conf-row c-conf-row-2">',
 				        '<div class="c-input-box box-lf"></div>', 
@@ -318,6 +373,7 @@ var Singletext = ExClass(H5ComponentBase, {
     	].join('');
 
     	var confTabSection = [
+    		'<div config-common></div>',
     		'<section class="c-conf-section c-conf-tabSection">',
                 '<ul class="u-tab z-singleLine">',
                     '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',

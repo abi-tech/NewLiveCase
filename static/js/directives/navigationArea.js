@@ -31,6 +31,13 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         	var $btnUndo = $(".c-toolPanel-right:last .u-toolBtn:eq(0)", element);
         	var $btnRedo = $(".c-toolPanel-right:last .u-toolBtn:eq(1)", element);
 
+            var updateModel = function (com) {
+                $rootScope.currentPage.components.push(com);
+                $rootScope.currentComponent = com;
+                $rootScope.$apply();
+                $rootScope.componentChanged(com);
+            }
+
         	function initView() {
         		angular.forEach(toolBottons, function (data, index, array) { 
 	        		var $toolbtn = $(template.compile(tpl_area_toolbtn)(data));
@@ -39,48 +46,33 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         	}
 
         	function initEvent() {
+                //图片
         		$(".u-toolBtn:eq(0)", toolBtnPanel).on('click', function (e) {
                     //点击弹出图片选择对话框
                     var options = {
                         onChosenEnd: function (item) {
-                            console.log('onChosenEnd', item);
                             var cfg = {};
                             cfg.width = item.options.width;
                             cfg.height = item.options.height;
                             cfg.url = item.options.url;
                             cfg.scale = editorService.editorScale;
-                            cfg.onDragEnd = function($html, top, left){
-                                //console.log($html, top, left);
-                            }
-                            cfg.onResizeEnd = function($html, top, left, width, height){
-                                //console.log($html, top, left, width, height);
-                            }
-                            pageService.get(pageService.currentPageIndex).components.push(new Singleimage(cfg));
-                            $rootScope.$apply();
+                            var com = new Singleimage(cfg);
+                            updateModel(com);
                         }
                     };
                     var fileDialog = new FileDialog(options);
                     fileDialog.show();
         		});
-
+                //文本
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {
                     var cfg = {};
                     cfg.scale = editorService.editorScale;
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
                     cfg.animateOut = { effect: "bounceOut", duration: 1 };
-                    cfg.onDragEnd = function($html, top, left){
-                        $rootScope.$apply();
-                        //console.log($html, top, left);
-                    }
-                    cfg.onResizeEnd = function($html, top, left, width, height){
-                        //console.log($html, top, left, width, height);
-                    }
-
-        			pageService.get(pageService.currentPageIndex).components.push(new Singletext(cfg));
-                    //console.log($rootScope.currentPage.components);
-                    scope.$apply();
+                    var com = new Singletext(cfg);
+        			updateModel(com);
         		});
-
+                //按钮
         		$(".u-toolBtn:eq(2)", toolBtnPanel).on('click', function (e) {
         			var $ul = $("ul", this);
         			$ul.toggle();
@@ -94,16 +86,10 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                     cfg.funMode = index == 1? "icon" : "text";
                     cfg.animateIn = { effect: "bounceIn", duration: 1 };
                     cfg.animateOut = { effect: "bounceOut", duration: 1 };
-                    cfg.onDragEnd = function($html, top, left){
-                        //console.log($html, top, left);
-                    }
-                    cfg.onResizeEnd = function($html, top, left, width, height){
-                        //console.log($html, top, left, width, height);
-                    }
-                    pageService.get(pageService.currentPageIndex).components.push(new Externallinks(cfg));
-                    $rootScope.$apply();
+                    var com = new Externallinks(cfg);
+                    updateModel(com);
         		});
-
+                //高级组件
         		$nav2Coms.on('click', function (e) {
         			var dom = $("body>.g-coms");
 
@@ -118,13 +104,13 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                         $nav2Coms.removeClass("z-active");
         			}
         		});
-
+                //特效
         		$nav2effect.on('click', function (e) {
         			var dom = $("body>.g-coms");
         			alert('nav2effect');
         		});
-
-                var globalMusic = new GlobalMusic({ 
+                //背景音乐
+                var bgMusic = new GlobalMusic({ 
                     onChosenEnd: function (data) {
                         if(!data){
                             $("i", $nav2music).removeClass().addClass("icon-x20 icon-x22-nomusic");
@@ -136,15 +122,15 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                         
                     }
                 });
-
+                //背景音乐
         		$nav2music.on('click', function (e) { 
-        			globalMusic.show();
+        			bgMusic.show();
         		});
-
+                //保存
         		$btnSave.on('click', function (e) {
         			alert('btnSave');
         		});
-
+                //预览
         		$btnPreview.on('click', function (e) {
         			var $dialog = $compile('<div preview-dialog></div>')(scope);
         			var $cover = $('<div class="g-cover"></div>');
@@ -156,19 +142,17 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         				$dialog.remove();
         			});
         		});
-
+                //发布
         		$btnRelease.on('click', function (e) {
                     alert("btnRelease");
         		});
-
+                //撤销
         		$btnUndo.on('click', function (e) {
-        			//icon-x30 x30-undo-hover icon-x30-undo-disabled x30-undo-disabled-hover
-        			alert('btnUndo');
+        			console.log($rootScope.currentPage);
         		});
-
+                //恢复
         		$btnRedo.on('click', function (e) {
-        			//icon-x30 x30-redo-hover icon-x30-redo-disabled x30-redo-disabled-hover
-        			alert('btnRedo');
+        			console.log($rootScope.currentComponent);
         		});
         	}
 

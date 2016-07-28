@@ -10,12 +10,28 @@ var ConfPage = function (options) {
 mainModule.directive("configArea", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
     return {
         restrict: "A",
-        template: '<div class="g-config g-config-page"><section class="c-config"></section></div>',
+        template: ['<div class="g-config g-config-page"><section class="c-config"></section></div>'].join(''),
         replace: true,
         scope: {},
         link: function (scope, element, attrs) {
-            $rootScope.$watch('currentPage', function (newVal, oldVal) {
+            $rootScope.$on('page.changed', function ($event, index, page) {
                 if(!$rootScope.currentPage) return;
+                initViewPage();
+            });
+
+        	$rootScope.$watch('currentComponent', function (newVal, oldVal) { 
+                if(newVal == oldVal) return;
+                if(newVal == null){
+                    initViewPage();
+                    return;
+                }
+                $(".c-config", element).empty();
+                //newVal.buildConfig();
+                var $html = $compile(newVal.$config)($rootScope);
+            	$(".c-config", element).append(newVal.$config);
+            });
+
+            var initViewPage = function () {
                 $(".c-config", element).empty();
                 var tpl = [
                 '<section class="c-config-wapper none">',
@@ -36,16 +52,70 @@ mainModule.directive("configArea", ['$rootScope', '$compile', 'pageService', fun
 
                 var $html = $compile(tpl)($rootScope);
                 $(".c-config", element).append($html);
-            });
-
-        	$rootScope.$watch('currentComponent', function (newVal, oldVal) {
-                if(!$rootScope.currentComponent) return;
-                $(".c-config", element).empty();
-                var $html = $compile($rootScope.currentComponent.$config)($rootScope);
-            	$(".c-config", element).append($html);
-            });
+            }
+            initViewPage();
         }
     }
+}]);
+
+
+mainModule.directive('configCommon',['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
+    return {
+        restrict: 'A',
+        replace: true,
+        template: [
+            '<section class="c-conf-section c-conf-tabSection">',
+                '<ul class="u-tab z-singleLine">',
+                    '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',
+                    '<li><a href="javascript:void(0);">动画</a></li>',
+                '</ul>',
+            '</section>',
+        ].join(''),
+        link: function (scope, element, attrs) {
+            var confAnimation = new ConfAnimation({
+                data: { 
+                    in: constants.comsAnimationList[2],
+                    out: null
+                },
+                onAnimateIn: function (data) {
+                    console.log("onAnimateIn", data);
+                    $rootScope.currentComponent.animate(data);
+                },
+                onAnimateOut: function (data) {
+                    console.log("onAnimateOut", data);
+                    $rootScope.currentComponent.animate(data);
+                },
+                onAnimInChange: function (data) {
+                    console.log("onAnimInChange", data);
+                    $rootScope.currentComponent.animateIn = data;
+                    $rootScope.currentComponent.animate(data);
+                },
+                onAnimOutChange: function (data) {
+                    console.log("onAnimOutChange", data);
+                    $rootScope.currentComponent.animate(data);
+                }
+            });
+
+            $("section.c-config").append(confAnimation.$html);
+            var $confStyle = $('<div>');
+            var $confAnimation = confAnimation.$html;
+
+            $("ul li", element).on("click", function (e) {
+                var $this = this;
+                $("ul li>a", element).removeClass("z-active");
+                $("a", $this).addClass("z-active");
+
+                var idx = $("ul li", element).index($this);
+                switch(idx){
+                    case 0: $confStyle.show(); $confAnimation.hide(); break;
+                    case 1: $confStyle.hide(); $confAnimation.show(); break;
+                }
+            });
+
+            $confStyle.insertAfter(element);
+            $confAnimation.insertAfter(element);
+        }
+    };
 }]);
 
 mainModule.directive('configPosition', function () {
@@ -75,7 +145,7 @@ mainModule.directive('configPosition', function () {
             '</section>'
         ].join(''),
         link: function (scope, element, attrs) {
-            console.log(scope.currentComponent);
+
         }
     };
 });

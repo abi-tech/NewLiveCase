@@ -1,8 +1,6 @@
 mainModule.service('pageService', ['$http', function ($http) {
 
 	var service = {
-        currentPageIndex: 0,
-        currentComponent: null,
 		pages:[new H5Page()],
 
 		get: function (index) {

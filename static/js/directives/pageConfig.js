@@ -1,15 +1,3 @@
-mainModule.directive("uiConfigSection", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
-    return {
-        restrict: "A",
-        template: '<section class="c-conf-section c-conf-triggerSection z-expand"><div ng-transclude></div></section>',
-        transclude: true,
-        replace: true,
-        link: function (scope, element, attrs) {
-
-        }
-    }
-}]);
-
 mainModule.directive("pageBackgroundImage", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
     return {
         restrict: "A",
@@ -18,7 +6,7 @@ mainModule.directive("pageBackgroundImage", ['$rootScope', '$compile', 'pageServ
                 '背景设置',
                 '<div class="info-pop">',
                     '<div class="bg"></div>',
-                    '<div class="info">最佳尺寸：640x1040(px)</div> <i></i>',
+                    '<div class="info">最佳尺寸：640x1040(px)</div><i></i>',
                 '</div>',
             '</div>'
         ].join(''),
@@ -50,38 +38,18 @@ mainModule.directive("pageBackgroundImage", ['$rootScope', '$compile', 'pageServ
                 '</div>'
             ].join('')); 
 
+            var updateModel =  function (val) {
+                $rootScope.currentPage.bgImage = val;
+                $rootScope.currentPage.css["background-image"] = val? 'url(\'' + val.url + '\')' : "none";
+                $rootScope.$apply();
+            }
+
             var $parent = element.parent();
             var chooseBackgroundImage = function (e) {
-                console.log("chooseBackgroundImage");
                 var options = {
                     onChosenEnd: function (item) {
-                        var page = pageService.getCurrentPage();
-                        page.bgImage = item.options;
-
-                        var $bgImage = $(tpl);
-                        var width = item.options.width / item.options.height * $("#editorFrame").height();
-                        var left = ($("#editorFrame").width() - width) / 2;
-                        $bgImage.find("img").css("left", left);
-                        $bgImage.find("img").attr("src", item.options.url);
-                        $("#editorFrame .page-bg-div").remove();
-                        $("#editorFrame").append($bgImage);
-
-                        $(".u-image-wrap", $chosenView).css("background-color", page.bgColor)
-                            .css("background-image", "url('" + page.bgImage.url + "')");
-
-                        $(".jcrop-panel-header,.c-background-layer", $parent).remove();
-                        $parent.prepend($chosenView);
-
-                        $(".change-btn-image", $chosenView).on("click", chooseBackgroundImage);
-
-                        $(".delete", $chosenView).on("click", function (e) {
-                            $("#editorFrame .page-bg-div").remove();
-                            $(".jcrop-panel-header,.c-background-layer", $parent).remove();
-                            $parent.prepend(element);
-                            initEvent();
-                            return false;
-                        });
-                        //initEvent();
+                        updateModel(item.options);
+                        initView();
                     }
                 };
                 var fileDialog = new FileDialog(options);
@@ -89,12 +57,44 @@ mainModule.directive("pageBackgroundImage", ['$rootScope', '$compile', 'pageServ
                 return false;
             };
 
+            var initView = function () {
+                var bgColor = $rootScope.currentPage.bgColor;
+                var bgImage = $rootScope.currentPage.bgImage;
+                if(!bgImage) return;
+
+                var $bgImage = $(tpl);
+                var width = bgImage.width / bgImage.height * $("#editorFrame").height();
+                var left = ($("#editorFrame").width() - width) / 2;
+                $bgImage.find("img").css("left", left);
+                $bgImage.find("img").attr("src", bgImage.url);
+                $("#editorFrame .page-bg-div").remove();
+                $("#editorFrame").append($bgImage);
+
+                $(".u-image-wrap", $chosenView)
+                    .css("background-color", bgColor)
+                    .css("background-image", "url('" + bgImage.url + "')");
+
+                $(".jcrop-panel-header,.c-background-layer", $parent).remove();
+                $parent.prepend($chosenView);
+
+                $(".change-btn-image", $chosenView).on("click", chooseBackgroundImage);
+
+                $(".delete", $chosenView).on("click", function (e) {
+                    $("#editorFrame .page-bg-div").remove();
+                    $(".jcrop-panel-header,.c-background-layer", $parent).remove();
+                    $parent.prepend(element);
+
+                    updateModel(null);
+                    initEvent();
+                    return false;
+                });
+            }
+
             var initEvent = function () {
                 element.on("click", chooseBackgroundImage);
             }
 
-
-
+            initView();
             initEvent();
         }
     }
@@ -121,13 +121,18 @@ mainModule.directive("pageBackgroundColor", ['$rootScope', '$compile', 'pageServ
         replace: true,
         scope: {},
         link: function (scope, element, attrs) {
+            var updateModel = function (val) {
+                $rootScope.currentPage.bgColor = val? val : "rgb(255, 255, 255)";
+                $rootScope.currentPage.css["background-color"] = $rootScope.currentPage.bgColor;
+                $rootScope.$apply();
+
+                $("#editorFrame").css("background-color", $rootScope.currentPage.bgColor);
+            }
+
             var initEvent = function () {
                 $("li", element).on("click", function (e) {
-                    var page = pageService.getCurrentPage();
                     var color = $(this).css("background-color");
-                    page.bgColor = color? color : "rgb(255, 255, 255)";
-
-                    $("#editorFrame").css("background-color", page.bgColor);
+                    updateModel(color);
                 });
             }
 
@@ -149,13 +154,21 @@ mainModule.directive("pageSliderIcon", ['$rootScope', '$compile', 'pageService',
         replace: true,
         scope: {},
         link: function (scope, element, attrs) {
-            scope.icons = pageService.getCurrentPage().icons;
-            scope.selected = pageService.getCurrentPage().slideIcon;
+            scope.icons = constants.pageIconList;
+            scope.selected = $rootScope.currentPage.slideIcon;
+
+            var updateModel = function (val) {
+                $rootScope.currentPage.slideIcon = val;
+
+                $("#editorFrame .slide-page-icon")
+                    .removeClass()
+                    .addClass("slide-page-icon " + val.icon);
+            }
 
             scope.$watch("selected", function (newValue, oldValue) {
                 if (newValue == oldValue) return;
-
-                pageService.getCurrentPage().slideIcon = newValue;
+                
+                updateModel(newValue);
             });
         }
     }
@@ -179,12 +192,16 @@ mainModule.directive("pageSlideAnimation", ['$rootScope', '$compile', 'pageServi
         replace: true,
         scope: {},
         link: function (scope, element, attrs) {
-            scope.animations = pageService.getCurrentPage().animations;
-            scope.selected = pageService.getCurrentPage().animation;
+            scope.animations = constants.pageAnimationList;
+            scope.selected = $rootScope.currentPage.animation;
+
+            updateModel = function (val) {
+                $rootScope.currentPage.animation = val;
+            }
 
             scope.chosen = function(animation) {
                 scope.selected = animation;
-                pageService.getCurrentPage().animation = animation;
+                updateModel(animation);
                 $("#editorFrame").trigger("onLoad");
             }
         }

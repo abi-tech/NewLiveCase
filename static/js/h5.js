@@ -96,7 +96,7 @@ var H5ComponentBase = ExClass({
 
         that.options = $.extend(true, {}, defaultOptions, options);
         //console.log(that.options);
-        $.extend(that, that.options);
+        //$.extend(that, that.options);
 
         that._build();
     },

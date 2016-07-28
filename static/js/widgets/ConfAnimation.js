@@ -2,6 +2,7 @@ var PanelAnimation = function (options) {
 	var that = this;
 
 	var defaultOptions = {
+		data: null,
 		type: "in",
 		label: "没有出场动画", //没有入场动画
 		animations: [
@@ -51,7 +52,8 @@ var PanelAnimation = function (options) {
 	        { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从右缩小", "effect": "zoomOutRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
 	        { "type":"hinge", "direction": "out", "typeName": "坠落", "name": "坠落", "effect": "hinge", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
 		],
-		onChosenEnd: function (animation) { }
+		onAnimate: function (animation) { },
+		onChange: function (animation) { }
 	};
 
 	that.options = $.extend(true, {}, defaultOptions, options);
@@ -76,7 +78,7 @@ var PanelAnimation = function (options) {
 	].join('');
 
 	var tpl_none_anim = [
-	'<div class="f-mt-4" style="display: block;">',
+	'<div class="f-mt-4" style="display: none;">',
         '<label class="u-label f-float-l f-mt-4">' + that.options.label + '</label>',
         '<a href="javascript:void(0);" class="u-btn u-btn-large">添加动画</a>',
     '</div>'
@@ -98,69 +100,60 @@ var PanelAnimation = function (options) {
     '</div>'
 	].join('');
 
+	var animTypeList = $.map(that.options.animations, function (n) {
+		if(n.direction == that.options.type && n.default === true) 
+			return n;
+	});
+
+	var chooseAnimType = new ChooseList({
+		adapter: { "type": "direction", "name": "typeName", "key": "type" },
+		data: that.options.data,
+		type: "normal",
+		list: animTypeList,
+		onChosenEnd: function (idx, data, item) {
+			that.options.data = $.extend({}, data);
+			that.chosen(data);
+			that.options.onChange(data);
+		}
+	});
+
+	that.chosen = function (data) {
+		if(!data) return;
+
+		$("div.u-image-wrap>div", that.$chooseAnime).removeClass();
+		$("div.u-image-wrap>div", that.$chooseAnime).addClass("u-image-large");
+		$("div.u-image-wrap>div", that.$chooseAnime).addClass("anime-" + data.type);
+		$("label", that.$viewHasa).text(data.name);
+		that.$viewDialog.hide();
+		that.$viewNone.hide();
+		that.$viewHasa.show();
+		that.$panel.show();
+		that.$row1.empty();
+		var animations = that.filterAnimation(data.type);
+		var chooseAnimList = new ChooseList({
+			data: data,
+			type: "small",
+			anim: true,
+			list: animations,
+			onChosenEnd: function (idx, data, item) {
+				that.options.data = $.extend({}, data);
+				that.options.onChange(data);
+			}
+		});
+		that.$row1.append(chooseAnimList.$html);
+	}
+
 	that.filterAnimation = function (type) {
 		return $.map(that.options.animations, function (n) {
 			if(n.type == type) return n;
 		});
 	}
 
-	var animTypeList = $.map(that.options.animations, function (n) {
-		if(n.direction == that.options.type && n.default === true) 
-			return { name: n.typeName, effect: n.type};
-	});
-
-	var chooseAnimType = new ChooseList({
-		type: "normal",
-		list: animTypeList,
-		onChosenEnd: function (idx, data, item) {
-			$("div.u-image-wrap>div", that.$chooseAnime).removeClass();
-			$("div.u-image-wrap>div", that.$chooseAnime).addClass("u-image-large");
-			$("div.u-image-wrap>div", that.$chooseAnime).addClass("anime-" + data.effect);
-			$("label", that.$viewHasa).text(data.name);
-			that.$viewDialog.hide();
-			that.$viewNone.hide();
-			that.$viewHasa.show();
-			that.$panel.show();
-			that.$row1.empty();
-			var animations = that.filterAnimation(data.effect);
-			var chooseAnimList = new ChooseList({
-				type: "small",
-				value: animations[0].effect,
-				anim: true,
-				list: animations,
-				onChosenEnd: function (idx, data, item) {
-					console.log(idx, data);
-				}
-			});
-			that.$row1.append(chooseAnimList.$html);
-		}
-	});
-
-
-	that.$viewNone = $(tpl_none_anim);
-	that.$viewHasa = $(tpl_hasa_anim);
-	that.$viewDialog = $(tpl_dialog_anim);
-	that.$html = $(tpl_wrapper);
-	that.$chooseAnime = $(".link-chooseAnime", that.$html);
-	that.$panel = $("div.c-conf-panel", that.$html);
-	that.$row1 = $("div.c-conf-row:eq(0)", that.$panel);
-	that.$row2 = $("div.c-conf-row:eq(1)", that.$panel);
-	that.$row3 = $("div.c-conf-row:eq(2)", that.$panel);
-	that.$row4 = $("div.c-conf-row:eq(3)", that.$panel);
-	that.$row5 = $("div.c-conf-row:eq(4)", that.$panel);
-
-	$("section.u-dialog-body", that.$viewDialog).append(chooseAnimType.$html);
-
-	$("div.c-input-box.f-pb-4", that.$html).append(that.$viewNone);
-	$("div.c-input-box.f-pb-4", that.$html).append(that.$viewHasa);
-	$("div.c-input-box.f-pb-4", that.$html).append(that.$viewDialog);
-
-
 	that.calcDialogTop = function (argument) {
 		var windowHeight = $("body").height();
 		var dialogHeight = that.$viewDialog.outerHeight();
 		var top = that.$chooseAnime.offset().top;
-		console.log(windowHeight, dialogHeight, top);
+		//console.log(windowHeight, dialogHeight, top);
 		if(windowHeight <= top + dialogHeight){
 			top = windowHeight - dialogHeight - 10;
 		}
@@ -177,49 +170,99 @@ var PanelAnimation = function (options) {
 		that.$viewHasa.hide();
 		that.$panel.hide();
 	}
-	//选择动画
-	that.$chooseAnime.on("click", function (e) {
-		e.stopPropagation();
+	
 
-		that.calcDialogTop();
-		that.$viewDialog.toggle();
-	});
+	that.initView = function () {
+		that.$viewNone = $(tpl_none_anim);
+		that.$viewHasa = $(tpl_hasa_anim);
+		that.$viewDialog = $(tpl_dialog_anim);
+		that.$html = $(tpl_wrapper);
+		that.$chooseAnime = $(".link-chooseAnime", that.$html);
+		that.$panel = $("div.c-conf-panel", that.$html);
+		that.$row1 = $("div.c-conf-row:eq(0)", that.$panel);
+		that.$row2 = $("div.c-conf-row:eq(1)", that.$panel);
+		that.$row3 = $("div.c-conf-row:eq(2)", that.$panel);
+		that.$row4 = $("div.c-conf-row:eq(3)", that.$panel);
+		that.$row5 = $("div.c-conf-row:eq(4)", that.$panel);
 
-	//添加动画
-	$("a.u-btn", that.$viewNone).on("click", function (e) {
-		e.stopPropagation();
+		$("section.u-dialog-body", that.$viewDialog).append(chooseAnimType.$html);
 
-		that.calcDialogTop();
-		that.$viewDialog.toggle();
-	});
+		$("div.c-input-box.f-pb-4", that.$html).append(that.$viewNone);
+		$("div.c-input-box.f-pb-4", that.$html).append(that.$viewHasa);
+		$("div.c-input-box.f-pb-4", that.$html).append(that.$viewDialog);
 
-	//更换
-	$("a:eq(0)", that.$viewHasa).on("click", function (e) {
-		e.stopPropagation();
+		if(that.options.data){
+			that.$viewNone.hide();
+			that.$viewHasa.show();
+			that.$panel.show();
+		}else{
+			that.$viewNone.show();
+			that.$viewHasa.hide();
+			that.$panel.hide();
+		}
+		
 
-		that.calcDialogTop();
-		that.$viewDialog.toggle();
-	});
-	//预览
-	$("a:eq(1)", that.$viewHasa).on("click", function (e) {
-		e.stopPropagation();
-	});
-	//删除
-	$("a:eq(2)", that.$viewHasa).on("click", function (e) {
-		e.stopPropagation();
-		that.reset();
-	});
+		that.chosen(that.options.data);
+	}
+
+	that.initEvent = function () {
+		//选择动画
+		that.$chooseAnime.on("click", function (e) {
+			e.stopPropagation();
+
+			that.calcDialogTop();
+			that.$viewDialog.toggle();
+		});
+		//添加动画
+		$("a.u-btn", that.$viewNone).on("click", function (e) {
+			e.stopPropagation();
+
+			that.calcDialogTop();
+			that.$viewDialog.toggle();
+		});
+		//更换
+		$("a:eq(0)", that.$viewHasa).on("click", function (e) {
+			e.stopPropagation();
+
+			that.calcDialogTop();
+			that.$viewDialog.toggle();
+		});
+		//预览
+		$("a:eq(1)", that.$viewHasa).on("click", function (e) {
+			e.stopPropagation();
+			that.options.onAnimate(that.options.data);
+		});
+		//删除
+		$("a:eq(2)", that.$viewHasa).on("click", function (e) {
+			e.stopPropagation();
+			that.reset();
+			that.options.data = null;
+			that.options.onChange(null);
+		});
 
 
-	$(window).on("resize", function (e) {
-		that.calcDialogTop();
-	});
+		$(window).on("resize", function (e) {
+			that.calcDialogTop();
+		});
+	}
+	
+	that.initView();
+	that.initEvent();
 }
 
 var ConfAnimation = function (options) {
 	var that = this;
 
-	var defaultOptions = {};
+	var defaultOptions = {
+		data: {
+			in: null,
+			out: null
+		},
+		onAnimateIn: function (data){},
+		onAnimInChange: function (data){},
+		onAnimateOut: function (data){},
+		onAnimOutChange: function (data){}
+	};
 
 	var template = [
 	'<section class="c-conf-section c-conf-animeSection">',
@@ -234,43 +277,55 @@ var ConfAnimation = function (options) {
     '</ul>'
 	].join('');
 
-	$.extend(true, {}, defaultOptions, options);
+	that.options = $.extend(true, {}, defaultOptions, options);
 
 	var animIn = new PanelAnimation({
+		data: that.options.data.in,
 		type: "in",
-		label: "没有入场动画"
+		label: "没有入场动画",
+		onAnimate: that.options.onAnimateIn,
+		onChange: that.options.onAnimInChange
 	});
+
 	var animOut = new PanelAnimation({
+		data: that.options.data.out,
 		type: "out",
-		label: "没有出场动画"
+		label: "没有出场动画",
+		onAnimate: that.options.onAnimateOut,
+		onChange: that.options.onAnimOutChange
 	});
 
-	that.$html = $(template);
-	that.$tabAnimInOut = $(tpl_tab_anim_in_out);
-	that.$panelAnimIn = animIn.$html;
-	that.$panelAnimOut = animOut.$html;
-
-	that.$panelAnimIn.show();
-	that.$panelAnimOut.hide();
-	$("div.c-conf-row:eq(0)", that.$html).append(that.$tabAnimInOut);
-	that.$html.append(animIn.$html);
-	that.$html.append(animOut.$html);
-
-	$("li:eq(0)", that.$tabAnimInOut).on("click", function (e) {
-		e.stopPropagation();
-		$("li a", that.$tabAnimInOut).removeClass("z-active");
-		$("a", this).addClass("z-active");
+	that.initView = function () {
+		that.$html = $(template);
+		that.$tabAnimInOut = $(tpl_tab_anim_in_out);
+		that.$panelAnimIn = animIn.$html;
+		that.$panelAnimOut = animOut.$html;
 
 		that.$panelAnimIn.show();
 		that.$panelAnimOut.hide();
-	});
+		$("div.c-conf-row:eq(0)", that.$html).append(that.$tabAnimInOut);
+		that.$html.append(animIn.$html);
+		that.$html.append(animOut.$html);
+	}
 
-	$("li:eq(1)", that.$tabAnimInOut).on("click", function (e) {
-		e.stopPropagation();
-		$("li a", that.$tabAnimInOut).removeClass("z-active");
-		$("a", this).addClass("z-active");
+	that.initEvent = function () {
+		$("li:eq(0)", that.$tabAnimInOut).on("click", function (e) {
+			$("li a", that.$tabAnimInOut).removeClass("z-active");
+			$("a", this).addClass("z-active");
 
-		that.$panelAnimIn.hide();
-		that.$panelAnimOut.show();
-	});
+			that.$panelAnimIn.show();
+			that.$panelAnimOut.hide();
+		});
+
+		$("li:eq(1)", that.$tabAnimInOut).on("click", function (e) {
+			$("li a", that.$tabAnimInOut).removeClass("z-active");
+			$("a", this).addClass("z-active");
+
+			that.$panelAnimIn.hide();
+			that.$panelAnimOut.show();
+		});
+	}
+
+	that.initView();
+	that.initEvent();
 }

@@ -13,7 +13,7 @@ var PreviewListBuilder = function (options) {
                 '<div class="up"></div>',
                 '<div class="down"></div>',
                 '<nav class="nav">{{ $index + 1 }}</nav>',
-                '<div class="show" bg-layout="tensile" style="background-color: rgb(255, 255, 255);">',
+                '<div class="show" bg-layout="tensile" ng-style="page.css">',
                     '<div class="com-preview"><div></div></div>',
                 '</div>',
             '</section>',
@@ -53,34 +53,34 @@ mainModule.directive("previewArea", ['$rootScope', '$timeout', '$log', '$compile
 
             scope.click = function (index) {
                 active(index);
-                $rootScope.pageChanged(index);
-                $("#editorFrame").trigger("onLoad");
+                $rootScope.pageChanged(index, pageService.pages[index]);
                 return false;
             }
 
             scope.close = function (index, $event) {
-                var next = 0; 
+                var curr = 0; 
 
                 if(index == 0){
-                    next = 0;
+                    curr = 0;
                 }else if(pageService.pages[index].active){
                     var prev = index - 1;
-                    next = prev < 0? 0 : prev;
+                    curr = prev < 0? 0 : prev;
                 }
                 pageService.delete(index);
 
                 if (pageService.pages.length == 0) {
                     pageService.add();
                 }
-                active(next);
-                $rootScope.pageChanged(next);
+                active(curr);
+                $rootScope.pageChanged(curr, pageService.pages[curr]);
                 $event.stopPropagation();
             }
 
             scope.copy = function (index, $event) {
                 pageService.copy(index);
-                active(index + 1);
-                $rootScope.pageChanged();
+                var curr = index + 1;
+                active(curr);
+                $rootScope.pageChanged(curr, pageService.pages[curr]);
                 $event.stopPropagation();
             }
 
@@ -100,14 +100,16 @@ mainModule.directive("previewArea", ['$rootScope', '$timeout', '$log', '$compile
 
             scope.add = function () {
                 pageService.add();
-                active(pageService.pages.length - 1);
-                $rootScope.pageChanged(pageService.pages.length - 1);
+                var curr = pageService.pages.length - 1;
+                active(curr);
+                $rootScope.pageChanged(curr, pageService.pages[curr]);
             }
 
             var init = function () {
                 var builder = new PreviewListBuilder();
                 var $html = $compile(builder.$html)(scope);
                 $(".pv-container", element).append($html);
+                active(0);
             }
 
             var active = function (index) {
@@ -119,7 +121,6 @@ mainModule.directive("previewArea", ['$rootScope', '$timeout', '$log', '$compile
             }
             
             init();
-            active(0);
             // var $btnAdd = $(".c-plus", element);
 
             // $btnAdd.on('click', function (e) {
@@ -145,85 +146,85 @@ mainModule.directive("previewArea", ['$rootScope', '$timeout', '$log', '$compile
     }
 }]);
 
-var tpl_preview_page = [
-'<section ng-class="($index == currentIndex? \'c-ct c-ct-active\' : \'c-ct\')" style="margin-bottom: 0px; margin-top: 0px;">',
-	'<div class="close icon-x22 icon-x22-close"></div>',
-	'<div class="copy icon-x14 icon-x14-copy" title="复制"></div>',
-	'<div class="up"></div>',
-	'<div class="down"></div>',
-	'<nav class="nav">{{ $index + 1 }}</nav>',
-	'<div class="show" ng-style="page.style">',
-		'<div class="com-preview"></div>',
-	'</div>',
-'</section>'
-].join('');
+// var tpl_preview_page = [
+// '<section ng-class="($index == currentIndex? \'c-ct c-ct-active\' : \'c-ct\')" style="margin-bottom: 0px; margin-top: 0px;">',
+// 	'<div class="close icon-x22 icon-x22-close"></div>',
+// 	'<div class="copy icon-x14 icon-x14-copy" title="复制"></div>',
+// 	'<div class="up"></div>',
+// 	'<div class="down"></div>',
+// 	'<nav class="nav">{{ $index + 1 }}</nav>',
+// 	'<div class="show" ng-style="page.style">',
+// 		'<div class="com-preview"></div>',
+// 	'</div>',
+// '</section>'
+// ].join('');
 
-mainModule.directive("previewPage", ['$rootScope', '$log', 'pageService', 'editorService',
-    function ($rootScope, $log, pageService, editorService) {
-    return {
-        restrict: "A",
-        template: tpl_preview_page,
-        replace: true,
-        link: function (scope, element, attrs) {
-        	var $btnClose = $(".close", element);
-        	var $btnCopy = $(".copy", element);
-        	var $btnUp = $(".up", element);
-        	var $btnDown = $(".down", element);
-        	var $nav = $(".nav", element);
+// mainModule.directive("previewPage", ['$rootScope', '$log', 'pageService', 'editorService',
+//     function ($rootScope, $log, pageService, editorService) {
+//     return {
+//         restrict: "A",
+//         template: tpl_preview_page,
+//         replace: true,
+//         link: function (scope, element, attrs) {
+//         	var $btnClose = $(".close", element);
+//         	var $btnCopy = $(".copy", element);
+//         	var $btnUp = $(".up", element);
+//         	var $btnDown = $(".down", element);
+//         	var $nav = $(".nav", element);
 
-        	$btnClose.on('click', function (e) {
-                e.stopPropagation();
+//         	$btnClose.on('click', function (e) {
+//                 e.stopPropagation();
 
-        		pageService.delete(scope.$index);
-        		scope.$apply();
+//         		pageService.delete(scope.$index);
+//         		scope.$apply();
 
-                element.siblings().removeClass("c-ct-active");
-                $(".g-preview section.m-pv>section.c-ct:eq(0)").addClass("c-ct-active");
-                scope.setCurrentPage(0, pageService.pages[0]);
-        	});
+//                 element.siblings().removeClass("c-ct-active");
+//                 $(".g-preview section.m-pv>section.c-ct:eq(0)").addClass("c-ct-active");
+//                 scope.setCurrentPage(0, pageService.pages[0]);
+//         	});
 
-        	$btnCopy.on('click', function (e) {
-                e.stopPropagation();
-        		scope.copyPage(scope.$index);
-                scope.$apply();
+//         	$btnCopy.on('click', function (e) {
+//                 e.stopPropagation();
+//         		scope.copyPage(scope.$index);
+//                 scope.$apply();
 
-                element.siblings().removeClass("c-ct-active");
-                element.addClass("c-ct-active"); console.log(scope, $rootScope);
-        	});
+//                 element.siblings().removeClass("c-ct-active");
+//                 element.addClass("c-ct-active"); console.log(scope, $rootScope);
+//         	});
 
-        	$btnUp.on('click', function (e) {
-                e.stopPropagation();
-        		pageService.moveUp(scope.$index); console.log(scope, $rootScope);
-                scope.$apply();
+//         	$btnUp.on('click', function (e) {
+//                 e.stopPropagation();
+//         		pageService.moveUp(scope.$index); console.log(scope, $rootScope);
+//                 scope.$apply();
 
-                element.siblings().removeClass("c-ct-active");
-                element.addClass("c-ct-active");
-        	});
+//                 element.siblings().removeClass("c-ct-active");
+//                 element.addClass("c-ct-active");
+//         	});
 
-        	$btnDown.on('click', function (e) {
-                e.stopPropagation();
-        		pageService.moveDown(scope.$index); console.log(scope, $rootScope);
-                scope.$apply();
+//         	$btnDown.on('click', function (e) {
+//                 e.stopPropagation();
+//         		pageService.moveDown(scope.$index); console.log(scope, $rootScope);
+//                 scope.$apply();
 
-                element.siblings().removeClass("c-ct-active");
-                element.addClass("c-ct-active");
-        	});
+//                 element.siblings().removeClass("c-ct-active");
+//                 element.addClass("c-ct-active");
+//         	});
 
-            element.on('click', function (e) {
-                //$("#editorFrame .c-c-container").remove();
-                element.siblings().removeClass("c-ct-active");
-                element.addClass("c-ct-active");
+//             element.on('click', function (e) {
+//                 //$("#editorFrame .c-c-container").remove();
+//                 element.siblings().removeClass("c-ct-active");
+//                 element.addClass("c-ct-active");
 
-                var idx = scope.$index; 
-                pageService.currentPageIndex = idx; 
-                scope.setCurrentPage(idx, pageService.pages[idx]);
-                scope.$apply();
+//                 var idx = scope.$index; 
+//                 pageService.currentPageIndex = idx; 
+//                 scope.setCurrentPage(idx, pageService.pages[idx]);
+//                 scope.$apply();
 
-                $rootScope.pageChanged(idx);
-            });
-        }
-    }
-}]);
+//                 $rootScope.pageChanged(idx);
+//             });
+//         }
+//     }
+// }]);
 
 mainModule.directive("pageComponent", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
     return {

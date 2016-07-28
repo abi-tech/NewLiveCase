@@ -25,8 +25,8 @@ var EditorFrameBuilder = function (options) {
     };
     
     that.$html = $([
-        '<div id="editorFrame" class="u-page-border page-container u-page-active" bg-layout="center">',
-            '<div ng-repeat="component in components" preview="0" editor-area-component></div>',
+        '<div id="editorFrame" class="u-page-border page-container u-page-active" bg-layout="center" style="background-color: {{ currentPage.bgColor }};">',
+            '<div ng-repeat="component in currentPage.components" preview="0" editor-area-component></div>',
         '</div>'
     ].join(''));
 
@@ -73,28 +73,29 @@ var EditorFrameBuilder = function (options) {
     }
 
     that.animate = function (animation) { 
-        animation = animation? animation : that.page.animation;
-        if(!animation) { 
+        var anim = animation? animation : that.page.animation;
+        if(!anim) { 
             console.log("animation is undefined");
             return;
         }
-        var express = animation.effect + " " + animation.duration + "s backwards";
+        var exp = anim.effect + " " + anim.duration + "s backwards";
         var end = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
-        that.$html.css("animation", express).one(end, function () {
+        that.$html.css("animation", exp).one(end, function () {
             that.$html.css("animation", "none");
         });
     }
 
+    that.setBackgroundColor = function (color) {
+        that.$html.css("background-color", color);
+    }
+
     that.setBackgroundImage = function (image) {
+        if(!image) return;
         var width = image.width / image.height * that.editorHeight;
         var left = (that.editorWidth - width) / 2;
         that.$bgImage.find("img").css("left", left);
         that.$bgImage.find("img").attr("src", image.url);
         that.$html.append(that.$bgImage);
-    }
-
-    that.setBackgroundColor = function (color) {
-        that.$html.css("background-color", color);
     }
 
     that.removeBackgroundImage = function () {
@@ -155,28 +156,19 @@ var EditorFrameBuilder = function (options) {
     }
 
     that.init();
-    //that.animate(that.page.animation);
 }
 
 mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'editorService',
     function ($rootScope, $compile, pageService, editorService) {
     return {
         restrict: "A",
-        template: '<div class="g-editor"><section class="m-editor"></section></div>',
+        template: '<div class="g-editor"><section class="m-editor"><div id="editorFrame"></div></section></div>',
         replace: true,
-        scope: {},
         link: function (scope, element, attrs) {
-            var $newScope;
             var init = function (index) {
-                $newScope && $newScope.$destroy();
-                delete $newScope;
-                $newScope = scope.$new();
-                $newScope.components = pageService.pages[index].components;
-
-                $("#editorFrame", element).remove();
                 var frame = new EditorFrameBuilder({ page: pageService.pages[index] });
-                var $html = $compile(frame.$html)($newScope);
-                $(".m-editor", element).append($html);
+                var $html = $compile(frame.$html)($rootScope);
+                $("#editorFrame", element).replaceWith($html);
                 $("#editorFrame").trigger("onLoad");
             }
 
@@ -205,7 +197,6 @@ mainModule.directive("editorAreaComponent", ['$rootScope', '$compile', function 
                 $event.stopPropagation();
                 component.chosen();
                 $rootScope.currentComponent = component;
-                console.log($rootScope.currentComponent);
             }
             var $html = $compile(scope.component.$html)(scope);
             element.replaceWith($html);

@@ -17,20 +17,11 @@ var H5Page = function(options) {
         height: 1040,
         bgColor: "rgb(255, 255, 255)",
         bgImage: "",
-        css: null,
+        css: {
+            "background-color": "rgb(255, 255, 255)",
+            "background-image": "none"
+        },
         active: false,
-        icons: [
-            { "name": "LiveApp", "value": "0", "icon": "slide-page-icon-default" },
-            { "name": "UpArrow", "value": "1", "icon": "slide-page-icon-up" },
-            { "name": "DownArrow", "value": "2", "icon": "slide-page-icon-down" }
-        ],
-        animations: [
-            { "type": "anime-page-slideZoomIn", "name": "缩放", "effect": "a_slideZoom_bottomIn", "duration": 0.5, "delay": 0 },
-            { "type": "anime-page-slideIn", "name": "滑动", "effect": "a_slide_bottomIn", "duration": 0.5, "delay": 0 },
-            { "type": "anime-page-fadeIn", "name": "淡入", "effect": "a_fadeIn_bottomIn", "duration": 0.5, "delay": 0 },
-            { "type": "anime-page-rotateIn", "name": "旋入", "effect": "a_rotate_bottomIn", "duration": 0.5, "delay": 0 },
-            { "type": "anime-page-xSlideIn", "name": "横向滑动", "effect": "a_xSlide_rightIn", "duration": 0.5, "delay": 0 }
-        ],
         slideIcon: null,
         animation: null,
         applyAllPages: false,
@@ -112,8 +103,8 @@ var H5Page = function(options) {
     that.setOptions = function (options) {
         delete that.options;
         that.currentComponent = null;
-        that.defaultOptions.slideIcon = that.defaultOptions.icons[0];
-        that.defaultOptions.animation = that.defaultOptions.animations[0];
+        that.defaultOptions.slideIcon = constants.pageIconList[0];
+        that.defaultOptions.animation = constants.pageAnimationList[0];
         that.options = $.extend({}, that.defaultOptions, options);
         $.extend(that, that.options);
     }

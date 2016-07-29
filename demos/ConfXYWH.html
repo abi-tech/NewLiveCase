@@ -20,8 +20,7 @@
 
     <script src="/static/js/widgets/Switcher.js"></script>
 	<script src="/static/js/widgets/Slider.js"></script>
-	<script src="/static/js/widgets/ChooseList.js"></script>
-	<script src="/static/js/widgets/ConfAnimation.js"></script>
+	<script src="/static/js/widgets/ConfXYWH.js"></script>
 </head>
 <body class="g-body g-case-body theme">
 	<div class="g-config">
@@ -33,26 +32,14 @@
 	</div>
 	<script type="text/javascript">
 		$(function () {
-			var confAnimation = new ConfAnimation({
-				data: { 
-					in: constants.comsAnimationList[2],
-					out: constants.comsAnimationList[32]
-				},
-				onAnimateIn: function (data) {
-					console.log("onAnimateIn", data);
-				},
-				onAnimateOut: function (data) {
-					console.log("onAnimateOut", data);
-				},
-				onAnimInChange: function (data) {
-					console.log("onAnimInChange", data);
-				},
-				onAnimOutChange: function (data) {
-					console.log("onAnimOutChange", data);
+			var confXYWH = new ConfXYWH({
+				data: { "left": 10, "top": 20, "width": 30, "height": 40 },
+				onChange: function (data) {
+					console.log(data);
 				}
 			});
 
-			$("section.c-config").append(confAnimation.$html);
+			$("section.c-config").append(confXYWH.$html);
 		});
 	</script>
 

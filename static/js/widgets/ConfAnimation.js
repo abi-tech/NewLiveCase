@@ -105,6 +105,40 @@ var PanelAnimation = function (options) {
 			return n;
 	});
 
+	function onAnimationDelayChange(data) {
+		if(!that.options.data) return;
+		that.options.data["delay"] = data;
+		that.options.onChange(that.options.data);
+	}
+
+	function onAnimationDurationChange(data) {
+		if(!that.options.data) return;
+		that.options.data["duration"] = data;
+		that.options.onChange(that.options.data);
+	}
+
+	function onAnimationCountChange(data) {
+		if(!that.options.data) return;
+		that.options.data["count"] = data;
+		that.options.onChange(that.options.data);
+	}
+
+	function onAnimationInfiniteChange(data) {
+		if(!that.options.data) return;
+		that.options.data["infinite"] = data;
+		that.options.onChange(that.options.data);
+	}
+
+	var defDelay = that.options.data? that.options.data["delay"] : 0;
+	var defDuration = that.options.data? that.options.data["duration"] : 1;
+	var defCount = that.options.data? that.options.data["count"] : 1;
+	var defInfinite = that.options.data? that.options.data["infinite"] : false;
+
+	var sliderAnimationDelay = new Slider({ val: defDelay, min: 0, max: 300, step: 0.01, onChange: onAnimationDelayChange });
+    var sliderAnimationDuration = new Slider({ val: defDuration, min: 0, max: 5, step: 0.01, onChange: onAnimationDurationChange });
+    var sliderAnimationCount = new Slider({ val: defCount, min: 1, max: 10, step: 1, onChange: onAnimationCountChange });
+    var switcherAnimationInfinite = new Switcher({ val: defInfinite, onChange: onAnimationInfiniteChange })
+
 	var chooseAnimType = new ChooseList({
 		adapter: { "type": "direction", "name": "typeName", "key": "type" },
 		data: that.options.data,
@@ -190,6 +224,10 @@ var PanelAnimation = function (options) {
 		$("div.c-input-box.f-pb-4", that.$html).append(that.$viewNone);
 		$("div.c-input-box.f-pb-4", that.$html).append(that.$viewHasa);
 		$("div.c-input-box.f-pb-4", that.$html).append(that.$viewDialog);
+		that.$row2.append(sliderAnimationDelay.$html);
+		that.$row3.append(sliderAnimationDuration.$html);
+		that.$row4.append(sliderAnimationCount.$html);
+		that.$row5.append(switcherAnimationInfinite.$html);
 
 		if(that.options.data){
 			that.$viewNone.hide();
@@ -323,6 +361,7 @@ var ConfAnimation = function (options) {
 
 			that.$panelAnimIn.hide();
 			that.$panelAnimOut.show();
+			//console.log(this);
 		});
 	}
 

@@ -307,8 +307,8 @@ var Singletext = ExClass(H5ComponentBase, {
         
         that.defaultOptions = {
         	type: "singletext",
-        	x: 111.5,
-        	y: 108,
+        	left: 112,
+        	top: 108,
         	width: 417,
         	height: 80,
         	text: "右侧输入文本",
@@ -333,8 +333,8 @@ var Singletext = ExClass(H5ComponentBase, {
 			}
         }
 
-		that.componentTemplate = '<div inside-styles="" class="text-wrap" ng-style="component.componentCss"></div>';
-		that.innerTemplate = '<div class="text-content" ng-style="component.innerCss" ng-bind="component.text"></div>';
+		that.componentTemplate = '<div inside-styles="" class="text-wrap"></div>';
+		that.innerTemplate = '<div class="text-content"></div>';
 		that.configTemplate = '<div config-position></div>';
 
 		that.$component = $(that.componentTemplate);
@@ -343,9 +343,10 @@ var Singletext = ExClass(H5ComponentBase, {
 		that.options = $.extend(true, {}, that.defaultOptions, options);
 
 		$super(that.options);
-		$.extend(that, that.options);
+		//$.extend(that, that.options);
 		that.$container.addClass("c-single-text");
 		
+		//that.$config = $('<div config-common></div>');
 		that.buildConfig();
 		if(typeof that.options.text === 'string' && that.options.text.length > 0){
         	that.$inner.text(that.options.text);
@@ -369,100 +370,101 @@ var Singletext = ExClass(H5ComponentBase, {
 				        '<div class="c-input-box box-rf"></div>',
 				    '</div>',
 	    		'</section>',
-    		'</section>'
+    		'</section>',
+    		'<div config-common></div></section>'
     	].join('');
 
-    	var confTabSection = [
-    		'<div config-common></div>',
-    		'<section class="c-conf-section c-conf-tabSection">',
-                '<ul class="u-tab z-singleLine">',
-                    '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',
-                    '<li><a href="javascript:void(0);">动画</a></li>',
-                '</ul>',
-            '</section>',
-    	].join('');
+    	// var confTabSection = [
+    	// 	'<div config-common></div>',
+    	// 	'<section class="c-conf-section c-conf-tabSection">',
+     //            '<ul class="u-tab z-singleLine">',
+     //                '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',
+     //                '<li><a href="javascript:void(0);">动画</a></li>',
+     //            '</ul>',
+     //        '</section>',
+    	// ].join('');
 
-    	var confAnimation = new ConfAnimation({});
+    	// var confAnimation = new ConfAnimation({});
     	that.$conf = $(confTemplate);
-    	that.$confTabSection = $(confTabSection);
-    	that.$confStyle = $(that.confFacadeTemplate);
-		that.$confAnimation = confAnimation.$html;
-		that.$confPosition = $(that.confPositionTemplate);
+  //   	that.$confTabSection = $(confTabSection);
+  //   	that.$confStyle = $(that.confFacadeTemplate);
+		// that.$confAnimation = confAnimation.$html;
+		// that.$confPosition = $(that.confPositionTemplate);
 
-    	that._initRow1();
-    	that._initRow2();
+  //   	that._initRow1();
+  //   	that._initRow2();
 
-    	var tpl = [
-    		that.confHeaderTemplate,
-    		that.confSettingTemplate,
-    		that.confFacadeTemplate,
-    		that.confAnimationTemplate,
-    		that.confPositionTemplate
-    	].join('');
+  //   	var tpl = [
+  //   		that.confHeaderTemplate,
+  //   		that.confSettingTemplate,
+  //   		that.confFacadeTemplate,
+  //   		that.confAnimationTemplate,
+  //   		that.confPositionTemplate
+  //   	].join('');
 
     	that.$config = $('<section class="c-config-wapper"></section>');
-    	that.$config.append($(that.confHeaderTemplate));
+    	//that.$config.append($(that.confHeaderTemplate));
     	that.$config.append(that.$conf);
-    	that.$config.append(that.$confTabSection);
-    	that.$config.append(that.$confStyle);
-    	that.$config.append(that.$confAnimation);
-    	that.$config.append(that.$confPosition);
+    	// that.$config.append(that.$confTabSection);
+    	// that.$config.append(that.$confStyle);
+    	// that.$config.append(that.$confAnimation);
+    	// that.$config.append(that.$confPosition);
 
-    	that.$confStyle.show();
-    	that.$confAnimation.hide();
+    	// that.$confStyle.show();
+    	// that.$confAnimation.hide();
 
-    	$("ul li", that.$confTabSection).on("click", function (e) {
-    		e.stopPropagation();
-    		var $this = this;
-    		$("ul li>a", that.$confTabSection).removeClass("z-active");
-    		$("a", $this).addClass("z-active");
-    		var idx = $("ul li", that.$confTabSection).index($this);
-    		switch(idx){
-    			case 0: that.$confStyle.show(); that.$confAnimation.hide(); break;
-    			case 1: that.$confStyle.hide(); that.$confAnimation.show(); break;
-    		}
-    	});
+    	// $("ul li", that.$confTabSection).on("click", function (e) {
+    	// 	e.stopPropagation();
+    	// 	var $this = this;
+    	// 	$("ul li>a", that.$confTabSection).removeClass("z-active");
+    	// 	$("a", $this).addClass("z-active");
+    	// 	var idx = $("ul li", that.$confTabSection).index($this);
+    	// 	switch(idx){
+    	// 		case 0: that.$confStyle.show(); that.$confAnimation.hide(); break;
+    	// 		case 1: that.$confStyle.hide(); that.$confAnimation.show(); break;
+    	// 	}
+    	// });
 
-    	that.$bgColor = $([
-    		'<div class="u-colorpicker">',
-                '<input type="text" style="color: rgb(0, 0, 0); background: rgb(225, 225, 225);">',
-                '<a href="javascript:void(0);" class="small"><i class="icon-x20 icon-x20-color"></i></a>',
-            '</div>'
-    	].join(''));
+    	// that.$bgColor = $([
+    	// 	'<div class="u-colorpicker">',
+     //            '<input type="text" style="color: rgb(0, 0, 0); background: rgb(225, 225, 225);">',
+     //            '<a href="javascript:void(0);" class="small"><i class="icon-x20 icon-x20-color"></i></a>',
+     //        '</div>'
+    	// ].join(''));
 
-    	that.$borderWidth = $([
-    		'<div class="u-colorpicker f-ml-6">',
-                '<input type="text" style="color: rgb(0, 0, 0); background: rgb(225, 225, 225);">',
-                '<a href="javascript:void(0);" class="small"><i class="icon-x20 icon-x20-color"></i></a>',
-            '</div>'
-    	].join(''));
+    	// that.$borderWidth = $([
+    	// 	'<div class="u-colorpicker f-ml-6">',
+     //            '<input type="text" style="color: rgb(0, 0, 0); background: rgb(225, 225, 225);">',
+     //            '<a href="javascript:void(0);" class="small"><i class="icon-x20 icon-x20-color"></i></a>',
+     //        '</div>'
+    	// ].join(''));
 
-    	that.$bgColor.colorpicker({
-    		onChange: function(color){
-    			console.log(color);
-    		}
-        });
+    	// that.$bgColor.colorpicker({
+    	// 	onChange: function(color){
+    	// 		console.log(color);
+    	// 	}
+     //    });
 
-        that.$borderWidth.colorpicker({
-    		onChange: function(color){
-    			console.log(color);
-    		}
-        });
+     //    that.$borderWidth.colorpicker({
+    	// 	onChange: function(color){
+    	// 		console.log(color);
+    	// 	}
+     //    });
 
-        function onChange(data) {
-        	console.log(data);
-        }
-        var spinner = new Spinner();
-        var borderRadiusSlider = new Slider({ val: 0, min: 0, max: 50, step: 1, onChange: onChange });
-        var opacitySlider = new Slider({ val: 0, min: 0, max: 100, step: 1, onChange: onChange });
-        var rotateSlider = new Slider({ val: 0, min: 0, max: 360, step: 1, onChange: onChange });
+     //    function onChange(data) {
+     //    	console.log(data);
+     //    }
+     //    var spinner = new Spinner();
+     //    var borderRadiusSlider = new Slider({ val: 0, min: 0, max: 50, step: 1, onChange: onChange });
+     //    var opacitySlider = new Slider({ val: 0, min: 0, max: 100, step: 1, onChange: onChange });
+     //    var rotateSlider = new Slider({ val: 0, min: 0, max: 360, step: 1, onChange: onChange });
 
-        $("div.c-conf-panel:eq(0)>div.c-conf-row>div.c-input-box", that.$confStyle).append(that.$bgColor);
-        $("div.c-conf-panel:eq(1)>div.c-conf-row>div.c-input-box", that.$confStyle).append(spinner.$html);
-        $("div.c-conf-panel:eq(1)>div.c-conf-row>div.c-input-box", that.$confStyle).append(that.$borderWidth);
-        $("div.c-conf-panel:eq(2)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(borderRadiusSlider.$html);
-        $("div.c-conf-panel:eq(3)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(opacitySlider.$html);
-        $("div.c-conf-panel:eq(4)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(rotateSlider.$html);
+     //    $("div.c-conf-panel:eq(0)>div.c-conf-row>div.c-input-box", that.$confStyle).append(that.$bgColor);
+     //    $("div.c-conf-panel:eq(1)>div.c-conf-row>div.c-input-box", that.$confStyle).append(spinner.$html);
+     //    $("div.c-conf-panel:eq(1)>div.c-conf-row>div.c-input-box", that.$confStyle).append(that.$borderWidth);
+     //    $("div.c-conf-panel:eq(2)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(borderRadiusSlider.$html);
+     //    $("div.c-conf-panel:eq(3)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(opacitySlider.$html);
+     //    $("div.c-conf-panel:eq(4)>div.c-conf-row>div.c-input-box", that.$confStyle).replaceWith(rotateSlider.$html);
     },
     _initConfig: function () {
     	var that = this;

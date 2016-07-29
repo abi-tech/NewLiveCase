@@ -18,10 +18,16 @@
     <link href="/static/plugins/range-slider/2.1.4/css/ion.rangeSlider.skinNice.css" rel="stylesheet" />
     <script src="/static/plugins/range-slider/2.1.4/js/ion.rangeSlider.js"></script>
 
-    <script src="/static/js/widgets/Switcher.js"></script>
+	<script src="/static/js/widgets/UITab.js"></script>
+    <script src="/static/js/widgets/ColorPicker.js"></script>
+	<script src="/static/js/widgets/Spinner.js"></script>
 	<script src="/static/js/widgets/Slider.js"></script>
+    <script src="/static/js/widgets/Switcher.js"></script>
 	<script src="/static/js/widgets/ChooseList.js"></script>
+
+	<script src="/static/js/widgets/ConfStyle.js"></script>
 	<script src="/static/js/widgets/ConfAnimation.js"></script>
+	<script src="/static/js/widgets/ConfXYWH.js"></script>
 </head>
 <body class="g-body g-case-body theme">
 	<div class="g-config">
@@ -33,6 +39,25 @@
 	</div>
 	<script type="text/javascript">
 		$(function () {
+			var wrapper = $(".c-config-wapper");
+			var tpl_tab_wrapper = '<section class="c-conf-section c-conf-tabSection"></section>';
+
+	    	var $tabWrapper = $(tpl_tab_wrapper);
+
+			var confStyle = new ConfStyle({
+				data: { 
+		            backgroundColor: "rgba(10, 10, 10, 0)", 
+		            borderWidth: 20, 
+		            borderColor: "rgba(30, 30, 30, 0)",
+		            borderRadius: 40,
+		            opacity: 50,
+		            rotate: 60
+		        },
+				onChange: function (data) {
+					console.log(data);
+				}
+			});
+
 			var confAnimation = new ConfAnimation({
 				data: { 
 					in: constants.comsAnimationList[2],
@@ -52,7 +77,26 @@
 				}
 			});
 
-			$("section.c-config").append(confAnimation.$html);
+			var confXYWH = new ConfXYWH({
+				data: { "left": 10, "top": 20, "width": 30, "height": 40 },
+				onChange: function (data) {
+					console.log(data);
+				}
+			});
+
+			var $uiTab = new UITab({
+				active: 0,
+	    		list: [
+	    			{ name: "样式", dom: confStyle.$html },
+	    			{ name: "动画", dom: confAnimation.$html }
+	    		]
+	    	});
+
+			$tabWrapper.append($uiTab.$html);
+			wrapper.append($tabWrapper);
+			wrapper.append(confStyle.$html);
+			wrapper.append(confAnimation.$html);
+			wrapper.append(confXYWH.$html);
 		});
 	</script>
 

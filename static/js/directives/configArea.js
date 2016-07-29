@@ -10,7 +10,7 @@ var ConfPage = function (options) {
 mainModule.directive("configArea", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
     return {
         restrict: "A",
-        template: ['<div class="g-config g-config-page"><section class="c-config"></section></div>'].join(''),
+        template: ['<div class="g-config g-config-page"><section class="c-config"></div>'].join(''),
         replace: true,
         scope: {},
         link: function (scope, element, attrs) {
@@ -26,9 +26,9 @@ mainModule.directive("configArea", ['$rootScope', '$compile', 'pageService', fun
                     return;
                 }
                 $(".c-config", element).empty();
-                //newVal.buildConfig();
+                newVal.buildConfig();
                 var $html = $compile(newVal.$config)($rootScope);
-            	$(".c-config", element).append(newVal.$config);
+                $(".c-config", element).append($html);
             });
 
             var initViewPage = function () {
@@ -63,19 +63,43 @@ mainModule.directive('configCommon',['$rootScope', '$compile', 'pageService', fu
     return {
         restrict: 'A',
         replace: true,
-        template: [
-            '<section class="c-conf-section c-conf-tabSection">',
-                '<ul class="u-tab z-singleLine">',
-                    '<li><a href="javascript:void(0);" style="border-left:none;" class="z-active">样式</a></li>',
-                    '<li><a href="javascript:void(0);">动画</a></li>',
-                '</ul>',
-            '</section>',
-        ].join(''),
+        template: '<section class="c-conf-section c-conf-tabSection"></section>',
+        scope: {},
         link: function (scope, element, attrs) {
+            var animateIn = $rootScope.currentComponent.options.animateIn;
+            var animateOut = $rootScope.currentComponent.options.animateIn;
+            var componentCss = $rootScope.currentComponent.options.componentCss;
+            var left = $rootScope.currentComponent.options.left;
+            var top = $rootScope.currentComponent.options.top;
+            var width = $rootScope.currentComponent.options.width;
+            var height = $rootScope.currentComponent.options.height;
+
+            var confStyle = new ConfStyle({
+                data: { 
+                    backgroundColor: componentCss["background-color"], 
+                    borderWidth: 20, 
+                    borderColor: "rgba(30, 30, 30, 0)",
+                    borderRadius: 40,
+                    opacity: 50,
+                    rotate: 60
+                },
+                onChange: function (data) {
+                    console.log(data); //transform: rotate(0deg);
+                    $rootScope.currentComponent.setComponentCss(data);
+                    // $rootScope.currentComponent.componentCss["background-color"] = data["backgroundColor"];
+                    // $rootScope.currentComponent.componentCss["border-width"] = data["borderWidth"];
+                    // $rootScope.currentComponent.componentCss["border-color"] = data["borderColor"];
+                    // $rootScope.currentComponent.componentCss["border-radius"] = data["borderRadius"];
+                    // $rootScope.currentComponent.componentCss["opacity"] = parseInt(data["opacity"]) / 100;
+                    // $rootScope.currentComponent.componentCss["transform"] = "rotate(" + data["rotate"] + "deg)";
+                    $rootScope.$apply();
+                }
+            });
+
             var confAnimation = new ConfAnimation({
                 data: { 
-                    in: constants.comsAnimationList[2],
-                    out: null
+                    in: animateIn,
+                    out: animateOut
                 },
                 onAnimateIn: function (data) {
                     console.log("onAnimateIn", data);
@@ -96,24 +120,30 @@ mainModule.directive('configCommon',['$rootScope', '$compile', 'pageService', fu
                 }
             });
 
-            $("section.c-config").append(confAnimation.$html);
-            var $confStyle = $('<div>');
-            var $confAnimation = confAnimation.$html;
-
-            $("ul li", element).on("click", function (e) {
-                var $this = this;
-                $("ul li>a", element).removeClass("z-active");
-                $("a", $this).addClass("z-active");
-
-                var idx = $("ul li", element).index($this);
-                switch(idx){
-                    case 0: $confStyle.show(); $confAnimation.hide(); break;
-                    case 1: $confStyle.hide(); $confAnimation.show(); break;
+            var confXYWH = new ConfXYWH({
+                data: { "left": left, "top": top, "width": width, "height": height },
+                onChange: function (data) {
+                    console.log(data);
+                    $rootScope.currentComponent.setLeft(data.left);
+                    $rootScope.currentComponent.containerCss["top"] = data["top"] * scale;
+                    $rootScope.currentComponent.containerCss["width"] = data["width"] * scale;
+                    $rootScope.currentComponent.containerCss["height"] = data["height"] * scale;
+                    $rootScope.$apply();
                 }
             });
 
-            $confStyle.insertAfter(element);
-            $confAnimation.insertAfter(element);
+            var uiTab = new UITab({
+                active: 0,
+                list: [
+                    { name: "样式", dom: confStyle.$html },
+                    { name: "动画", dom: confAnimation.$html }
+                ]
+            });
+
+            element.append(uiTab.$html);
+            element.after(confXYWH.$html);
+            element.after(confAnimation.$html);
+            element.after(confStyle.$html);
         }
     };
 }]);

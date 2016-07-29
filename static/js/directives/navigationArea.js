@@ -67,8 +67,6 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {
                     var cfg = {};
                     cfg.scale = editorService.editorScale;
-                    cfg.animateIn = { effect: "bounceIn", duration: 1 };
-                    cfg.animateOut = { effect: "bounceOut", duration: 1 };
                     var com = new Singletext(cfg);
         			updateModel(com);
         		});
@@ -84,8 +82,6 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                     cfg.scale = editorService.editorScale;
                     cfg.funType = index + '';
                     cfg.funMode = index == 1? "icon" : "text";
-                    cfg.animateIn = { effect: "bounceIn", duration: 1 };
-                    cfg.animateOut = { effect: "bounceOut", duration: 1 };
                     var com = new Externallinks(cfg);
                     updateModel(com);
         		});

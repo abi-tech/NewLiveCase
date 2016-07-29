@@ -4,13 +4,20 @@ var H5ComponentBase = ExClass({
         var defaultOptions = {
             mode: '1', // 设计 1 显示 2
             type: 'base',
+            left: 0,
+            top: 0,
             width: 0,
             height: 0,
-            x: 0,
-            y: 0,
-            zIndex: 10000,
+            center: false,
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            borderWidth: 0,
+            borderColor: "rgba(0, 0, 0, 0)",
+            borderRadius: 0,
+            opacity: 100,
             rotate: 0,
-            center: true,
+            zIndex: 10000,
+            animateIn: null,
+            animateOut: null,
             containerCss: { 
                 "width": "0px",
                 "height": "0px",
@@ -23,8 +30,6 @@ var H5ComponentBase = ExClass({
             },
             componentCss: { },
             innerCss: { },
-            animateIn: null,
-            animateOut: null,
             onChosenEnd: function(){},
             onDragEnd: function(){},
             onResizeEnd: function(){}
@@ -33,7 +38,7 @@ var H5ComponentBase = ExClass({
         that.id = ('h5_c_' + Math.random()).replace('.', '_');
 
         that.wrapperTemplate = [
-            '<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move" ng-style="component.containerCss" ng-click="click(component, $event)">',
+            '<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move" ng-click="click(component, $event)">',
                 '<div class="tl-c"></div><div class="tr-c"></div><div class="bl-c"></div><div class="br-c"></div>',
             '</div>'
         ].join('');
@@ -47,48 +52,6 @@ var H5ComponentBase = ExClass({
             '</header>'
         ].join('');
 
-        that.confFacadeTemplate = [
-            '<section class="c-conf-section c-conf-style z-expand">',
-                '<div class="c-conf-panel">',
-                    '<div class="c-conf-row">',
-                        '<label class="c-input-label">背景</label>',
-                        '<div class="c-input-box"><div ng-model="currentComponent.borderColor" ipr-colorpicker></div></div>',
-                    '</div>',
-                '</div>',
-                '<div class="c-conf-panel">',
-                    '<div class="c-conf-row">',
-                        '<label class="c-input-label">边框</label>',
-                        '<div class="c-input-box"></div>',
-                    '</div>',
-                '</div>',
-                '<div class="c-conf-panel">',
-                    '<div class="c-conf-row">',
-                        '<label class="c-input-label">圆角</label>',
-                        '<div class="c-input-box"></div>',
-                    '</div>',
-                '</div>',
-                '<div class="c-conf-panel">',
-                    '<div class="c-conf-row">',
-                        '<label class="c-input-label">透明</label>',
-                        '<div class="c-input-box"></div>',
-                    '</div>',
-                '</div>',
-                '<div class="c-conf-panel">',
-                    '<div class="c-conf-row c-conf-row-2">',
-                        '<label class="c-input-label">旋转</label>',
-                        '<div class="c-input-box"></div>',
-                    '</div>',
-                '</div>',
-            '</section>'
-        ].join('');
-
-        that.confAnimationTemplate = [
-            ''
-        ].join('');
-
-        that.confPositionTemplate = [
-            '<div config-position></div>'
-        ].join('');
         //wrapper 在设计模式下加载 用于组件的 位置 宽高 大小 控制
         //container 在显示模式下设置 
         //component 控制组件的外观
@@ -152,15 +115,15 @@ var H5ComponentBase = ExClass({
         this.options.containerCss["height"] = this._scale(height);
         this.$wrapper.css("height", this._scale(height));
     },
-    setX: function (x) {
+    setLeft: function (left) {
         //设置x
-        this.x = x;
+        this.left = left;
         this.options.containerCss["left"] = this._scale(x);
         this.$wrapper.css("left", this._scale(x));
     },
-    setY: function (y) {
+    setTop: function (top) {
         //设置y
-        this.y = y;
+        this.top = y;
         this.options.containerCss["top"] = this._scale(y);
         this.$wrapper.css("top", this._scale(y));
     },
@@ -193,7 +156,13 @@ var H5ComponentBase = ExClass({
     previewTemplate: function () {
         return;
     },
-    buildViewer: function () {
+    setViewCss: function (argument) {
+        // body...
+    },
+    setHtmlCss: function (argument) {
+        // body...
+    },
+    buildView: function () {
         var that = this;
 
         //生成模板
@@ -208,21 +177,21 @@ var H5ComponentBase = ExClass({
         that.$viewContainer.addClass("c-" + that.options.type);
         that.$viewContainer.css("position", "absolute");
 
-        var containerCss = $.extend({}, that.options.containerCss)
+        var containerCss = $.extend({}, that.options.containerCss);
+        containerCss["top"] = that.options.top;
+        containerCss["left"] = that.options.left;
         containerCss["width"] = that.options.width;
         containerCss["height"] = that.options.height;
-        containerCss["top"] = that.options.y;
-        containerCss["left"] = that.options.x;
         that._setCss(that.$viewContainer, containerCss);
         that._setCss(that.$viewComponent, that.options.componentCss);
         that._setCss(that.$viewInner, that.options.innerCss); //console.log("h5", that.$viewInner);
     },
     buildHtml: function () {
         var that = this;
+        that.options.containerCss["top"] = that._scale(that.options.top);
+        that.options.containerCss["left"] = that._scale(that.options.left);
         that.options.containerCss["width"] = that._scale(that.options.width);
         that.options.containerCss["height"] = that._scale(that.options.height);
-        that.options.containerCss["top"] = that._scale(that.options.y);
-        that.options.containerCss["left"] = that._scale(that.options.x);
 
         that.$wrapper = $(that.wrapperTemplate);
         that.$container = $(that.containerTemplate);
@@ -245,7 +214,7 @@ var H5ComponentBase = ExClass({
     _build: function() {
         var that = this;
         
-        that.buildViewer();
+        that.buildView();
         that.buildHtml();
 
         that.$container.on('onLoad',function(){
@@ -310,12 +279,16 @@ var H5ComponentBase = ExClass({
                 $(event.target).css('left', x);
                 $(event.target).css('top', y);
 
-                that.options.x = parseInt(x / that.options.scale);
-                that.options.y = parseInt(y / that.options.scale);
+                that.options.left = parseInt(x / that.options.scale);
+                that.options.top = parseInt(y / that.options.scale);
 
+                $("#left").val(parseInt(x));
+                $("#top").val(parseInt(y));
+                that.$view.css('left', that.options.left);
+                that.$view.css('top', that.options.top);
                 //TODO 移动时修改 top left
                 if(typeof that.onDragEnd === 'function')
-                    that.onDragEnd(that.$html, that.options.x, that.options.y);
+                    that.onDragEnd(that.$html, that.options.left, that.options.top);
             }
         });
     },
@@ -340,26 +313,34 @@ var H5ComponentBase = ExClass({
             $(event.target).css('width', w);
             $(event.target).css('height', h);
 
-            that.options.x = parseInt(x / that.options.scale);
-            that.options.y = parseInt(y / that.options.scale);
+            that.options.left = parseInt(x / that.options.scale);
+            that.options.top = parseInt(y / that.options.scale);
             that.options.width = parseInt(w / that.options.scale);
             that.options.height = parseInt(h / that.options.scale);
 
+            $("#left").val(that.options.left);
+            $("#top").val(that.options.top);
+            $("#width").val(that.options.width);
+            $("#height").val(that.options.height);
+            that.$view.css('left', that.options.left);
+            that.$view.css('top', that.options.top);
+            that.$view.css('width', that.options.width);
+            that.$view.css('height', that.options.height);
             //TODO 移动时修改 top left width height
             if(typeof that.onResizeEnd === 'function')
-                that.onResizeEnd(that.$html, that.options.x, that.options.y, that.options.width, that.options.height);
+                that.onResizeEnd(that.$html, that.options.left, that.options.top, that.options.width, that.options.height);
         });
     },
     _moveend: function () {
         var that = this;
         that.interact.on('dragend', function(event){
-            var containerCss = $.extend({}, that.options.containerCss)
-            containerCss["width"] = that.options.width;
-            containerCss["height"] = that.options.height;
-            containerCss["top"] = that.options.y;
-            containerCss["left"] = that.options.x;
-            that._setCss(that.$viewContainer, containerCss);
-            that._setCss(that.$viewInner, that.options.innerCss);
+            // var containerCss = $.extend({}, that.options.containerCss)
+            // containerCss["width"] = that.options.width;
+            // containerCss["height"] = that.options.height;
+            // containerCss["top"] = that.options.y;
+            // containerCss["left"] = that.options.x;
+            // that._setCss(that.$viewContainer, containerCss);
+            // that._setCss(that.$viewInner, that.options.innerCss);
         });
     },
     _resizeend: function(){
@@ -391,5 +372,59 @@ var H5ComponentBase = ExClass({
             }
             return action;
         });
+    },
+    setXYWH: function (data) {
+        var left = parseInt(data["left"]);
+        var top = parseInt(data["top"]);
+        var width = parseInt(data["width"]);
+        var height = parseInt(data["height"]);
+        var scale = that.scale;
+
+        that.options.containerCss["left"] = left;
+        that.options.containerCss["top"] = top;
+        that.options.containerCss["width"] = width;
+        that.options.containerCss["height"] = height;
+        
+        that.containerCss["left"] = left;
+        that.containerCss["top"] = top;
+        that.containerCss["width"] = width;
+        that.containerCss["height"] = height;
+
+        that.left = left;
+        that.top = top;
+        that.width = width;
+        that.height = height;
+
+        $("#left").val(left);
+        $("#top").val(top);
+        $("#width").val(width);
+        $("#height").val(height);
+
+        that.$html.css("left", left * that.scale);
+        that.$html.css("top", top * that.scale);
+        that.$html.css("width", width * that.scale);
+        that.$html.css("height", height * that.scale);
+
+        that.$view.css("left", left);
+        that.$view.css("top", top);
+        that.$view.css("width", width);
+        that.$view.css("height", height);
+    },
+    setComponentCss: function (data) {
+        var that = this;
+
+        that.options.componentCss["background-color"] = data["backgroundColor"];
+        that.options.componentCss["border-width"] = data["borderWidth"];
+        that.options.componentCss["border-color"] = data["borderColor"];
+        that.options.componentCss["border-radius"] = data["borderRadius"];
+        that.options.componentCss["opacity"] = parseInt(data["opacity"]) / 100;
+        that.options.componentCss["transform"] = "rotate(" + data["rotate"] + "deg)";
+        that.options.containerCss["transform"] = "rotate(" + data["rotate"] + "deg)";
+
+        that._setCss(that.$view, componentCss);
+        that._setCss(that.$view, containerCss);
+
+        that._setCss(that.$html, componentCss);
+        that._setCss(that.$html, containerCss);
     }
 });

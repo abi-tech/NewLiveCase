@@ -6,9 +6,7 @@ var Spinner = function (options) {
     	max: 10,
     	step: 1,
     	val: 0,
-    	onChange: function (val) {
-    		// body...
-    	}
+    	onChange: function (val) { }
     };
 
     that.options = $.extend(true, {}, defaultOptions, options);
@@ -38,12 +36,6 @@ var Spinner = function (options) {
 
     $textbox.val(that.options.val);
 
-    that.valid = function () {
-        var val = $textbox.val();
-        val = val.replace(/[^0-9-]+/,'');
-        $textbox.val(val);
-    }
-
     $btnSub.on("click", function (e) {
     	e.stopPropagation();
     	var temp = parseInt($textbox.val()) - that.options.step;
@@ -54,6 +46,7 @@ var Spinner = function (options) {
         }
         that.options.val = temp;
         $textbox.val(that.options.val);
+        that.options.onChange(that.options.val);
     });
 
     $btnAdd.on("click", function (e) {
@@ -67,9 +60,20 @@ var Spinner = function (options) {
         }
         that.options.val = temp;
         $textbox.val(that.options.val);
+        that.options.onChange(that.options.val);
     });
 
     $textbox.on("keyup", function (e) {
-        that.valid();
+        var val = $textbox.val();
+        val = val.replace(/[^0-9-]+/,'');
+        var temp = parseFloat(val);
+        if(temp >= that.options.max){
+            temp = that.options.max;
+        }else if(temp <= that.options.min){
+            temp = that.options.min;
+        }
+        that.options.val = temp;
+        $textbox.val(that.options.val);
+        that.options.onChange(that.options.val);
     });
 }

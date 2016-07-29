@@ -12,9 +12,14 @@
     <link href="/static/css/animate.min.css" rel="stylesheet" />
 	<script src="/static/plugins/jquery/2.2.3/jquery.min.js"></script>
 	<script src="/static/plugins/template/template.js"></script>
+
+	<link href="/static/plugins/range-slider/2.1.4/css/ion.rangeSlider.css" rel="stylesheet" />
+    <link href="/static/plugins/range-slider/2.1.4/css/ion.rangeSlider.skinNice.css" rel="stylesheet" />
+    <script src="/static/plugins/range-slider/2.1.4/js/ion.rangeSlider.js"></script>
+
 	<script src="/static/js/widgets/ColorPicker.js"></script>
 	<script src="/static/js/widgets/Spinner.js"></script>
-	<script src="/static/js/widgets/ConfPanel.js"></script>
+	<script src="/static/js/widgets/Slider.js"></script>
 	<script src="/static/js/widgets/ConfStyle.js"></script>
 </head>
 <body>
@@ -29,8 +34,20 @@
 		/** 测试 ConfPanel 构建布局 **/
 		$(function () {
 			var wrapper = $(".c-config-wapper");
-			var panel = new ConfStyle();
-			wrapper.append(panel.$html);
+			var confStyle = new ConfStyle({
+				data: { 
+		            backgroundColor: "rgba(10, 10, 10, 0)", 
+		            borderWidth: 20, 
+		            borderColor: "rgba(30, 30, 30, 0)",
+		            borderRadius: 40,
+		            opacity: 50,
+		            rotate: 60
+		        },
+				onChange: function (data) {
+					console.log(data);
+				}
+			});
+			wrapper.append(confStyle.$html);
 		});
 	</script>
 </body>

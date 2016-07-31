@@ -1,0 +1,45 @@
+1.应用到所有页码  H5Page
+2.锁定翻页 H5Page
+3.自动翻页 H5Page
+4.背景音乐控制 H5Music
+5.预览页面 PreviewDilage
+6.特效
+7.其他组件 表单
+8.其他组件 地图
+9.其他组件 视频
+10.其他组件 音频
+11.其他组件 画册
+12.其他组件 互动
+13.其他组件 抽奖
+14.其他组件 照片墙
+15.其他组件 卡卷
+16.其他组件 语音留言墙
+17.其他组件 支付
+18.撤销
+19.恢复
+20.保存
+21.预览
+22.发布
+23.zIndex控制器 ZIndexToolbar
+24.slider.js 优化 ion.rangeSlider.js
+删除动画BUG: 无法删除
+组件写法模板：
+
+var Singletext = ExClass(H5ComponentBase, {
+    initialize: function($super, options) { 
+    	var that = this;
+        
+        that.defaultOptions = { }
+
+		that.componentTemplate = '';
+		that.innerTemplate = '';
+		that.configTemplate = '';
+
+		$super(that.options);
+    },
+    buildConfig : function () {
+    },
+    refresh: function () {
+    }
+});
+

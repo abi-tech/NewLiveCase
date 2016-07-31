@@ -75,6 +75,7 @@
 	var ColorPicker = function (element, options) {
 		this.defaults = {
 			offset: { top: 0, left: 0 },
+			onShown: function () {},
 			onChange: function(color){}
 		};
 		this.$element = $(element);
@@ -100,7 +101,7 @@
 		
 		$element.on("click", function (e) {
 			e.stopPropagation();
-			that.toggle();
+			that.show();
 		});
 
 		$("div.oni-colorpicker-color-list>div.color-box", $picker).on("click", function (e) {
@@ -133,6 +134,7 @@
 	ColorPicker.prototype.show = function(){
 		this._calcPos();
 		this.$picker.show();
+		this.options.onShown();
 	}
 
 	ColorPicker.prototype.hide = function(){
@@ -146,10 +148,8 @@
 	}
 
 	$.fn.colorpicker = function (options) {
-        return $.map(this, function(element){
-        	var colorPicker = new ColorPicker(element, options);
-        	colorPicker.init();
-        	return colorPicker;
-        });
+        var colorPicker = new ColorPicker(this, options);
+    	colorPicker.init();
+    	return colorPicker;
     }
 })(jQuery, window, document);

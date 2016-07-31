@@ -11,7 +11,6 @@ mainModule.directive("pageBackgroundImage", ['$rootScope', '$compile', 'pageServ
             '</div>'
         ].join(''),
         replace: true,
-        scope: {},
         link: function (scope, element, attrs) {
             var tpl = $([
                 '<div class="page-bg-div" style="width: 100%; height: 100%; overflow: hidden; position: absolute; z-index: 1; top: 0px; left: 0px;">',
@@ -96,6 +95,10 @@ mainModule.directive("pageBackgroundImage", ['$rootScope', '$compile', 'pageServ
 
             initView();
             initEvent();
+
+            // scope.$on("$destroy", function() {
+            //     console.log("pageBackgroundImage销毁");
+            // });
         }
     }
 }]);
@@ -114,12 +117,12 @@ mainModule.directive("pageBackgroundColor", ['$rootScope', '$compile', 'pageServ
                     '<li class="f-float-l f-point f-ml-7" style="background-color: rgb(80, 227, 194);"></li>',
                     '<li class="f-float-l f-point f-ml-7" style="background-color: rgb(248, 231, 28);"></li>',
                     '<li class="f-float-l f-ml-5 colorpick f-point">',
-                    '<input class="f-point" type="text" id="page_backgroundColor" data-duplex-changed="initCp" style="color: rgb(255, 255, 255); background: rgb(255, 255, 255);"></li>',
+                        '<input class="f-point" type="text" style="color: rgb(255, 255, 255); background: rgb(255, 255, 255);">',
+                    '</li>',
                 '</ul>',
             '</div>'
         ].join(''),
         replace: true,
-        scope: {},
         link: function (scope, element, attrs) {
             var updateModel = function (val) {
                 $rootScope.currentPage.bgColor = val? val : "rgb(255, 255, 255)";
@@ -129,6 +132,12 @@ mainModule.directive("pageBackgroundColor", ['$rootScope', '$compile', 'pageServ
                 $("#editorFrame").css("background-color", $rootScope.currentPage.bgColor);
             }
 
+            $("input.f-point", element).colorpicker({
+                onChange: function(color){
+                    updateModel(color);
+                }
+            });
+
             var initEvent = function () {
                 $("li", element).on("click", function (e) {
                     var color = $(this).css("background-color");
@@ -137,6 +146,10 @@ mainModule.directive("pageBackgroundColor", ['$rootScope', '$compile', 'pageServ
             }
 
             initEvent();
+
+            // scope.$on("$destroy", function() {
+            //     console.log("pageBackgroundColor销毁");
+            // });
         }
     }
 }]);
@@ -152,7 +165,7 @@ mainModule.directive("pageSliderIcon", ['$rootScope', '$compile', 'pageService',
             '</div>'
         ].join(''),
         replace: true,
-        scope: {},
+        scope:{},
         link: function (scope, element, attrs) {
             scope.icons = constants.pageIconList;
             scope.selected = $rootScope.currentPage.slideIcon;
@@ -170,6 +183,9 @@ mainModule.directive("pageSliderIcon", ['$rootScope', '$compile', 'pageService',
                 
                 updateModel(newValue);
             });
+            // scope.$on("$destroy", function() {
+            //     console.log("pageSliderIcon销毁");
+            // })
         }
     }
 }]);
@@ -190,7 +206,6 @@ mainModule.directive("pageSlideAnimation", ['$rootScope', '$compile', 'pageServi
             '</div>'
         ].join(''),
         replace: true,
-        scope: {},
         link: function (scope, element, attrs) {
             scope.animations = constants.pageAnimationList;
             scope.selected = $rootScope.currentPage.animation;
@@ -201,9 +216,103 @@ mainModule.directive("pageSlideAnimation", ['$rootScope', '$compile', 'pageServi
 
             scope.chosen = function(animation) {
                 scope.selected = animation;
-                updateModel(animation);
+                updateModel(animation); 
+                //console.log("scope.chosen scope.chosen ");
                 $("#editorFrame").trigger("onLoad");
             }
+
+            // scope.$on("$destroy", function() {
+            //     console.log("pageSlideAnimation销毁");
+            // });
         }
     }
 }]);
+
+mainModule.directive("pageConfigother", ['$rootScope', '$compile', 'pageService', function ($rootScope, $compile, pageService) {
+    return {
+        restrict: "A",
+        template: [
+        '<div class="c-conf-row f-mt-30">',
+            '<div class="f-fix f-mb-20">',
+                '<label class="f-float-l f-mt-2" style="color:#333">应用到所有页面</label>',
+            '</div>',
+            '<hr>',
+            '<div class="f-fix f-mt-20" style="position: relative">',
+                '<label class="f-float-l f-mt-2" style="color:#333">锁定翻页</label>',
+                '<div class="tips-area">',
+                    '<div class="info">',
+                        '<div class="info-pop" style="top: -61px;height: 38px;padding-top: 10px;width: 205px">',
+                            '锁定后该页将无法继续翻页，<br>可添加“跳转按钮”跳转至其他页面。<i></i>',
+                        '</div>',
+                    '</div>',
+                '</div>',
+            '</div>',
+            '<hr>',
+            '<div class="f-fix f-mt-20 f-mb-15" style="position: relative">',
+                '<label class="f-float-l f-mt-2" style="color:#333">自动翻页</label>',
+                '<div class="tips-area">',
+                    '<div class="info">',
+                        '<div class="info-pop" style="top: -80px;height: 57px;padding-top: 10px">',
+                            '1、该页面动画自动播放完毕后，并自动翻至下一页；<br>2、自动播放时，点击该页面即可停止自动播放。<i></i>',
+                        '</div>',
+                    '</div>',
+                '</div>',
+            '</div>',
+            '<div class="c-conf-row">',
+                '<label class="c-input-label" style="color:#333">翻页时间</label>',
+                '<div class="c-input-box"></div>',
+            '</div>',
+        '</div>'
+        ].join(''),
+        replace: true,
+        link: function (scope, element, attrs) {
+            var switcherApply = new Switcher({ val: $rootScope.currentPage.applyAllPages, onChange: onApplyChange });
+            var switcherLock = new Switcher({ val: $rootScope.currentPage.lockTurnPage, onChange: onLockChange });
+            var switcherAuto = new Switcher({ val: $rootScope.currentPage.autoTurnPage, onChange: onAutoChange });
+            var sliderAutoDelay = new Slider({ val: $rootScope.currentPage.autoTurnPageDelay, min: 0, max: 300, step: 0.01, onChange: onAutoDelayChange });
+
+            var $row1 = $("div.f-fix:eq(0)", element);
+            var $row2 = $("div.f-fix:eq(1)", element);
+            var $row3 = $("div.f-fix:eq(2)", element);
+            var $row4 = $(".c-conf-row", element);
+
+            function onApplyChange(data) {
+                $rootScope.currentPage.applyAllPages = data;
+            }
+            function onLockChange(data) {
+                $rootScope.currentPage.lockTurnPage = data;
+            }
+            function onAutoChange(data) {
+                toggle(data);
+                $rootScope.currentPage.autoTurnPage = data;
+            }
+            function onAutoDelayChange(data) {
+                $rootScope.currentPage.autoTurnPageDelay = data;
+            }
+
+            function toggle(data) {
+                if (data) {
+                    $row4.show();
+                }else{
+                    $row4.hide();
+                }
+            }
+
+            $row1.append(switcherApply.$html);
+            $row2.append(switcherLock.$html);
+            $row3.append(switcherAuto.$html);
+            $row4.find(".c-input-box").append(sliderAutoDelay.$html);
+
+            toggle($rootScope.currentPage.autoTurnPage);
+
+            scope.$on("$destroy", function() {
+                console.log("pageConfigother销毁");
+            });
+        }
+    }
+}]);
+
+
+
+
+

@@ -2,7 +2,7 @@ var GlobalMusic = function (options) {
 	var that = this;
 	var defaultOptions = {
 		playing: false,
-		data: null,
+		data: { name: "", url: "", pos: "top: 20px; right: 20px;" },
 		onChosenEnd: function (data) { }
 	};
 
@@ -138,8 +138,8 @@ var GlobalMusic = function (options) {
 			onChosenEnd: function (item) {
 				if(!item) return;
 				var data = { "name": item.options.name, "url": item.options.url };
-				that.options.data = data;
-				that.options.onChosenEnd(data);
+				$.extend(that.options.data, data);
+				that.options.onChosenEnd(that.options.data);
 				that._view2();
 				that.play();
 			}
@@ -171,7 +171,16 @@ var GlobalMusic = function (options) {
 		var index = that.$positions.index($(this));
         var $i = $("i:eq(0)", this);
         $("i:eq(0)", that.$positions).removeClass("icon-selected").css("display", "none");
-        $i.addClass("icon-selected").css("display", "inline")
+        $i.addClass("icon-selected").css("display", "inline");
+
+        switch(index){
+        	case 0: that.options.data["pos"] = "top: 20px; right: 20px;"; break;
+        	case 1: that.options.data["pos"] = "bottom: 20px; right: 20px;"; break;
+        	case 2: that.options.data["pos"] = "top: 20px; left: 20px;"; break;
+        	case 3: that.options.data["pos"] = "bottom: 20px; left: 20px;"; break;
+        }
+
+        that.options.onChosenEnd(that.options.data);
 	});
 
 	that.$mask.on("click", function (e) {

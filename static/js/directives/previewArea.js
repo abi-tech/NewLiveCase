@@ -98,11 +98,27 @@ mainModule.directive("previewArea", ['$rootScope', '$timeout', '$log', '$compile
                 $event.stopPropagation();
             }
 
+            var pagePicker = new PagePicker({
+                onChosen: function (data) {
+                    console.log("PagePicker", data);
+                },
+                onConfirm: function (data) {
+                    if(!data){
+                        pageService.add();
+                    }else{
+                        var h5page = comUtils.createPage(data);
+                        pageService.pages.push(h5page);
+                    }
+                    
+                    var curr = pageService.pages.length - 1;
+                    active(curr);
+                    $rootScope.pageChanged(curr, pageService.pages[curr]);
+
+                    console.log("PagePicker", data);
+                }
+            });
             scope.add = function () {
-                pageService.add();
-                var curr = pageService.pages.length - 1;
-                active(curr);
-                $rootScope.pageChanged(curr, pageService.pages[curr]);
+                pagePicker.show();
             }
 
             var init = function () {

@@ -6282,11 +6282,11 @@ article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,secti
 .m-addPage .add-page-btn-wrap .add-page-btn.btn-confirm {
 	border-right:2px solid #fff;
 	width:50%;
-	background:url(../../../img/icon-check.png)50% 50% no-repeat #36b34a
+	background:url(/static/images/icon-check.png)50% 50% no-repeat #36b34a
 }
 .m-addPage .add-page-btn-wrap .add-page-btn.btn-cancel {
 	width:50%;
-	background:url(../../../img/icon-close.png)50% 50% no-repeat #374047
+	background:url(/static/images/icon-close.png)50% 50% no-repeat #374047
 }
 .c-page-list-show .data-loading {
 	position:absolute;

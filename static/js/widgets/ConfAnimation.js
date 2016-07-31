@@ -5,53 +5,7 @@ var PanelAnimation = function (options) {
 		data: null,
 		type: "in",
 		label: "没有出场动画", //没有入场动画
-		animations: [
-			{ "type":"bounceIn", "direction": "in", "typeName": "弹入", "name": "弹入", "effect": "bounceIn", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"bounceIn", "direction": "in", "typeName": "弹入", "name": "从上弹入", "effect": "bounceInDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"bounceIn", "direction": "in", "typeName": "弹入", "name": "从下弹入", "effect": "bounceInUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"bounceIn", "direction": "in", "typeName": "弹入", "name": "从左弹入", "effect": "bounceInLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"bounceIn", "direction": "in", "typeName": "弹入", "name": "从右弹入", "effect": "bounceInRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeIn", "direction": "in", "typeName": "淡入", "name": "淡入", "effect": "fadeIn", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"fadeIn", "direction": "in", "typeName": "淡入", "name": "从上淡入", "effect": "fadeInDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeIn", "direction": "in", "typeName": "淡入", "name": "从下淡入", "effect": "fadeInUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeIn", "direction": "in", "typeName": "淡入", "name": "从左淡入", "effect": "fadeInLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeIn", "direction": "in", "typeName": "淡入", "name": "从右淡入", "effect": "fadeInRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"flipIn", "direction": "in", "typeName": "翻入", "name": "水平翻入", "effect": "flipInY", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-		    { "type":"flipIn", "direction": "in", "typeName": "翻入", "name": "垂直翻入", "effect": "flipInX", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-		    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "旋入", "effect": "rotateIn", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从上旋入", "effect": "rotateInDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从下旋入", "effect": "rotateInUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从左旋入", "effect": "rotateInLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从右旋入", "effect": "rotateInRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "渐进放大", "effect": "zoomIn", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "从上放大", "effect": "zoomInDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "从下放大", "effect": "zoomInUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "从左放大", "effect": "zoomInLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "从右放大", "effect": "zoomInRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"bounceOut", "direction": "out", "typeName": "弹出", "name": "弹出", "effect": "bounceOut", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"bounceOut", "direction": "out", "typeName": "弹出", "name": "从上弹出", "effect": "bounceOutDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"bounceOut", "direction": "out", "typeName": "弹出", "name": "从下弹出", "effect": "bounceOutUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"bounceOut", "direction": "out", "typeName": "弹出", "name": "从左弹出", "effect": "bounceOutLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"bounceOut", "direction": "out", "typeName": "弹出", "name": "从右弹出", "effect": "bounceOutRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeOut", "direction": "out", "typeName": "淡出", "name": "淡出", "effect": "fadeOut", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"fadeOut", "direction": "out", "typeName": "淡出", "name": "从上淡出", "effect": "fadeOutDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeOut", "direction": "out", "typeName": "淡出", "name": "从下淡出", "effect": "fadeOutUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeOut", "direction": "out", "typeName": "淡出", "name": "从左淡出", "effect": "fadeOutLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"fadeOut", "direction": "out", "typeName": "淡出", "name": "从右淡出", "effect": "fadeOutRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"flipOut", "direction": "out", "typeName": "翻出", "name": "水平翻出", "effect": "flipOutY", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-		    { "type":"flipOut", "direction": "out", "typeName": "翻出", "name": "垂直翻出", "effect": "flipOutX", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-		    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "旋出", "effect": "rotateOut", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从上旋出", "effect": "rotateOutDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从下旋出", "effect": "rotateOutUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从左旋出", "effect": "rotateOutLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从右旋出", "effect": "rotateOutRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "渐进缩小", "effect": "zoomOut", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-	        { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从上缩小", "effect": "zoomOutDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从下缩小", "effect": "zoomOutUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从左缩小", "effect": "zoomOutLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从右缩小", "effect": "zoomOutRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-	        { "type":"hinge", "direction": "out", "typeName": "坠落", "name": "坠落", "effect": "hinge", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-		],
+		animations: constants.comsAnimationList,
 		onAnimate: function (animation) { },
 		onChange: function (animation) { }
 	};
@@ -137,7 +91,7 @@ var PanelAnimation = function (options) {
 	var sliderAnimationDelay = new Slider({ val: defDelay, min: 0, max: 300, step: 0.01, onChange: onAnimationDelayChange });
     var sliderAnimationDuration = new Slider({ val: defDuration, min: 0, max: 5, step: 0.01, onChange: onAnimationDurationChange });
     var sliderAnimationCount = new Slider({ val: defCount, min: 1, max: 10, step: 1, onChange: onAnimationCountChange });
-    var switcherAnimationInfinite = new Switcher({ val: defInfinite, onChange: onAnimationInfiniteChange })
+    var switcherAnimationInfinite = new Switcher({ val: defInfinite, onChange: onAnimationInfiniteChange });
 
 	var chooseAnimType = new ChooseList({
 		adapter: { "type": "direction", "name": "typeName", "key": "type" },

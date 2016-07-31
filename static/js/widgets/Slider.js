@@ -36,9 +36,7 @@ var Slider = function (options) {
         grid: false,
         onChange: function (data) {
             $input.val(data.from);
-        },
-        onFinish: function (data) { 
-        	that.options.onChange(data.from);
+            that.options.onChange(data.from);
         }
     })
     .data("ionRangeSlider");

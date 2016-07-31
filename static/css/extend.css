@@ -1961,12 +1961,11 @@ div .oni-scrollbar-arrow-down b {
 	left: -1px;
 }
 .c-externallinks-edit [type=text-align-list] {
-	/*left: 139px;*/
-	position: static;
+	left: 139px;
 	width: 69px;
 }
 .c-externallinks-edit [type=font-style-list] {
-	/*left: 209px;*/
+	left: 209px;
 	width: 68px;
 }
 .c-externallinks-edit .x-icon-left,
@@ -2113,6 +2112,7 @@ div .oni-scrollbar-arrow-down b {
 	background: linear-gradient(#fbfbfb, #e1e1e1);
 }
 .c-externallinks-edit .c-externallinks-setting .c-font-setting li {
+	position: relative;
 	border-top: 1px solid #ccc;
 	width: 25%;
 	float: left;
@@ -6259,3 +6259,18 @@ i.scala.hidescala {
 .c-photowall-edit .c-pw-pre:hover,.u-image-change-btn:hover {
 	background: #E6E6E6;
 }
+
+/*.c-externallinks-edit [type=font-size-list] {
+    width: 70px;
+    left: -1px;
+}
+
+.c-externallinks-edit [type=text-align-list] {
+    left: 139px;
+    width: 69px;
+}
+
+.c-externallinks-edit [type=font-style-list] {
+    left: 209px;
+    width: 68px;
+}*/

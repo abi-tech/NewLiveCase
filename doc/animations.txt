@@ -1,0 +1,30 @@
+<div style="position: relative; z-index: 9399;">
+	<div id="globalAudio" class="u-globalAudio globalAudio-default z-play" style="right: 20px; top: 20px;">
+		<div class="u-globalAudio-0 u-globalAudio-1"></div>
+		<audio id="globalAudioPlayer" src="http://img.liveapp.cn/group3/eng/66/95/fba82fc80435050d7c6dc6956222_14533655137602_5.mp3" loop="" autoplay="false"></audio>
+		<div></div>
+	</div>
+</div>
+
+function GetUrlRelativePath()
+　　{
+　　　　var url = document.location.toString();
+　　　　var arrUrl = url.split("//");
+
+　　　　var start = arrUrl[1].indexOf("/");
+　　　　var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
+
+　　　　if(relUrl.indexOf("?") != -1){
+　　　　　　relUrl = relUrl.split("?")[0];
+　　　　}
+　　　　return relUrl;
+　　}
+
+function GetUrlPara()
+　　{
+　　　　var url = document.location.toString();
+　　　　var arrUrl = url.split("?");
+
+　　　　var para = arrUrl[1];
+　　　　return para;
+　　}

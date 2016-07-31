@@ -3,12 +3,14 @@ var H5ComponentBase = ExClass({
         var that = this;
         var defaultOptions = {
             mode: '1', // 设计 1 显示 2
+            active: false,
             type: 'base',
             left: 0,
             top: 0,
             width: 0,
             height: 0,
             center: false,
+            scale: constants.scale,
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderWidth: 0,
             borderColor: "rgba(0, 0, 0, 0)",
@@ -38,7 +40,7 @@ var H5ComponentBase = ExClass({
         that.id = ('h5_c_' + Math.random()).replace('.', '_');
 
         that.wrapperTemplate = [
-            '<div class="f-abs c-c-container" data-id=' + that.id + ' style="cursor: move" ng-click="click(component, $event)">',
+            '<div class="f-abs c-c-container" style="cursor: move" ng-click="click(component, $event)">',
                 '<div class="tl-c"></div><div class="tr-c"></div><div class="bl-c"></div><div class="br-c"></div>',
             '</div>'
         ].join('');
@@ -135,16 +137,17 @@ var H5ComponentBase = ExClass({
         //设置动画退出
         $.extend(this.options.animateOut, animation);
     },
-    animate: function(animation) {
-        //表演动画
+    animateIn: function () {
+        this.animate(this.options.animateIn);
+    },
+    animateOut: function () {
+        this.animate(this.options.animateOut);
+    },
+    animate: function(animation) { 
         var that = this;
         if(!animation) return;
 
-        var express = animation.effect + " " + animation.duration + "s";
-        var end = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
-        that.$container.css("animation", express).one(end, function () {
-            that.$container.css("animation", "none");
-        });
+        comUtils.animate("组件动画", that.$container, animation);
     },
     chosen: function () {
         //添加选中样式
@@ -162,9 +165,34 @@ var H5ComponentBase = ExClass({
     setHtmlCss: function (argument) {
         // body...
     },
+    getScaleContainerCss: function () {
+        var css = $.extend({}, this.options.containerCss);
+        css["top"] = this.options.top * this.options.scale;
+        css["left"] = this.options.left * this.options.scale;
+        css["width"] = this.options.width * this.options.scale;
+        css["height"] = this.options.height * this.options.scale;
+        css["transform"] = "rotate(" + this.options.rotate + "deg)";
+        return css;
+    },
+    refreshContainerCss: function () {
+        this.options.containerCss["top"] = this.options.top;
+        this.options.containerCss["left"] = this.options.left;
+        this.options.containerCss["width"] = this.options.width;
+        this.options.containerCss["height"] = this.options.height;
+        this.options.containerCss["z-index"] = this.options.zIndex;
+    },
+    refreshComponentCss: function () {
+        this.options.componentCss["background-color"] = this.options.backgroundColor;
+        this.options.componentCss["border-width"] = this.options.borderWidth;
+        this.options.componentCss["border-color"] = this.options.borderColor;
+        this.options.componentCss["border-radius"] = this.options.borderRadius;
+        this.options.componentCss["opacity"] = parseInt(this.options.opacity) / 100;
+        this.options.componentCss["transform"] = "rotate(" + this.options.rotate + "deg)";
+    },
     buildView: function () {
         var that = this;
-
+        that.refreshContainerCss();
+        that.refreshComponentCss();
         //生成模板
         that.$viewContainer = $(that.containerTemplate);
         that.$viewComponent = $(that.componentTemplate);
@@ -177,24 +205,20 @@ var H5ComponentBase = ExClass({
         that.$viewContainer.addClass("c-" + that.options.type);
         that.$viewContainer.css("position", "absolute");
 
-        var containerCss = $.extend({}, that.options.containerCss);
-        containerCss["top"] = that.options.top;
-        containerCss["left"] = that.options.left;
-        containerCss["width"] = that.options.width;
-        containerCss["height"] = that.options.height;
-        that._setCss(that.$viewContainer, containerCss);
+        that._setCss(that.$viewContainer, that.options.containerCss);
         that._setCss(that.$viewComponent, that.options.componentCss);
         that._setCss(that.$viewInner, that.options.innerCss); //console.log("h5", that.$viewInner);
+
+        that.$view.attr("data-id", that.id);
     },
     buildHtml: function () {
         var that = this;
-        that.options.containerCss["top"] = that._scale(that.options.top);
-        that.options.containerCss["left"] = that._scale(that.options.left);
-        that.options.containerCss["width"] = that._scale(that.options.width);
-        that.options.containerCss["height"] = that._scale(that.options.height);
+        that.refreshContainerCss();
+        that.refreshComponentCss();
 
         that.$wrapper = $(that.wrapperTemplate);
         that.$container = $(that.containerTemplate);
+        that.$component = $(that.componentTemplate);
         that.$inner = $(that.innerTemplate);
         
         that.$component.append(that.$inner);
@@ -203,13 +227,13 @@ var H5ComponentBase = ExClass({
         that.$html = that.$wrapper;
         that.interact = interact(that.$html[0], { styleCursor: false });
         that._bind();
-        that._setCss(that.$wrapper, that.options.containerCss);
+        that._setCss(that.$wrapper, that.getScaleContainerCss());
         that._setCss(that.$component, that.options.componentCss);
         that._setCss(that.$inner, that.options.innerCss);
 
-        that.chosen();
-
-        return that.$html.clone();
+        if(that.options.active)
+            that.chosen();
+        that.$html.attr("data-id", that.id);
     },
     _build: function() {
         var that = this;
@@ -217,8 +241,8 @@ var H5ComponentBase = ExClass({
         that.buildView();
         that.buildHtml();
 
-        that.$container.on('onLoad',function(){
-            that.animate(that.options.animateIn);
+        that.$container.on('onLoad',function(){ console.log("that.$container.onLoad");
+            that.animateIn();
             return false;   // 阻止事件向上传播         
         });
         that.$container.on('onLeave',function(){
@@ -226,7 +250,7 @@ var H5ComponentBase = ExClass({
             return false;   // 阻止事件向上传播             
         });
 
-        that.$container.trigger('onLoad');
+        //that.$container.trigger('onLoad');
     },
     _bind: function(){
         var that = this;
@@ -333,7 +357,8 @@ var H5ComponentBase = ExClass({
     },
     _moveend: function () {
         var that = this;
-        that.interact.on('dragend', function(event){
+        that.interact.on('dragend resizeend', function(event){
+            // console.log('dragend resizeend', event);
             // var containerCss = $.extend({}, that.options.containerCss)
             // containerCss["width"] = that.options.width;
             // containerCss["height"] = that.options.height;
@@ -373,58 +398,33 @@ var H5ComponentBase = ExClass({
             return action;
         });
     },
-    setXYWH: function (data) {
-        var left = parseInt(data["left"]);
-        var top = parseInt(data["top"]);
-        var width = parseInt(data["width"]);
-        var height = parseInt(data["height"]);
-        var scale = that.scale;
-
-        that.options.containerCss["left"] = left;
-        that.options.containerCss["top"] = top;
-        that.options.containerCss["width"] = width;
-        that.options.containerCss["height"] = height;
-        
-        that.containerCss["left"] = left;
-        that.containerCss["top"] = top;
-        that.containerCss["width"] = width;
-        that.containerCss["height"] = height;
-
-        that.left = left;
-        that.top = top;
-        that.width = width;
-        that.height = height;
-
-        $("#left").val(left);
-        $("#top").val(top);
-        $("#width").val(width);
-        $("#height").val(height);
-
-        that.$html.css("left", left * that.scale);
-        that.$html.css("top", top * that.scale);
-        that.$html.css("width", width * that.scale);
-        that.$html.css("height", height * that.scale);
-
-        that.$view.css("left", left);
-        that.$view.css("top", top);
-        that.$view.css("width", width);
-        that.$view.css("height", height);
-    },
     setComponentCss: function (data) {
         var that = this;
+        $.extend(that.options, data);
+        
+        that.refreshContainerCss();
+        that.refreshComponentCss();
 
-        that.options.componentCss["background-color"] = data["backgroundColor"];
-        that.options.componentCss["border-width"] = data["borderWidth"];
-        that.options.componentCss["border-color"] = data["borderColor"];
-        that.options.componentCss["border-radius"] = data["borderRadius"];
-        that.options.componentCss["opacity"] = parseInt(data["opacity"]) / 100;
-        that.options.componentCss["transform"] = "rotate(" + data["rotate"] + "deg)";
-        that.options.containerCss["transform"] = "rotate(" + data["rotate"] + "deg)";
+        that._setCss(that.$viewComponent, that.options.componentCss);
+        that._setCss(that.$viewContainer, that.options.containerCss);
 
-        that._setCss(that.$view, componentCss);
-        that._setCss(that.$view, containerCss);
+        that._setCss(that.$component, that.options.componentCss);
+        that._setCss(that.$wrapper, that.getScaleContainerCss());
+    },
+    setXYWH: function (data) {
+        var that = this;
+        $.extend(that.options, data);
 
-        that._setCss(that.$html, componentCss);
-        that._setCss(that.$html, containerCss);
+        that._setCss(that.$viewComponent, that.options.componentCss);
+        that._setCss(that.$viewContainer, that.options.containerCss);
+
+        that._setCss(that.$component, that.options.componentCss);
+        that._setCss(that.$wrapper, that.getScaleContainerCss());
+    },
+    setAnimateIn: function (data) {
+        this.options.animateIn = $.extend({}, data);
+    },
+    setAnimateOut: function (data) {
+        this.options.animateOut = $.extend({}, data);
     }
 });

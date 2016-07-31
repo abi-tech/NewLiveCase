@@ -40,9 +40,7 @@ var Spinner = function (options) {
     	e.stopPropagation();
     	var temp = parseInt($textbox.val()) - that.options.step;
     	if(temp <= that.options.min){
-            that.options.val = that.options.min;
-            $textbox.val(that.options.val);
-            return;
+            temp = that.options.min;
         }
         that.options.val = temp;
         $textbox.val(that.options.val);

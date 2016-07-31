@@ -13,8 +13,8 @@ var tpl_area_toolbtn = [
 '</a>'
 ].join('');
 
-mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService', 'editorService',
-    function ($rootScope, $compile, pageService, editorService) {
+mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
+    function ($rootScope, $compile, pageService) {
     return {
         restrict: "A",
         templateUrl: "tpls/navigationArea.html",
@@ -32,10 +32,11 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         	var $btnRedo = $(".c-toolPanel-right:last .u-toolBtn:eq(1)", element);
 
             var updateModel = function (com) {
-                $rootScope.currentPage.components.push(com);
-                $rootScope.currentComponent = com;
-                $rootScope.$apply();
-                $rootScope.componentChanged(com);
+                $rootScope.$apply(function () {
+                    $rootScope.currentPage.addComponent(com);
+                    $rootScope.currentComponent = com;
+                });
+                //$rootScope.componentChanged(com);
             }
 
         	function initView() {
@@ -55,7 +56,6 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                             cfg.width = item.options.width;
                             cfg.height = item.options.height;
                             cfg.url = item.options.url;
-                            cfg.scale = editorService.editorScale;
                             var com = new Singleimage(cfg);
                             updateModel(com);
                         }
@@ -66,7 +66,6 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                 //文本
         		$(".u-toolBtn:eq(1)", toolBtnPanel).on('click', function (e) {
                     var cfg = {};
-                    cfg.scale = editorService.editorScale;
                     var com = new Singletext(cfg);
         			updateModel(com);
         		});
@@ -79,7 +78,6 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		$(".u-toolBtn:eq(2) ul li", toolBtnPanel).on('click', function (e) {
         			var index = $(".u-toolBtn:eq(2) ul li", toolBtnPanel).index(this);
         			var cfg = {};
-                    cfg.scale = editorService.editorScale;
                     cfg.funType = index + '';
                     cfg.funMode = index == 1? "icon" : "text";
                     var com = new Externallinks(cfg);
@@ -115,7 +113,8 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
                             $("i", $nav2music).removeClass().addClass("icon-x20 icon-x22-hasmusic");
                             $("p", $nav2music).addClass("textCarouselClz active").text(data.name);
                         }
-                        
+                        window.bgMusic = data;
+                        console.log(window.bgMusic);
                     }
                 });
                 //背景音乐
@@ -128,19 +127,14 @@ mainModule.directive("navigationArea", ['$rootScope', '$compile', 'pageService',
         		});
                 //预览
         		$btnPreview.on('click', function (e) {
-        			var $dialog = $compile('<div preview-dialog></div>')(scope);
-        			var $cover = $('<div class="g-cover"></div>');
-                    
-        			$("body").append($cover);
+                    var newScope = scope.$new();
+        			var $dialog = $compile('<div preview-dialog></div>')(newScope);
+
         			$("body").append($dialog);
-        			$cover.on("click", function (e) {
-        				$cover.remove();
-        				$dialog.remove();
-        			});
         		});
                 //发布
         		$btnRelease.on('click', function (e) {
-                    alert("btnRelease");
+                    console.log($rootScope);
         		});
                 //撤销
         		$btnUndo.on('click', function (e) {

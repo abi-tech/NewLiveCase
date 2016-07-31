@@ -58,3 +58,47 @@ var ExClass = function (baseClass, prop) {
 
     return F;
 };
+
+var comUtils = {};
+
+comUtils.animate = function (name, dom, animation, callback) {
+    if(dom && animation) {
+        var st = new Date().getTime();
+        console.log(name + "开始");
+        var exp = animation.effect + " " + animation.duration + "s ";
+        var end = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
+        dom.css("animation", exp).one(end, function () {
+            dom.css("animation", "none");
+            dom.unbind(end);
+
+            var et = new Date().getTime();
+            var sp = et - st;
+            console.log(name + "结束 耗时:" + sp + "ms");
+            callback && callback(dom, animation);
+        });
+    }
+}
+
+comUtils.createPage = function (opts) {
+    var h5page = new H5Page(opts);
+    $.each(h5page.components, function (i, n) {
+        h5page.components[i] = comUtils.createComponent(n);
+    });
+    return h5page;
+}
+
+comUtils.createComponent = function (opts) {
+    var component;
+    switch(opts.type){
+        case 'singleimage':
+            component = new Singleimage(opts);
+            break;
+        case 'singletext':
+            component = new Singletext(opts);
+            break;
+        case 'externallinks':
+            component = new Externallinks(opts);
+            break;
+    }
+    return component;
+}

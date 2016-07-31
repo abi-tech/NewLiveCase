@@ -13,6 +13,7 @@ var EditorFrameBuilder = function (options) {
     var that = this;
 
     that.defaultOptions = {
+        id: null,
         originWidth: 640,
         originHeight: 1040,
         originScale: 1,
@@ -23,7 +24,9 @@ var EditorFrameBuilder = function (options) {
         sliderHeight: 68,
         page: null
     };
-    
+
+    that.defaultOptions.id = ('h5page_' + Math.random()).replace('.', '_');
+
     that.$html = $([
         '<div id="editorFrame" class="u-page-border page-container u-page-active" bg-layout="center" style="background-color: {{ currentPage.bgColor }};">',
             '<div ng-repeat="component in currentPage.components" preview="0" editor-area-component></div>',
@@ -38,9 +41,9 @@ var EditorFrameBuilder = function (options) {
             '<li class="disable"><span>上移一层</span></li>',
             '<li class="disable"><span>移到最底层</span></li>',
             '<li class="disable"><span>下移一层</span></li>',
-            '<li class="disable"><span>复制</span></li>',
+            '<li ng-class="{\'disable\': currentComponent == null }"><span>复制</span></li>',
             '<li class="disable"><span>粘贴</span></li>',
-            '<li class="last disable"><span>删除</span></li>',
+            '<li class="last" ng-class="{\'disable\': currentComponent == null }" ng-click="deleteComponent()"><span>删除</span></li>',
         '</ul>'
     ].join(''));
 
@@ -51,6 +54,25 @@ var EditorFrameBuilder = function (options) {
             '<img style="position: absolute; width: auto; height: 100%; left: -140.288px; top: 0px;" />',
         '</div>'
     ].join(''));
+
+    var st;
+    var animList = [];
+    var index = 0;
+    var timer = $.timer(function() {
+        if (animList.length == index) {
+            timer.stop();
+            return;
+        }
+        var curr = new Date().getTime();
+        var span = curr - st;
+        var com = animList[index];
+        var time = com.options.animateIn.delay * 1000; 
+        if (time <= span) {
+            com.$html.show();
+            com.animateIn();
+            index++;
+        }
+    }, 50, true);
 
     that.setPage = function (page) {
         that.page = page;
@@ -75,14 +97,25 @@ var EditorFrameBuilder = function (options) {
     that.animate = function (animation) { 
         var anim = animation? animation : that.page.animation;
         if(!anim) { 
-            console.log("animation is undefined");
             return;
         }
-        var exp = anim.effect + " " + anim.duration + "s backwards";
-        var end = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
-        that.$html.css("animation", exp).one(end, function () {
-            that.$html.css("animation", "none");
+
+        $.each(that.page.components, function (i, n) { 
+            if(n.options.animateIn){
+                animList.push(n);
+                n.$html.hide();
+            }
         });
+
+        animList.sort(function (a, b) {
+            return a.options.animateIn.delay - b.options.animateIn.delay;
+        });
+
+        comUtils.animate("页面动画", that.$html, anim, function () {
+            st = new Date().getTime();
+            timer.play();
+        });
+
     }
 
     that.setBackgroundColor = function (color) {
@@ -142,10 +175,21 @@ var EditorFrameBuilder = function (options) {
             alert($(this).text());
         });
 
-        that.$html.on('onLoad',function(){
+        that.$html.on('onLoad',function(e){ //console.log("onLoad" + that.id, e);
+            index = 0;
+            st = 0;
+            animList.length = 0;
+            timer.stop();
             that.animate(that.page.animation);
             return false;          
         });
+    }
+
+    that.destroy = function () {
+        timer.stop();
+        that.$html.unbind();
+        that.$html.remove();
+        delete that.$html;
     }
 
     that.init = function () {
@@ -153,26 +197,41 @@ var EditorFrameBuilder = function (options) {
         that.initData();
         that.initView();
         that.initEvent();
+        that.$html.trigger("onLoad");
     }
 
     that.init();
 }
 
-mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'editorService',
-    function ($rootScope, $compile, pageService, editorService) {
+mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService',
+    function ($rootScope, $compile, pageService) {
     return {
         restrict: "A",
         template: '<div class="g-editor"><section class="m-editor"><div id="editorFrame"></div></section></div>',
         replace: true,
+        scope: {},
         link: function (scope, element, attrs) {
+            var frame, newScope;
             var init = function (index) {
-                var frame = new EditorFrameBuilder({ page: pageService.pages[index] });
-                var $html = $compile(frame.$html)($rootScope);
-                $("#editorFrame", element).replaceWith($html);
-                $("#editorFrame").trigger("onLoad");
+                frame && frame.destroy();
+                newScope && newScope.$destroy();
+                delete frame;
+                delete newScope;
+
+                newScope = $rootScope.$new();
+                newScope.deleteComponent = function () {
+                    $rootScope.deleteCurrentComponent();
+                }
+
+                frame = new EditorFrameBuilder({ page: pageService.pages[index] });
+                var $html = $compile(frame.$html)(newScope);
+                $(".m-editor", element).empty();
+                $(".m-editor", element).append($html);
+
+                scope.$destroy();
             }
 
-            scope.$on('page.changed', function (event, index) {
+            $rootScope.$on('page.changed', function (event, index) {
                 pageService.currentPageIndex = index;
                 init(index);
             });
@@ -181,6 +240,10 @@ mainModule.directive("editorArea", ['$rootScope', '$compile', 'pageService', 'ed
                 $rootScope.currentComponent = null;
                 $rootScope.componentChanged(null);
             });
+
+            // scope.$on("$destroy", function() {
+            //     console.log("销毁editorArea");
+            // })
             init(0);
         }
     }

@@ -123,10 +123,10 @@ constants.comsAnimationList = [
     { "type":"flipIn", "direction": "in", "typeName": "翻入", "name": "水平翻入", "effect": "flipInY", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
     { "type":"flipIn", "direction": "in", "typeName": "翻入", "name": "垂直翻入", "effect": "flipInX", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
     { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "旋入", "effect": "rotateIn", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从上旋入", "effect": "rotateInDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从下旋入", "effect": "rotateInUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从左旋入", "effect": "rotateInLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从右旋入", "effect": "rotateInRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从上旋入", "effect": "rotateInDownLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从下旋入", "effect": "rotateInUpLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从左旋入", "effect": "rotateInDownRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateIn", "direction": "in", "typeName": "旋入", "name": "从右旋入", "effect": "rotateInUpRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
     { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "渐进放大", "effect": "zoomIn", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
     { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "从上放大", "effect": "zoomInDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
     { "type":"zoomIn", "direction": "in", "typeName": "渐进放大", "name": "从下放大", "effect": "zoomInUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
@@ -145,10 +145,10 @@ constants.comsAnimationList = [
     { "type":"flipOut", "direction": "out", "typeName": "翻出", "name": "水平翻出", "effect": "flipOutY", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
     { "type":"flipOut", "direction": "out", "typeName": "翻出", "name": "垂直翻出", "effect": "flipOutX", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
     { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "旋出", "effect": "rotateOut", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
-    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从上旋出", "effect": "rotateOutDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从下旋出", "effect": "rotateOutUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从左旋出", "effect": "rotateOutLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
-    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从右旋出", "effect": "rotateOutRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从上旋出", "effect": "rotateOutDownLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从下旋出", "effect": "rotateOutUpLeft", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从左旋出", "effect": "rotateOutDownRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
+    { "type":"rotateOut", "direction": "out", "typeName": "旋出", "name": "从右旋出", "effect": "rotateOutUpRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
     { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "渐进缩小", "effect": "zoomOut", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
     { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从上缩小", "effect": "zoomOutDown", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
     { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从下缩小", "effect": "zoomOutUp", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
@@ -156,4 +156,6 @@ constants.comsAnimationList = [
     { "type":"zoomOut", "direction": "out", "typeName": "渐进缩小", "name": "从右缩小", "effect": "zoomOutRight", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": false },
     { "type":"hinge", "direction": "out", "typeName": "坠落", "name": "坠落", "effect": "hinge", "delay": 0, "duration": 1, "count": 1,"infinite":false, "default": true },
 ];
+
+constants.scale = 1;
 

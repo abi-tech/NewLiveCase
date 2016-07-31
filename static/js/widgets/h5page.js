@@ -16,20 +16,21 @@ var H5Page = function(options) {
         width: 640,
         height: 1040,
         bgColor: "rgb(255, 255, 255)",
-        bgImage: "",
+        bgImage: null,
         css: {
             "background-color": "rgb(255, 255, 255)",
             "background-image": "none"
         },
         active: false,
         slideIcon: null,
-        animation: null,
+        animation: constants.pageIconList[0],
         applyAllPages: false,
         autoTurnPage: false,
         autoTurnPageDelay: 0,
         lockTurnPage: false,
         zIndex: 10000,
         step: 100,
+        effect: null,
         components: []
     };
 
@@ -37,11 +38,10 @@ var H5Page = function(options) {
     * 描述：添加H5组件
     * 参数 component H5组件对象
     **/
-    that.add = function(component) {
+    that.addComponent = function(component) {
         var zIndex = that.zIndex + (that.step * (that.components.length + 1));
         component.setZIndex(zIndex);
         that.components.push(component);
-        that.currentComponent = component;
     }
 
     /**
@@ -92,7 +92,6 @@ var H5Page = function(options) {
     that.getOptions = function() {
         var obj = $.parseJSON(JSON.stringify(that));
         delete obj.defaultOptions;
-        delete obj.currentComponent;
         delete obj.options;
         return obj;
     }
@@ -102,15 +101,11 @@ var H5Page = function(options) {
     **/
     that.setOptions = function (options) {
         delete that.options;
-        that.currentComponent = null;
         that.defaultOptions.slideIcon = constants.pageIconList[0];
         that.defaultOptions.animation = constants.pageAnimationList[0];
         that.options = $.extend({}, that.defaultOptions, options);
+        that.options.css["background-image"] = that.options.bgImage? "url('" + that.options.bgImage["url"] + "')" : "none";
         $.extend(that, that.options);
-    }
-
-    that.animate = function (animation) {
-        // body...
     }
 
     /**

@@ -43,7 +43,7 @@ var H5 = function () {
     **/
     this.addPage = function(options){
         var page = $('<div class="page section">');
-        var bgImage = $('<img style="position: absolute; width: auto; height: 100%; left: 0px; top: 0px;">');
+        var bgImage = $('<img style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px;">');
         var slideIcon = $('<div class="u-guideWrap"><a href="javascript:void(0);" class="u-guideTop u-guideTop-' + options.slideIcon.value + '"></a></div>');
         
         page.css("background-color", options.bgColor);

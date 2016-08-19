@@ -28,3 +28,4 @@ function GetUrlPara()
 　　　　var para = arrUrl[1];
 　　　　return para;
 　　}
+http://www.showerlee.com/
